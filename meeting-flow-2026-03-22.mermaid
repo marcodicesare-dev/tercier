@@ -1,0 +1,103 @@
+---
+title: "Tercier Meeting — 22 March 2026, 19:00 — 60 min"
+---
+flowchart TD
+    START(["🎯 MEETING START — 60 min<br/>Location: Milan / Video call?"]) --> A
+
+    subgraph A["PHASE 1: FRAME — 3 min"]
+        direction TB
+        A1["'Ho preso molto seriamente quello che<br/>ci siamo detti nella call.<br/>Vi ho preparato un business plan<br/>con scenari e numeri, ma prima<br/>vi faccio vedere cosa ho trovato sul mercato.'"]
+        A2["Agenda: Market → Model → How I'd Run It → What I Need"]
+    end
+
+    A --> B
+
+    subgraph B["PHASE 2: MARKET PROOF — 12 min"]
+        direction TB
+        B1["SLIDE: 2,069 HotellerieSuisse member rows<br/>→ 718 selected dossiers<br/>→ 272 ICP hotels (4-5★, ADR ≥ CHF 250)<br/>'Questo è il mercato indirizzabile in Svizzera'"]
+        B2["SLIDE: Synthetic survey headlines<br/>1,632 buyer simulations, $25.54 total cost<br/>37% buy likelihood @ CHF 3K<br/>Top 50 hotels ranked + outreach angles"]
+        B3["SLIDE: Top 10 targets with names<br/>Schweizerhof ZH, Suvretta House, Victoria-Jungfrau...<br/>'These are real hotels, real data, real signals'"]
+        B4["KEY SLIDE: Deal killer = No PMS integration (79%)<br/>Proof need = Swiss reference + 60-day pilot<br/>'This tells us exactly how to sell it'"]
+        B1 --> B2 --> B3 --> B4
+    end
+
+    B --> B_HOLD{{"🃏 RESERVE: Full methodology,<br/>adversarial pipeline, 272 hotel details.<br/>Only if they ask HOW."}}
+
+    B_HOLD --> C
+
+    subgraph C["PHASE 3: BUSINESS MODEL + FINANCIALS — 12 min"]
+        direction TB
+        C1["SLIDE: Business Model Canvas<br/>1 slide, visual, clean"]
+        C2["SLIDE: Unit economics<br/>COGS EUR 15-50/hotel/mo + payments | Price EUR 1-5K/mo<br/>>95% gross margin | Breakeven ~5-7 hotels"]
+        C3["SWITCH TO LIVE SIMULATOR 💥<br/>'Fatemi farvi vedere una cosa —<br/>ditemi le vostre assumptions,<br/>lo giro in tempo reale'"]
+        C4["Show operator-seeded P50:<br/>M12: 30 hotels, EUR 826K ARR<br/>M18: 47 hotels, EUR 1.40M ARR<br/>M36: 115 hotels, EUR 4.0M ARR<br/>M60 exit: EUR 45.9M"]
+        C1 --> C2 --> C3 --> C4
+    end
+
+    C --> C_HOLD{{"🃏 RESERVE: follow-on angel scenario,<br/>separate exit Monte Carlo, legacy dual-path model.<br/>Only if they push on upside."}}
+
+    C_HOLD --> D
+
+    subgraph D["PHASE 4: HOW I'D RUN IT — 10 min"]
+        direction TB
+        D1["PRINCIPLE: AI-native from day 0<br/>'The survey you just saw? That's the product.<br/>I ate our own dog food. $25 total cost.'"]
+        D2["PRINCIPLE: Revenue and bottlenecks drive hiring<br/>'I evaluate the existing product context week 1.<br/>I run product + sales + strategy as solo founder/operator<br/>until revenue or execution bottlenecks justify hires.'"]
+        D3["PRINCIPLE: Daily iteration<br/>'I don't do weekly sprints.<br/>I ship and fix in hours.<br/>Everything you're seeing was built in 9 days.'"]
+        D4["PRINCIPLE: Clients > Capital<br/>'10 paying hotels teach us more<br/>than any amount of funding.<br/>Marketing budget Year 1: near zero.<br/>Your network IS the GTM.'"]
+        D1 --> D2 --> D3 --> D4
+    end
+
+    D --> E
+
+    subgraph E["PHASE 5: THE ASK — 8 min"]
+        direction TB
+        E1["'Per far funzionare questo, servono tre cose.'"]
+        E2["1️⃣ 10 WARM INTRODUCTIONS<br/>'Ho i top 50 hotel rankati.<br/>So chi chiamare e cosa dirgli.<br/>Mi serve che mi apriate la porta.<br/>Questo è il contributo più importante<br/>che potete dare nei primi 6 mesi.'"]
+        E3["2️⃣ SEED: CHF 120-150K<br/>'Capital-light business.<br/>>95% gross margins = self-funding after ~5-7 hotels.<br/>This covers runway to breakeven.'"]
+        E4["3️⃣ STRUCTURE<br/>Swiss AG in Zug | Marco = CEO/Administrator<br/>Equity: contribution-based, milestone-growing<br/>Salary: CHF 4K/mo → scales with hotel count<br/>+ 2% MRR revenue share"]
+        E1 --> E2 --> E3 --> E4
+    end
+
+    E --> E_NOTE{{"⚠️ DO NOT raise:<br/>Protection clauses, drag-along,<br/>JAKALA dynamics, shotgun clause.<br/>That's for SHA negotiation later.<br/>Tonight = alignment + excitement."}}
+
+    E_NOTE --> F
+
+    subgraph F["PHASE 6: CLOSE + NEXT STEPS — 5 min"]
+        direction TB
+        F1["Week 1: Evaluate MVP + team<br/>Week 2: First pilot hotel onboarding<br/>Week 3-4: Feedback loop + iterate"]
+        F2["CONCRETE QUESTIONS:<br/>'Quando incorporiamo?<br/>Quando incontro la catena pilota?<br/>Quando posso vedere l'MVP?'"]
+        F3["'Vi mando deck + simulatore stasera.<br/>Io sono pronto. Ci sono.'"]
+    end
+
+    F --> END([🏁 60 MIN — STOP])
+
+    %% Timing annotations
+    START -.- T1["⏱️ 0:00"]
+    A -.- T2["⏱️ 0:03"]
+    B -.- T3["⏱️ 0:15"]
+    C -.- T4["⏱️ 0:27"]
+    D -.- T5["⏱️ 0:37"]
+    E -.- T6["⏱️ 0:45"]
+    F -.- T7["⏱️ 0:53"]
+
+    %% CONVERSATION DYNAMICS
+    subgraph RULES["🧠 RULES OF ENGAGEMENT"]
+        direction TB
+        R1["Let THEM ask questions — don't fill silence"]
+        R2["If they go deep on a topic, LET THEM<br/>Adjust time from later phases"]
+        R3["If Amedeo starts selling the vision to YOU,<br/>let him — he's convincing himself"]
+        R4["If Corsaro speaks (finally), give him full attention"]
+        R5["The simulator is your 'oh shit' moment —<br/>time it when energy dips around min 25-30"]
+        R6["End 5 min early if possible —<br/>leaving them wanting more > overstaying"]
+    end
+
+    style A fill:#1a1a2e,color:#fff,stroke:#e94560
+    style B fill:#16213e,color:#fff,stroke:#0f3460
+    style C fill:#16213e,color:#fff,stroke:#0f3460
+    style D fill:#0f3460,color:#fff,stroke:#53b8bb
+    style E fill:#e94560,color:#fff,stroke:#fff
+    style F fill:#0f3460,color:#fff,stroke:#53b8bb
+    style RULES fill:#111,color:#ccc,stroke:#444
+    style B_HOLD fill:#333,color:#aaa,stroke:#666,stroke-dasharray: 5 5
+    style C_HOLD fill:#333,color:#aaa,stroke:#666,stroke-dasharray: 5 5
+    style E_NOTE fill:#8b0000,color:#fff,stroke:#ff4444,stroke-dasharray: 5 5
