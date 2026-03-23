@@ -1,0 +1,380 @@
+{
+  "assumptions": {
+    "purpose": "Compare a capital-efficient AI-native profitable path against a VC-accelerated category-capture path for Tercier over 5 years.",
+    "notes": [
+      "Both paths assume software-native global distribution and reject Swiss-only founder-cap assumptions.",
+      "The profitable path assumes AI leverage and reinvestment substitute for some historical headcount requirements.",
+      "The VC path does not assume money creates magic; it mostly buys time compression in integrations, international GTM, and portfolio sales.",
+      "Synthetic buyer survey outputs are used as pricing and friction anchors, not literal TAM penetration.",
+      "The Swiss dataset is used as a calibration wedge, not a global market ceiling."
+    ],
+    "survey_context": {
+      "survey_hotels": 272,
+      "price_bands": {
+        "2000_3000": 27,
+        "1000_2000": 243,
+        "under_1000": 2
+      },
+      "segments": {
+        "luxury": {
+          "count": 97,
+          "buy3": 39.5360824742268,
+          "buy5": 16.969072164948454,
+          "delay": 67.10309278350516
+        },
+        "upper_upscale": {
+          "count": 164,
+          "buy3": 35.292682926829265,
+          "buy5": 13.603658536585366,
+          "delay": 66.67682926829268
+        },
+        "business_conference": {
+          "count": 6,
+          "buy3": 39.5,
+          "buy5": 15.833333333333334,
+          "delay": 65.0
+        },
+        "serviced_apartments": {
+          "count": 2,
+          "buy3": 33.5,
+          "buy5": 12.5,
+          "delay": 67.5
+        },
+        "upscale": {
+          "count": 3,
+          "buy3": 32.0,
+          "buy5": 10.333333333333334,
+          "delay": 67.66666666666667
+        }
+      }
+    },
+    "dataset_context": {
+      "all_hotels": 2069,
+      "core_4_5_star_adr_250": 329,
+      "expanded_4plus_or_large": 643,
+      "large_80plus_rooms": 355
+    },
+    "simulation_count": 10000,
+    "seed": 7
+  },
+  "results": {
+    "ai_native_profitable": {
+      "scenario": {
+        "key": "ai_native_profitable",
+        "label": "AI-Native Profitable Compounding",
+        "description": "Assumes Tercier reaches early profitability, reinvests revenue aggressively, and uses AI leverage to keep product velocity and GTM productivity high without raising large rounds. Growth is constrained mainly by integrations, references, implementation quality, and selective group expansion.",
+        "phase_unlocks": [
+          [
+            1,
+            6,
+            400,
+            20
+          ],
+          [
+            7,
+            18,
+            3500,
+            160
+          ],
+          [
+            19,
+            30,
+            12000,
+            500
+          ],
+          [
+            31,
+            42,
+            32000,
+            1100
+          ],
+          [
+            43,
+            60,
+            75000,
+            2200
+          ]
+        ],
+        "exec_range": [
+          0.95,
+          1.1,
+          1.45
+        ],
+        "product_range": [
+          0.95,
+          1.1,
+          1.35
+        ],
+        "reference_range": [
+          0.9,
+          1.0,
+          1.18
+        ],
+        "integration_range": [
+          0.82,
+          0.96,
+          1.12
+        ],
+        "property_lambda_mult": 1.15,
+        "group_lambda_mult": 0.85,
+        "referral_direct_factor": 0.0015,
+        "referral_group_factor": 0.025,
+        "early_direct_churn": [
+          0.1,
+          0.13,
+          0.2
+        ],
+        "late_direct_churn": [
+          0.07,
+          0.1,
+          0.16
+        ],
+        "early_group_churn": [
+          0.06,
+          0.08,
+          0.14
+        ],
+        "late_group_churn": [
+          0.04,
+          0.06,
+          0.11
+        ],
+        "early_direct_nrr": [
+          1.0,
+          1.008,
+          1.018
+        ],
+        "late_direct_nrr": [
+          1.004,
+          1.013,
+          1.026
+        ],
+        "early_group_nrr": [
+          1.002,
+          1.011,
+          1.024
+        ],
+        "late_group_nrr": [
+          1.006,
+          1.017,
+          1.032
+        ],
+        "group_hq_fee_mult": 1.0,
+        "group_prop_fee_mult": 1.0,
+        "exit_multiple_floor": 3.4,
+        "exit_multiple_mode": 4.8,
+        "exit_multiple_ceiling": 6.8
+      },
+      "outputs": {
+        "arr_12m": {
+          "p10": 665547.2486883726,
+          "p50": 993360.3763958002,
+          "p90": 1417679.877434697,
+          "mean": 1023920.6606698161
+        },
+        "arr_24m": {
+          "p10": 2362171.9568179618,
+          "p50": 3209628.677316364,
+          "p90": 4292511.483298258,
+          "mean": 3284237.710834243
+        },
+        "arr_36m": {
+          "p10": 6391112.45374136,
+          "p50": 8591822.338655455,
+          "p90": 11429000.693085961,
+          "mean": 8782695.105924983
+        },
+        "arr_60m": {
+          "p10": 29679153.43332559,
+          "p50": 38939920.468273975,
+          "p90": 50791364.84128341,
+          "mean": 39734973.99570405
+        },
+        "exit_value_60m": {
+          "p10": 144186027.80169064,
+          "p50": 201810265.13640377,
+          "p90": 280365836.5200336,
+          "mean": 208108211.16226092
+        },
+        "direct_properties_60m": {
+          "p10": 714.0,
+          "p50": 916.0,
+          "p90": 1169.0,
+          "mean": 929.0026
+        },
+        "groups_60m": {
+          "p10": 24.0,
+          "p50": 36.0,
+          "p90": 51.0,
+          "mean": 36.8347
+        },
+        "total_properties_equivalent_60m": {
+          "p10": 1009.5717813051147,
+          "p50": 1321.1196911196912,
+          "p90": 1710.2969528369024,
+          "mean": 1344.461737025198
+        },
+        "probability_exit_value_gte_100m": 0.9971
+      }
+    },
+    "vc_accelerated": {
+      "scenario": {
+        "key": "vc_accelerated",
+        "label": "VC-Accelerated Category Capture",
+        "description": "Assumes capital is used to compress time in integrations, implementation, international GTM, and group/portfolio sales. It is not a linear money=magic model; the main edge is faster market unlocks, more credible enterprise motion, and stronger channel/reference density.",
+        "phase_unlocks": [
+          [
+            1,
+            6,
+            500,
+            30
+          ],
+          [
+            7,
+            18,
+            5000,
+            240
+          ],
+          [
+            19,
+            30,
+            18000,
+            750
+          ],
+          [
+            31,
+            42,
+            45000,
+            1700
+          ],
+          [
+            43,
+            60,
+            100000,
+            3000
+          ]
+        ],
+        "exec_range": [
+          1.0,
+          1.18,
+          1.55
+        ],
+        "product_range": [
+          0.98,
+          1.14,
+          1.4
+        ],
+        "reference_range": [
+          0.95,
+          1.08,
+          1.28
+        ],
+        "integration_range": [
+          0.9,
+          1.05,
+          1.22
+        ],
+        "property_lambda_mult": 1.35,
+        "group_lambda_mult": 1.45,
+        "referral_direct_factor": 0.0018,
+        "referral_group_factor": 0.035,
+        "early_direct_churn": [
+          0.09,
+          0.12,
+          0.18
+        ],
+        "late_direct_churn": [
+          0.06,
+          0.09,
+          0.14
+        ],
+        "early_group_churn": [
+          0.05,
+          0.07,
+          0.12
+        ],
+        "late_group_churn": [
+          0.03,
+          0.05,
+          0.09
+        ],
+        "early_direct_nrr": [
+          1.002,
+          1.012,
+          1.024
+        ],
+        "late_direct_nrr": [
+          1.006,
+          1.018,
+          1.032
+        ],
+        "early_group_nrr": [
+          1.005,
+          1.016,
+          1.03
+        ],
+        "late_group_nrr": [
+          1.01,
+          1.022,
+          1.038
+        ],
+        "group_hq_fee_mult": 1.18,
+        "group_prop_fee_mult": 1.1,
+        "exit_multiple_floor": 3.8,
+        "exit_multiple_mode": 5.4,
+        "exit_multiple_ceiling": 7.4
+      },
+      "outputs": {
+        "arr_12m": {
+          "p10": 1245241.5589952623,
+          "p50": 1808387.8697568616,
+          "p90": 2553737.093939703,
+          "mean": 1861352.3812554993
+        },
+        "arr_24m": {
+          "p10": 4894709.376490841,
+          "p50": 6703885.219623536,
+          "p90": 9130699.74115629,
+          "mean": 6888971.312116476
+        },
+        "arr_36m": {
+          "p10": 15479723.675853057,
+          "p50": 20974056.99875821,
+          "p90": 27837135.329659536,
+          "mean": 21415537.81388515
+        },
+        "arr_60m": {
+          "p10": 76318796.95411256,
+          "p50": 97112109.98628835,
+          "p90": 122961423.16806503,
+          "mean": 98692289.72965531
+        },
+        "exit_value_60m": {
+          "p10": 405800971.5331145,
+          "p50": 555660073.9485503,
+          "p90": 749225945.6994908,
+          "mean": 569498968.7369639
+        },
+        "direct_properties_60m": {
+          "p10": 1308.0,
+          "p50": 1623.0,
+          "p90": 2009.0,
+          "mean": 1644.1725
+        },
+        "groups_60m": {
+          "p10": 75.0,
+          "p50": 101.0,
+          "p90": 132.0,
+          "mean": 102.2272
+        },
+        "total_properties_equivalent_60m": {
+          "p10": 2194.0603196396296,
+          "p50": 2766.3441097547957,
+          "p90": 3455.889613694252,
+          "mean": 2802.71566669507
+        },
+        "probability_exit_value_gte_100m": 1.0
+      }
+    }
+  }
+}

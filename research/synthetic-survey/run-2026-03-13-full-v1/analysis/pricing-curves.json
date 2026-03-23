@@ -1,0 +1,50 @@
+[
+  {
+    "segment": "luxury",
+    "hotel_count": 97,
+    "avg_buy_3k": 40,
+    "avg_buy_5k": 17,
+    "band_distribution": {
+      "1000_2000": 69,
+      "2000_3000": 27,
+      "under_1000": 1
+    }
+  },
+  {
+    "segment": "upper_upscale",
+    "hotel_count": 164,
+    "avg_buy_3k": 35,
+    "avg_buy_5k": 14,
+    "band_distribution": {
+      "1000_2000": 163,
+      "under_1000": 1
+    }
+  },
+  {
+    "segment": "business_conference",
+    "hotel_count": 6,
+    "avg_buy_3k": 40,
+    "avg_buy_5k": 16,
+    "band_distribution": {
+      "1000_2000": 6
+    }
+  },
+  {
+    "segment": "serviced_apartments",
+    "hotel_count": 2,
+    "avg_buy_3k": 34,
+    "avg_buy_5k": 13,
+    "band_distribution": {
+      "1000_2000": 2
+    }
+  },
+  {
+    "segment": "upscale",
+    "hotel_count": 3,
+    "avg_buy_3k": 32,
+    "avg_buy_5k": 10,
+    "band_distribution": {
+      "1000_2000": 3
+    }
+  }
+]

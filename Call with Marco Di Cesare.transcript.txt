@@ -1,0 +1,406 @@
+ Ciao Marco, mi senti, ti mi vedi? Ti vedo, ti sento, ciao Marco scusami in ritardo
+ ma a Medeo è in una riunione e io ho una call quindi.
+ No, niente, assolutamente io solo bus vi mando solo per dirvi sono coma senza nessun problema.
+ Siete, avete l'ufficio a Milano? Abbiamo, ha anche l'ufficio a Milano,
+ sì abbiamo un ufficio principale a Milano. Aspettiamo a Medeo? No, no, no, non riesce a
+ venire perché con il nostro cero in questo momento l'ha chiamato quindi purtroppo non ci può essere.
+ Allora, ci siamo lasciati la scuola settimana con diciamo dei propositi, tu hai fatto una riflessione?
+ Sì, io c'è appunto riflettuto su due temi, uno è il feedback che mi hai dato tu che è super
+ super importante per me sulla terra di nessuno che dicevi nel momento in cui hai un'idea che
+ può essere questo tracking analytics ma per un segmento di enterprise non può andare per i
+ piccoli player magari non è abbastanza rilevante. Su questo ragionamento che ho fatto è ho parlato
+ con diverse aziende questa settimana perché qualcuno inizia a scrivermi feedback, stiamo,
+ sto impostando un lavoro più consulenziale con questi primi utenti che ho e quello che
+ mi rendo conto è che allora alla fine di una dashboard se ne fanno poco perché è un mondo
+ talmente sconosciuto che loro cioè guardare gli analytics non è sufficiente per avere un
+ valore aggiunto su quello su come ottimizzare per le eye search. Parlo di aziende comunque
+ medie, non parlo di grandi enterprise, non ho avuto ancora la fortuna di parlarci però la
+ riflessione che ho fatto su questo punto è che le aziende hanno bisogno di capire come funziona
+ le eye search e secondo me c'è l'opportunità di mercato è un business model che è più servizio
+ ma che poi gli dà una piattaforma per fare monitoraggio di il servizio consulenziale che
+ gli è fatto che è un po' quello che immagino faccia iacala. Giacala scusami e quindi la riflessione
+ è stato su questo, penso che ci sia un dibattito politico nel mondo di questa categoria tra chi
+ lavora da vent'anni nel mondo SEO che cerca di puntare tutto su "oh ma Google è ancora la prima
+ fonte" non è che non dovete più fare SEO e non fare più Google e chi invece salta sul treno
+ dell'opportunità dell'ogeo, adesso tutto alive, tutte le eye search, milioni di dollari investiti etc. vedo
+ tanto sui social questo dibattito tra gente che è da vent'anni nell'industria che cerca di spingere
+ per un "basta che fate una buona SEO" e poi siete raccomandati dalle eye search e invece gente
+ che magari sta cercando di portare qualcosa di nuovo magari con modalità anche non super
+ valide e quindi questo è il mondo eye search. Sul tema che ci si è andati altre idee open mind
+ onestamente come dicevo settimana scorsa io credo molto, secondo me il business cambieranno
+ tantissimo ma siamo in una fase molto early come adoption è difficile capire cosa su cosa puntare
+ però di sicuro nell'adoption gap c'è c'è una grande opportunità c'è a vero fare delle cose e eye
+ native nelle aziende che hanno un adoption bassa dimostralli che hanno valore aggiunto sotto
+ forma di workflow analytics come dicevamo però non ho l'idea da presentarvi oggi e l'ho anche
+ curioso di sapere voi su cosa vassavate lavorando se volete voi qualche input più che altro
+ Scusi Marco si, tanto grazie al punto che ci fate inizialmente, quello che noi stiamo lavorando
+ sensamente è l'utilizzo dell'artificial intelligence all'interno di un ecosistema
+ specifico perché crediamo molto nell'applicazione verticale nel senso che oggi non voglio generalizzare
+ ma le applicazioni generaliste probabilmente vi sta la possibilità di fare scala sul verticale
+ lasciaranno spazio a tante applicazioni verticali che sono oggi facile di implementare e che possono
+ essere utilizzate per far risparmiare significativamente tempo a chi oggi fa un mestiere con delle
+ complessità che oggi nessuno comunque in pochi, stanno approcciando proprio perché un mestiere
+ che ad oggi è molto verticale è ripetato negli generalisti e non lo affrontano, il verticale
+ in cui stiamo lavorando noi è come un motellerie che è un mercato grande noi conosciamo, abbiamo come
+ clienti diverse catene di hotel come giocala e che riditano diciamo la nostra storia imprenditoriale
+ e abbiamo iniziato a pensare come potevamo con applicazioni di artificial intelligence andare
+ a aiutare tutto quello che è il Dipartimento diciamo marketing e di costruzione dei contenuti
+ degli hotel a evolvere grazie ad utilizzare l'artificial intelligence, evolvere tutto quello
+ che il contenuto personalizzato da tipo gd target che arriva verso il single hotel il motivo per cui
+ siamo andati su hotelerie è che è un mercato molto peculiare perché anche ci siano dei brand
+ globali mario tradizio per citarne alcuni in realtà ogni single hotel è un ecossistema
+ assistante con delle necessità che sono molto diverse da quella dell'hotel successiva nella
+ lista in ordine alfabetico della catena se tu sei un hotel di mariot da un town dubai o a
+ monaco di pavera hai un in cam in markets completamente diverso le persone a cui parli
+ completamente diverse oltre alle lingue è proprio una questione di cosa gli interessa quelli che
+ viaggiano verso la location e perché ci viaggiano e qui tu ogni hotel necessiterebbe di un supporto
+ di analisi marketing molto evoluta che però inevitabilmente la catena non riesce ad agli perché
+ poi il single hotel è un medium business se non small small magari no un medium business poi
+ hai hotel che fatturano anche 60 70 milioni ma sono un po' degli unico no un hotel medio oggi ti
+ fattura dai 15 25 milioni di euro quindi sono dei medium business categoria medium che vuol dire
+ che non non hanno sostanzialmente oggi non qualificano per per cosa valice non qualificano
+ per avere un supporto vero e proprio di marketing da qualcuno di evoluto ok abbiamo scomposto quello
+ che è il problema di marketing e abbiamo costruito stiamo costruendo una un interfaccia che abbiamo
+ chiamato terra advanced ai per il momento che è sostanzialmente qualcosa che fa questo
+ mestiere cioè identifica un hotel prende da fonti riconosciuto i dati di mercato di
+ incoming della location di finire il set competitivo dell'hotel all'interno di
+ quello specifico a città che è diverso città per città perché a cui città non hai tutte le
+ catene e degli ultimi magari specifici locali le cose a considerare a quel punto ha un sistema
+ d'induction che define quali sono gli architipi dei clienti tipici di quel hotel e a dubai hai
+ dall'indiano all'europeo che viene a dubai per il turismo in una serie di una segmentazione
+ di barbiera c'hai holandesi a partite tedeschi ovviamente ai tedeschi holandesi inglesi una
+ serie di altre gli americane una serie di anche gente che viene dal middolist per fresh shopping per
+ esempio ha una serie di livelle una volta descritti dei caratteristiche costruite le
+ persone con un'analisi puntuale che non è fatta a caso ma è fatta con tutta una serie di elementi
+ di voice of the customer di lettura delle review eccetera noi siamo in grado oggi di far vestire
+ alle ai le lenti di quel consumatore e di fare due tipi di mestiere un mestiere è quello di
+ andare a essere utilizzato per fare un reading e una balutazione del tuo contenuto come hotel
+ verso sclodito i competitor con le lenti di quel consumatore lì e fare la ilite di dove quel tipo
+ di architipo di persona si verrà forte o meno forte e quindi date anche dei suggerimenti quando
+ parli con il tipo di persona lì su cosa fare la ilite e questo è un grande filone di ottimizzazione
+ di come tu comunichi che va dalla campagna pubblicità sui motori di ricerca fino a come scrivere
+ l'escrizione alla suite in pagina perché chiaramente hai tutta la parte di analisi dell'esì come
+ gli mantiene il newsletter il cliente come gli tutto questo e poi ha anche uno scarico a terra
+ che invece costruire un engine che è in grado invece di aiutarti a scrivere pezzi di contenuto
+ cioè oltre all'analisi tu puoi dire ok ma magari io devo scrivere più articoli relativi a degli
+ eventi perché sono gli eventi sono quelle che aumentano l'everage dell'e-rate che è il
+ prezzo di hotel e l'occupazione rate di una location possono essere eventi ricorsivi
+ sono tutti gli anni ovviamente che sono quell'anno lì perché l'Olympia di Lefano a Milano Cortina una
+ volta ogni 50 anni non per cui hai fenomeni anche di questo tipo trituramente quindi avere
+ un orchestratore che in maniera semplice sta nel mani della gestione dell'hotel che parla poi
+ con quelli che sono i soggetti corporate che compro le campagne pubblicitarie che mai danno una serie
+ di comunicazioni ma che poi non hanno mai tempo di servire l'hotel n+1 finale ha un costruzio
+ di licenza relativamente contenuto la possibilità di costruirti internamente con le AI una capacità
+ di comunicazione interpretazione del tuo mercato obiettivo e di azionabilità su questa cosa qui
+ che è molto voluta rispetto a quello che oggi faresti con la persona che sovretro ha 3-5 anni
+ di esperienza se va bene e che faceva magari dalla consiglia di lei posso da fare il marketing
+ dell'hotel ed è quello che scrive le bensure o il welcome nella televisione quando arrivino al
+ bergo abbiamo deciso di affrontare la sua parte intanto di se conoscio un po' la segmentazione
+ rotevita premium luxury a salire che era entri level del luxury premium luxury luxury ultraluxury mi
+ pareziono i premium 3 cluster premium luxury e oggi tipicamente un hotel che va in un intorno
+ dai 250 350 euro a salire poi dopo i diversi segmenti l'ultraluxury sopra gli 800 euro a
+ stanza ok ok ora questo tipo di di intuizione noi l'abbiamo fatta vedere ad alcuni negativiamo
+ cui la vogliamo è molto piaciuta è una fase prototipale che vuol dire che l'infrastruttura
+ di pensione che ho raccontato esiste anche già un team fatto da una sviluppatrice che
+ sta usando un ecosistema ai una parte di prototipazione che continua a fare da appunto
+ di vista logico io e una parte di pm che è quello che farà sia staggiato la sviluppatrice sulle
+ features business e dettando il tempo sia parlerà con la prima catena del pilota su cui costruire
+ quel prodotto in maniera da essere sicuro di non pensa non è se ci fatano in testa che
+ c'è l'esigenza ma andare a parlare con l'hotel manager specifico che ci chiederà poi magari
+ di adattarla quello che è il suo ecosistema di utilizzo per andare poi rilascio già ad un pilota
+ ad aprire di quest'anno per poi andare poi a fare uno scale up sulla prima catena durante il 26 e
+ a quel punto visto un prodotto che regge su una prima catena prova a fare uno scale up sul mercato
+ che oggi conta quasi un milione di hotel di cui circa 100 mila o qualcosa in meno sulla parte
+ prima un laxio da salire di cui però un mercato in grandissima espassione che ha oggi non fa fatica
+ a pagarti tra i 5 e 1000 euro al mese una licenza di un tool così perché vuoi dire comunque gli togli
+ una caterva di lavoro e gli costa molto meno della persona che oggi ci fa fare le cose se lo
+ vendi a 500 euro al mese i costa meno della catigenica che ha inotere gli speggio un lavoro un
+ valore elevato se gli toglie la produzione questo scusi tutto il pipone per dire che questo è quello
+ che oggi mi sembra una figata quindi per esclusione è comunque molto c'è un marketing agent chiamiamolo
+ così che ti aiuta a ottimizzare contenuti posizionamento ti dà solo un intelligence o anche
+ fa le cose non fa le cose bocca le cose fa le cose ok il limite sarà poi c'è la sviluppata
+ c'è la sua fine una volta che tu ce l'hai live che stavano qua c'è una volta che tu ce l'hai vuoi
+ anche svilupparlo man mano su quello che teoria che è le parti più interessanti no ok e la cosa
+ che dicevi che simula la persona cioè curioso perché mia moglie fa questo lavoro per l'azienda
+ dei coltellini svizzeri fa tipo ricerche di mercato e stanno sviluppando proprio queste
+ persona per fare tipo role playing dell'utente tipo l'intimizione l'ho avuto il gennaio che
+ faceva vedere che oggi se fai una survey su mille consumatori ed scrivi quei mille consumatori
+ le ai le ai ha un errore statistico sotto il 9% che vuol dire che mamma non che va avanti se
+ scende sotto il 4 non è statisticamente rilevante come errore su quel tipo di campionatura che
+ vuol dire che sinceramente farà il polling delle lezioni migliori di chi fare società di polling
+ senza di me lo chiamare il personal telefono non provi ma poi adesso la sto banalizzando
+ perché di pena non è chiaro che le regioni stignano su diversi però il mercato dell'hotel ha una
+ serie di dati che si possono utilizzare i vinclusi che oggi nella piattaforma c'è la possibilità
+ ma non avendo ancora associati degli alberghi e non lo stiamo ancora facendo partire anche
+ da TCRM che l'albergua ti può dire guarda io ti do le caratteristiche degli ultimi di che ha fatto
+ buchi negli ultimi cinque anni e derivi che è il mio cliente tipico di monaco di baviera
+ voglio dire poi c'è differenza tra chi è oggi e chi vuol resti che fosse in funzione del riposizionamento
+ e della catena però diciamo che per strada sul semplice siamo anche usati per prima parte che
+ compendi il dato che riusciamo a trovare fuori certo bello e l'hotel che dicevi che è in pilot o
+ che saranno pilot sono italiani non sono tutti esteri ok ma questa è una cosa che state facendo
+ voi diciamo come vostra idea imprenditoriale o c'entra con o è dentro giacala no questa è una
+ idea mia di marco ok ok ok siamo realizzando noi non è in competizione con giacala perché
+ giacala si occupa di fare servizi martec alle aziende diciamo che io marco non ci stiamo lavorando
+ dentro attivamente perché non possiamo abbiamo iniziato a metterci degli investimenti ma uno
+ dei temi che abbiamo sul tavolo di marco è chi mette da gestire questo tipo di attività perché
+ marco non la possiamo gestire quindi quando ti abbiamo incrociato onesto non te l'ho chiamato
+ per quello te l'ho chiamato per la ragione che tu hai detto il primo giorno poi nella conversazione
+ l'altra volta siamo nati in questa direzione e la sessione di oggi è la prevenzione della
+ ragione nstms e una titta di tipo te la sentireste di ragionare e guidarla cioè sostanzialmente
+ a noi serve un capo che si sveglia la mattina e con l'investimento fatto sostanzialmente con
+ un investimento concordato costruiamo un business plan che in una prima fase è fatta di azioni e
+ costruzione commerciali dove noi comunque abbiamo diversi contatti in notellerie quello
+ diciamo sarebbe un setup ulteriore che viene da noi ma ci vuole qualcuno che tutti i giorni invece
+ guida il prodotto lo costruisca e guida anche l'attorzione poi di un piano che deve essere
+ condiviso fare il capo proprio il mondo verticale sono d'accordissimo che è l'opportunità
+ di applicazione più più più interessante io semplicemente avendo sempre lavorato mondo
+ consolenziale o si ha ram data analytics non ho domain expertise in un vertical specifico quindi
+ non mi ero lanciato in una in una cosa del genere però sono molto convinto che sia il campo di
+ applicazione giusto l'idea mi stuzzica ovviamente c'è non ho non ho dei dubbi sul fatto che possa
+ essere un un qualcosa che ha una un'utilità commerciale per gli hotel però nel senso non
+ saprei cioè dovrei fare dei ragionamenti personali ovviamente però però c'è ovviamente l'idea
+ mi stuzzica non me l'aspettavo quindi non so bene cosa cosa rispondere non mi aspettavo
+ che aveste già una cosa così concreta quindi ci dovrei ragionare ci dovrei ragionare su
+ sì è più che un'idea e oggi esiste una piattaforma funzionante incomincio da avere
+ senza mette un livello anche abbastanza evoluto di di applicazione cioè per essere però vuol dire
+ senza che ti faccio investire troppo tempo anche guardare cosa c'è oggi già fatto cioè diciamo
+ che c'è molta roba sopra ok ma l'idea concreta sarebbe c'è formare scusa faccio domande scontate
+ dirette sarebbe formare una new company come dicevi per sviluppare questa c'è per creare
+ effettivamente il prodotto e poterlo poterlo vendere cioè come la parte diciamo logistica
+ l'avevi immaginata c'è da fare una società che vuol dire costruire una società possibili
+ probabilmente potrebbe essere in swizza la faccio estima insieme metterci dentro l'idea
+ la tecnologia e incominciare a costruire con il primo network delle catene che abbiamo un
+ primo un primo anno secondo me dove va messo terra il pilota ha fatto adottare in full a tutti
+ gli hotel di una catena facendo la catena un prezzo magari di favore ma diciamo abbiamo già trovato
+ anche la catena che sarebbe interessata a farlo per adottarlo e metterà terra tecnologia e business
+ plan comprising definizione poi la comprensione di quello che gli hotel d'altra parte sono convitti di
+ comprare sicuramente da dove partiamo a quello che scaricchiamo a terra poi ci verrà in mente
+ delle altre idee perché scoppieremo che magari 70% di quello che abbiamo pensato può essere
+ fatto diversamente ogni interesse diversamente agli hotel questo lo ha fatto in una conversazione
+ che mi aspetto venga una fase di pilota dopo di che per il secondo anno c'è invece una strategia
+ di scale up dove con qualcosa che funziona con un esempio live su una catena con qualcuno che
+ magari incomincia già a pagare qualche decina di miliari di euro di fee al mese fa un rollout e
+ dice sei che andiamo da altre 10 catene di cui di nuovo diverse le conosciamo noi e da lì
+ costruisci un business plan che significa fare una serie di appuntamenti ma pare gli eventi di
+ settore dove ha senso partecipare e in cominciare a fare la strategia di marketing e di sviluppo
+ commerciale l'attività questo già infatti in anno in anno 2 a crescere vuoi dire non è una cosa
+ per noi nuova io manco abbiamo già fatto un b2b 2b se vuoi che questo quad tipo gottio
+ c'era quello e ne va agli small billion business da mette una terza parte tipo le pagine gialle che
+ vendeva campagna gli small billion business poi gottio li eseguiva noi lo scale up anche la
+ dimensione marketing è abbastanza chiaro ci sei sembrato preparato su una tecnologia di piace
+ il prodotto c'è voglia di crescere questa società una società che a nostro modo di vedere può avere
+ uno spano importante di di crescere e di valutazione futura è chiaro che questo è un po di idea che
+ ce la vuoi ok no prima impressione e sono sono gasato mi piace avrei soltanto bisogno di capire
+ quali sono gli step concreti e rifletterci tutto qua cioè esempio primo step secondo step
+ dipendenze ovvero come ti dicevo settimana scorsa cioè io ovviamente se se se voglio se lavoro
+ con voi devo assolutamente c'è devo lasciare il mio lavoro full time ma non per una questione di
+ no ma guarda questo è una brevissima perché noi abbiamo bisogno di un cappuccino altrimenti infatti
+ c'è nel senso voglio mettere in chiaro che ovviamente se facciamo una cosa insieme per me
+ non è che c'è un sima se ma forse c'è c'è un se mi impegno mi impegno diventa la cosa dove
+ se ti interessa e ci credi a quel punto diventa full esatto che vuol dire ci proviamo facciamo
+ ovviamente un ragionamento di investimento e di come possiamo farlo insieme che per me significa
+ fare un mix dove io marco ci mettiamo anche degli investimenti come stiamo già facendo oltre a
+ un contributo importante di relazioni oltre l'idea eccetera e secondo noi la campione insieme come
+ possiamo farlo che per noi può può essere anche cioè il mio test ideale sarebbe ragionare a un
+ business plan che mi piacerebbe provarsi a ragionare l'atto tuo con una logica letto che
+ poi business plan si cambia non mi serve un business plan di 10 anni ma sarebbe vedere bello vedere
+ un'ipotesi a 12 24 e poi diciamo un carry on a 36 mesi per dire cosa fare che soldi che
+ risorse ti servirebbero per fare questa roba qua e poi ragionare sia se il piano convince tutti
+ noi che risorse ci possiamo mettere come possiamo fare un accordo insieme dove a seguire il
+ risultato che facciamo tu hai anche un carry di interest cresce intra la scelta ma al mano che
+ questo effettivamente vale la direzione che abbiamo stimato il piano cioè se si fa un piano si dice
+ guarda fa 10 50 100 quello che è in funzione di quello facciamo un bilancio in cui man mano che
+ fai accomplishment nei primi anni del piano del piano tu sali in opzioni in in azioni
+ proporzionalmente e noi ragioniamo nei primi anni di fare un mix tra azioni e compensation dove sappiamo
+ del parti oggi ma sostanzialmente cerchiamo di realizzarlo non ci aspettiamo che vieni a zero
+ ma lo mixiamo e funziona anche di quello che poi contributi dove arriviamo un mix non so se mi sono
+ spiegato marco tu volevi dire si integrazione di quello che hai detto mi devo di fatto quello che
+ li stiamo proponendo marco è di valutare insieme la possibilità di fare una nuco noi abbiamo
+ ipotizzato di fare un nuco di diritto svizzero anche quindi passare a giurivo una nuova società
+ che a te come amministratore del gato quindi sì che ti svegli al mattino e guidi l'azienda
+ in asset a questa azienda noi conferiamo il progetto nello stato in cui è come ti diceva
+ vedevo non è un progetto sulla carta oggi esiste un bp funzionante esiste un cliente anche
+ con un progetto 2026 di pilota su un albergo ma parliamo di una catena gigantesca che è
+ potrebbe sostanzialmente poi deployare il 2027 su una serie di albergi il pilota di successo
+ esiste un team perché abbiamo una developer full time che sta sostanzialmente lavorando per assicurarsi
+ che il nostro mvp sia scalabile all'interno del privetro di mvp esiste un progetto tecnico che
+ oggi sta ovviando a quello che serve per la messa a terra della prima fase noi abbiamo un
+ intuizione rispetto al mercato potenziale lo sviluppo ma quello che vogliamo capire con te è se tu
+ te la senti di guidare una venice di questo tipo dove guidare è il combinato disposto di tanti
+ caratteristiche non in primis la capacità di guidare la realizzazione di un prodotto che
+ parte probabilmente da un'ottima intuizione ma nel dettaglio nella sua continuazione troverà
+ una chiave di posizionamento noi che cosa possiamo mettere in questo progetto chiaramente
+ conferiamo gli asset italiziamo il progetto e che cosa stiamo provanti a ragionare anche
+ siamo consapevoli del fatto che oggi nel lavoro devi sopravvivere quindi sostanzialmente hai
+ bisogno di qualche certezza per lasciare un lavoro allo stesso tempo non stiamo cercando un
+ dipendente stiamo cercando un ministratore che abbia in interest con la exit perché noi
+ facciamo questo progetto per vendere questo asset nel giro dei prossimi speriamo cinque anni quindi
+ in funzione di quello che deciderai la fase successiva è la realizzazione di un business
+ plan di massima una valutazione di partenza anche un con cambio salari verso equity in
+ crescita rispetto agli obiettivi e tutto questo si fa chiaramente con delle logiche che sono non
+ le inventiamo noi no oggi quindi sono delle logiche che devono cercare di allignare gli interessi
+ questo è il quindi per te dove sta l'opportunità per te l'opportunità è quella di avere un
+ percorso accelerato da imprenditore no perché sali a bordo con due imprenditori che sono pronti
+ anche a mettere del capitale di rischio e diciamo avere un pezzo di un equity che può essere crescente
+ in funzione degli obiettivi che tu raggiungi cioè questo è il certo spazio domanda questi due
+ persone che hanno lavorato l' MVP che stavano scusami dicevamo una ragazza francese che è un
+ ingegnere informatico 34 anni quindi che sta lavorando la full stack quindi utilizzando abbiamo
+ fatto una ricerca e selezionato una persona con altissima propensità di utilizzo delle ai
+ nello sviluppo perché non crediamo non crediamo in architettura di sviluppo di tipo tradizionale
+ ripetiamo che le ai abbia aperto una frontiera sì sì sì sì sì la la PM tecnica è un project
+ manager diciamo di esperienza di nuovo più vicino ai 40 che ai 30 che sostanzialmente
+ ha la seniority per dialogare con stakeholders a vario livello rispetto alle complessità che
+ un che progetto si può portare dietro ma questi persone che lavorano adesso questo
+ progetto li avete lanciate per fare l'endp o le vedete parte fondamentale del del dell'azienda cioè
+ non c'è nessuna domanda più di c'è di sono degli asset sono dei contractor e perché la
+ domanda che mi sorgerebbe poi spontanea c'è avete valutato loro anche per per per costruire c'è per
+ dirigere c'è mi chiedevo un po è la relazione oggi studando io l'infrastruttura di come abbiamo
+ messo su su gli strumenti o discusta con la sviluppa trice la PM una persona che conoscevamo che
+ partita io che usavamo anche per altre cose quindi abbiamo che succeda a dare una persona diciamo
+ di fiducia ma in questo momento non abbiamo preso impegni di cuote per nessuno di due specifico
+ la sviluppa trice a sua volta è una ragazza in gamba ma che andrebbe fatta lavorare con qualcuno
+ che ne coordinano sforzo che magari gli fa anche degli upgrade perché la velocità con cui Claude
+ per esempio ultimamente è diventato uno strumento di prodattività di sviluppo incredibile rende
+ sostanzialmente qualsiasi sviluppatore da impostare bene e poi c'è proprio un tema di guardare il
+ prodotto innamorarsi di quello che fa il prodotto e migliorarlo perché oggi il prodotto è frutto
+ il nostro pensiero ma può essere ultimamente frutto il nostro pensiero che può essere molto
+ verticale la competenza di quello che è un ind sento delle voci di sottofondo e quindi c'è
+ a capire quello c'è molto a fare la razione in grado c'è il prodotto è anche carino
+ quindi comunque c'è se ho capito bene la mente cioè loro sono state le braccia finora nella
+ costruzione dell'emlipi però diciamo la mente l'idea c'è tutto arriva da te da voi loro sono
+ stati utilizzati semplicemente per mettere per eseguire il primo MVP giusto corretto ok a
+ livello avete fatto un ragionamento su sui costi della della tecnologia in termini di tokens
+ c'è il modello che c'ha convinto della ragazza che abbiamo preso per questo stile qua e che è
+ arrivata facendo tutto un ragionamento che è interessante sul proprio su token e sull'ultimitazione
+ dei token comunque su una tecnologia che oggi in una fase di pilota per un motel per adesso o costare
+ diciamo una 40 30 40 euro di costi di token più o meno sul dia in una fase di setting e setup e poi
+ variabili sul utilizzo ma non folle perché comunque le produzione dei contenuti costa poco oggi sui
+ tokens non costa an cazzo quella parte lì la parte di più evi sulle parti di analisi che però una
+ volta che tu hai creato l'ecosistema e la testa del sistema che è la parte diciamo più intense
+ resto execution quindi una volta che tu hai descritto bene la persona se vuol dire ora lì e mai
+ internet diciamo ok ok solo perché è un interesse un ragionamento interessante il mondo c'è i
+ margini del mondo software si stanno un po' rivoluzionando per via del fatto che la gente usa
+ tantissimi tokens perché non è ancora ottimizzato e quindi spendi tantissimo poi alla fine questo
+ è un tema semplicemente per dire ci sono dei modelli che oscaricano il costo sotto forma di
+ crediti allo al cliente oppure loro pagano l'infrastruttura e si pagano i crediti loro e tu
+ semplicemente sei il tramite però questo ragionamento però è solo per dire che sono
+ cose che ho notato in questo periodo cioè software che stanno sui 100 al mese hanno un margine
+ bassissimo se vengono utilizzati tanto non è il questo il caso però è solo per dire
+ è un punto valido il momento non siamo avanti così è una modellizzazione secondo me un hotel ha una
+ produzione di contenuti che può essere anche evoluta ma secondo me non arriverà mai a fare
+ centenane centenane di pezzi un po' di veri vedere ma hai da qualche parte perché su me
+ se parla di un ecossistema come dicevo che è una media azienda una media azienda non ha il marketing
+ della coca cola dentro certo certo ma poi potrebbe potrebbe anche fare un milione di contenuti
+ il importante che poi il modello scala su sull'utilizzo semplicemente comunque
+ la proposta mi losing a tanto mi fa molto piacere sono molto molto contento che che me ne
+ abbiate parlato e mi sento fortunato in questo momento non mi aspettavo questa cosa fino a 50
+ minuti fa quindi non so guarda io manco molto a istinto restamenti ci sei piaciuto vi ha detto
+ vediamo cosa ne dice, il tema è un ragionamento più scolo che vuoi fare tu la fine certo certo io
+ vorrei cioè sono molto gasato dall'idea semplicemente dato dato cioè ho imparato la classica
+ cazzata dormici su capito quindi nel senso ho bisogno semplicemente di pensarci un attimo se
+ poi volete farmi vedere qualcosa giusto per farmi un'idea più principale vogliamo anche
+ firmare un disclosure agreement se mi volete far vedere qualcosa per aiutarmi a approccessare
+ non servono cazzo però riesci a esprimere no no è solo per per per per tutte le armi tutto
+ qua non quello che scuinti facciamo anche vedere le cose da solo per non farti un pippone dimostrativo
+ è l'applicazione che fa tante cose cioè l'applicativo oggi è live sostanzialmente una serie di
+ analisi che fa con tutto quella che ha i suonati la segmentazione per hotel le tipologie di
+ source market sul mercato per gli eventi che sono gli eventi strategici che impattano la domanda
+ le parti di strategie implicatio è tutto questo fatto su un source data che puoi definire in
+ maniera che il source data sia definito non sia una lucidazione leiai quindi con ricerca di
+ strada necchiale ha una parte di questo intelligence direi scusi una parte di competitive set dove tu
+ l'allocation di hotel sono molto settati sulla parte di pricing questi sono quelli che sono
+ identificati per l'allocation ognuno ha dei driver di scelto stanziamente definito rispetto
+ quello che è l'hotel adon che questo caso è il cliente specifico e hai una serie di variabili
+ che cambiano a seconda della tipologia di con una serie di variabili sono sono queste asti che vedi
+ poi l'anotella qui ovviamente hai poi una serie di dip dive su cosa è buona cosa è male sulla sua
+ parte in generale gli hotel e hai questo customer che oggi era di leggere invece con una serie di
+ tecnologia che ci mette diverse ore qua sono 1.700/1.800 review da hotel principale e i competitor
+ questo un corre a fare una serie di dimension sul sul quello che è importante in base a quello che
+ ci ha scritto nelle review per tutti gli hotel riesce stanzialmente a rautarle tutti sui topic per
+ ogni hotel tu hai diversi tipologia di topic dove c'è più o meno review e riesce a capire tutta una
+ serie di cosa che sull'incoming market sono il motivo per cui viaggiavano il motivo del
+ giorno e dove c'è stata effinzione sui diversi hotel con una serie di anale dei puntuali rispetto
+ al clustering di location e poi di analisi competitiva di questo tipo qua questo alimenta i dati di
+ mercato e i dati di review concreti tutti i due fonti dati certe quindi in una lucidazione ai concorrono
+ a dare a lei ai la possibilità di costruire le personas che hanno caratteristiche sociodemografiche
+ e livelli interessi diversi con tutta una serie di dettaglio che non ti tedio e hai poi un dip dive
+ delle persone che in grado tu puoi scegliere la persona se puoi chiedere gli stanzialmente
+ andare a verificarti secondo l'inti di quella persona cosa ne pensa chi sarebbe tra gli hotel
+ che ho selezionato quando si ha selezionato i due ma potrebbero entrare tutti su quelli che ho
+ selezionato vincere hotel roccoforte in questo caso perché è proprio il tipo di persona sono
+ una serie di caratteristiche ovviamente questo anche qua fa un audit del sito va a vedere per
+ percentare un condition la metis le cose importanti fa una first impression cioè i primi che ci
+ secondi chi vince secondo lui di questi okay va a fare una website audit molto evoluta dove hai una
+ serie di comparison table non da poco poi va a vedere anche la room presentation e ti dà una serie di
+ dip dive molto profondi di cosa potresti che abbiano una presentazione da room ok questo poi
+ costruisce
+ un calendario per persona scuola strategia action con le priorities e hai un content engine dove puoi
+ mandare dei brief in questo caso il brief qua era costruire un newsletter si prende tutte le parti
+ di contenuto che hanno tempo costruire ogni parte di contenuto dal social communication
+ al menù del ristorante fino a l'on properties lu me location tu lo puoi selezionare e cosa viene
+ fuori tu puoi tagli un brief il brie per costruire questo caso il teso di una letter ovviamente è
+ tutto fatto ad persona quindi è persona la strada di language il canale e tutte le cose addirittura
+ costruisci se vuoi un'immagine questo è un esercizzo di stile che è interessante
+ come noter user alle sue e ti dà di tutta la pergiù di quella che sarebbe la newsletter da
+ caricare in acqua più a mele da scaricare da poter importare un domani quindi ti dà una
+ activation e tutta questa va qua dove hai detto e tu puoi prendere che so il room letter a quel punto
+ lo fai sempre sulla persona che ti interessa puoi scegliere la lingua e poi dagli una specific
+ brief e poi creare per generare il pezzo di contenuto sempre con gli occhi del consumatore che hai
+ studiato essere quello che ti interessa e quindi potranno personizzare di tutto questo è che
+ se una persona fosse fatta questa cosa da mano ci avrebbe messo due settimane a minimo e avrebbe
+ avuto dei dati e poi non c'era la lingua e la cultura di tu tu hai utel tipo dubai dove hai sette
+ otto nazioni tra diverse e chi ci sono e vede con la cultura con la lingua col taglio giusto con le
+ cose fatte un certo bordo che oggi non è nelle possibilità di un hotel che come ti diceva una
+ media azienda e quindi non è che ha no no è vero e quindi tu gli metti il potere delle ai e che
+ loro oggi le ai se la potrebbe utilizzare loro ma dovrebbero avere modo di dirgli quala persona
+ s'è seguito di raccogliere certo raccogliere le opinioni nelle dati sto a tutto quello che noi
+ oggi gli stiamo semplificando che lui si siede apre la roba dice che oggi devo fare una newsletter
+ la roba modifico la descrizione del sito in funzione al tipo di persone che lo sta vedendo ho capisco
+ se ho un evento che mi attrarrà più americane quindi do l'high light su quello che imparante per
+ l'americano sul sito nei prossimi tre mesi perché tutti gli anni sono con la fiera che mi porta un
+ 30% più di occhi di persone in città c'è un mille strategie che la piattafona può anche suggerire
+ di dare no quindi tu è un egin che la cosa bella è che una volta che ha gli elementi esterni
+ corretti e attivabili su qualsiasi tipo di hotel in queste parte del mondo perché il business
+ sempre può riportare qualcuno a dormire nel hotel certo ok ok chiaro
+ mi vengono in mente domande tecniche ma non credo sia oggi il momento però molto chiaro
+ c'è il value proposition è molto chiaro
+ questo va marco oggi che tu sappia quanto quali sono io non so con che è stato diciamo di
+ visto tu viva in svizia non so nulla della svizia la tedesca sai qualcosa di diritto societario
+ quali sono sostanzialmente requisiti per tu potresti essere oggi amministratore di
+ nostra città si allora è molto il processo è molto snello o sono anche già tramite amici che
+ l'hanno appena aperta una in contatto anche con uno studio legale molto molto speccia molto in
+ gamma su queste cose che gestisci anche ip registrazione di ip loghi eccetera marchi eccetera
+ sono due lentità una è la game bh i requisiti sono semplicemente deve avere 20.000 franchi di
+ capitale l'altra quella più ed è tipo mi sembra che sia tipo la sr l'italiana che non sbaglio
+ la aghe invece è quella un po più strutturata che permette discorsi tipo equity incorporation
+ cose di cui non sono molto specializzato ma so che diciamo quando si apre con investimenti
+ da terzi si fa diciamo anche un discorso di equity di solito si apre la ghe e penso che ci sia una
+ condizione di capitale iniziale più alta ma non vi voglio dire cazzate sulla cifra però non
+ siamo c'è sia non sarà qualche sarà qualcosina in più di 20.000 non so esattamente c'è diciamo
+ che rispetto all'italia l'unica cosa diversa vera dalla svizzere che richiedono di avere un
+ capitale che tu poi parcheggi sul conto corrente dell'azienda non è che lo dispendi però vogliono
+ sì scusami sono facilmente reperibili queste informazioni però più interessato agli aspetti
+ diciamo di tempistiche a un punto di vista di lavoro per possibilità di ricoprire un ruolo di
+ amministratore all'interno dell'associazione. No quello cioè io un permesso io sono elegibile
+ per il permesso c che è a tempo indeterminato l'unica cosa che dovrei fare è fare un esame
+ di a2 tedesco cioè se vi se consegno il certificato di a2 tedesco allora il permesso c e questo
+ sarà bene a due non è un livello alzatissimo no no no no esatto il mio permesso scadea nel
+ veddo il 2030 se non faccio nulla. C'ho promesso il mio tedesco è zero però a due di solito non è
+ un livello alzatissimo. No però non ci sono limitazioni c'è chiunque che abbia c'è la
+ svizzera dal permesso a chi ha un lavoro o a chi vuole fare un business che può essere un business
+ esatto che può essere un business individuale un business un business diciamo più strutturato
+ come un'azienda il fatto che io il permesso fino al 2030 ce l'ho c'è anche se perdo il lavoro il
+ permesso ce l'ho fino al 2030 quello non me lo toglie nessuno e comunque sono elegibile per il
+ permesso a lungo c cioè è indefinito quindi non ci sono limitazioni da quel punto di vista.
+ Io direi no fatemi ci ragionare su e ci risentiamo a breve cosa dite.
+ E il next step per me si decide di andare avanti in questa cosa qui possiamo fare un po' di
+ approfondimento e poi mi piacerebbe che tu facessi un ragionamento su sì ma è più per perché vorrei
+ che si decide andare avanti e entra in un mindset di doverlo far funzionare quindi con tutto quello
+ che vuol dire perché ci conosciamo da da poco ci stai sembrato una persona in gamba ma senso che
+ tutte ne approfondi perché se quello che non ci serve è qualcuno che deve fare per disequamente
+ quello che gli diciamo noi noi cerchiamo qualcuno che guida un business quindi abbia anche un
+ contraddittorio sulle cose che hai sempre che sarai tu se sarai tu a guidarla la persona
+ guida tutti i giorni noi siamo una fonte d'aiuto di tutti i tipi ma ci aspettiamo che il leader di
+ questa cosa qua per essere azionista con noi su questo tipo di percorso cioè sia uno che ci
+ crede. Sì sì sì no sono d'accordissimo su questo. Marco ti saluto dai ti ringrazio.
+ Grazie vado ciao Marco buonaserata a presto. Ciao ciao.

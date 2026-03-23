@@ -1,0 +1,23 @@
+{
+  "total_hotels": 5,
+  "filter": {
+    "min_stars": 4,
+    "min_adr_chf": 250,
+    "require_selected": true
+  },
+  "mode": "pilot",
+  "by_stars": {
+    "4": 2,
+    "5": 3
+  },
+  "by_category": {
+    "Luxury": 1,
+    "Premium": 4
+  },
+  "by_segment": {
+    "": 5
+  },
+  "revenue_median": 0,
+  "revenue_max": 0,
+  "total_interview_requests": 20
+}

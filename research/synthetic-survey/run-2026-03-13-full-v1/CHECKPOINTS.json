@@ -1,0 +1,21 @@
+{
+  "run_id": "run-2026-03-13-full-v1",
+  "updated_at": "2026-03-13T20:24:43.933Z",
+  "phases_completed": [
+    "cohort",
+    "aggregation",
+    "judge",
+    "merge",
+    "analysis"
+  ],
+  "current_phase": null,
+  "batch_ids": {},
+  "counts": {
+    "cohort_hotels": 272,
+    "total_interviews": 1632,
+    "aggregated": 544,
+    "judge_successes": 544,
+    "merged_hotels": 272
+  },
+  "errors": []
+}

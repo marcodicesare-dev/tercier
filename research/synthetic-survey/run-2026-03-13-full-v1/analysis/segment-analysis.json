@@ -1,0 +1,261 @@
+[
+  {
+    "segment": "business_conference",
+    "hotel_count": 6,
+    "avg_buy_likelihood_3k": 40,
+    "avg_buy_likelihood_5k": 16,
+    "avg_delay_likelihood": 65,
+    "avg_priority_score": 45,
+    "avg_adr": 273,
+    "avg_rooms": 182,
+    "avg_revenue": 12274503,
+    "price_band_distribution": {
+      "1000_2000": 6
+    },
+    "top_wedges": [
+      {
+        "wedge": "Attribution-first 90-day pilot with PMS/booking-engine integration, Swiss-hosted option, and weekly owner-ready action reports proving direct-booking uplift.",
+        "count": 1
+      },
+      {
+        "wedge": "Turn scattered review, pricing and booking data into a single weekly action pack that measurably lifts direct bookings while saving the small team time.",
+        "count": 1
+      },
+      {
+        "wedge": "Weekly decision engine that turns compset, review, and booking signals into 5 prioritized actions with ready-to-use FR/EN copy — replacing manual spreadsheets and avoiding an additional hire.",
+        "count": 1
+      }
+    ],
+    "top_blockers": [
+      {
+        "blocker": "Owner/Finance proof gate on measurable attribution plus GDPR/Swiss-hosting legal review and IT integration windows.",
+        "count": 1
+      },
+      {
+        "blocker": "PMS/CRS integration dependencies plus owner risk aversion without Swiss references and a contractual performance safeguard.",
+        "count": 1
+      },
+      {
+        "blocker": "Owner risk aversion combined with limited team bandwidth; if execution lags or attribution is unclear, recurring SaaS spend will be delayed or declined.",
+        "count": 1
+      }
+    ],
+    "top_deal_killers": [
+      {
+        "killer": "No PMS/CRM integration",
+        "count": 6
+      }
+    ]
+  },
+  {
+    "segment": "luxury",
+    "hotel_count": 97,
+    "avg_buy_likelihood_3k": 40,
+    "avg_buy_likelihood_5k": 17,
+    "avg_delay_likelihood": 67,
+    "avg_priority_score": 43,
+    "avg_adr": 965,
+    "avg_rooms": 85,
+    "avg_revenue": 13711161,
+    "price_band_distribution": {
+      "1000_2000": 69,
+      "2000_3000": 27,
+      "under_1000": 1
+    },
+    "top_wedges": [
+      {
+        "wedge": "Low‑risk, Swiss‑hosted 90‑day pilot focused on direct share shift and clearer weekly decisions (no auto‑pricing), mapped to replacing agency/content and overlapping reputation spend; backed by Swiss luxury references.",
+        "count": 1
+      },
+      {
+        "wedge": "A Swiss‑hosted, PMS‑integrated 90‑day pilot during a shoulder season that consolidates compset alerts + review intelligence into a single weekly action plan, proving reduced OTA commission and ~+5% direct revenue while replacing fragmented agency/reporting time.",
+        "count": 1
+      },
+      {
+        "wedge": "Turn scattered data into a single weekly commercial action plan that demonstrably lifts direct revenue, while reducing agency/content spend and enhancing compset intelligence—proven via a de-risked 90-day pilot.",
+        "count": 1
+      }
+    ],
+    "top_blockers": [
+      {
+        "blocker": "Owner/Revenue risk aversion to algorithmic pricing without strong Swiss luxury references and performance assurances, plus overlap/term constraints with existing vendors and IT/legal review time.",
+        "count": 1
+      },
+      {
+        "blocker": "Owner/CFO reluctance to approve a recurring CHF 5k SaaS without Swiss luxury references, firm SLAs, and clear attribution; integration/legal reviews can further stall timelines.",
+        "count": 1
+      },
+      {
+        "blocker": "Procurement/IT/legal friction around data security, Swiss hosting, and PMS/CRS integrations, plus perceived overlap with the RMS/reputation stack.",
+        "count": 1
+      }
+    ],
+    "top_deal_killers": [
+      {
+        "killer": "No PMS/CRM integration",
+        "count": 82
+      },
+      {
+        "killer": "Cannot prove attribution / ROI",
+        "count": 13
+      },
+      {
+        "killer": "No GDPR / Swiss data hosting",
+        "count": 1
+      }
+    ]
+  },
+  {
+    "segment": "upper_upscale",
+    "hotel_count": 164,
+    "avg_buy_likelihood_3k": 35,
+    "avg_buy_likelihood_5k": 14,
+    "avg_delay_likelihood": 67,
+    "avg_priority_score": 39,
+    "avg_adr": 405,
+    "avg_rooms": 65,
+    "avg_revenue": 6216114,
+    "price_band_distribution": {
+      "1000_2000": 163,
+      "under_1000": 1
+    },
+    "top_wedges": [
+      {
+        "wedge": "clearer_weekly_decisions",
+        "count": 2
+      },
+      {
+        "wedge": "Pilot-backed weekly decision engine that replaces spreadsheets/agency tasks, integrates with PMS to prove 5–8% direct uplift, and complies with Swiss/GDPR hosting.",
+        "count": 1
+      },
+      {
+        "wedge": "Offer a Swiss-hosted, PMS-integrated 60–90 day pilot that delivers one weekly action plan and targets a +7–10% direct uplift, backed by Swiss reference calls and a clear ROI scorecard.",
+        "count": 1
+      }
+    ],
+    "top_blockers": [
+      {
+        "blocker": "Owner/finance signoff combined with execution bandwidth and proof-of-attribution demands.",
+        "count": 1
+      },
+      {
+        "blocker": "CFO/Owner reluctance to add recurring opex without hard ROI and the hidden implementation load/cost of PMS integration and team time.",
+        "count": 1
+      },
+      {
+        "blocker": "Attribution uncertainty (seasonality and channel-mix confounders) plus integration complexity/costs and owner skepticism of recurring OPEX.",
+        "count": 1
+      }
+    ],
+    "top_deal_killers": [
+      {
+        "killer": "No PMS/CRM integration",
+        "count": 124
+      },
+      {
+        "killer": "Cannot prove attribution / ROI",
+        "count": 27
+      },
+      {
+        "killer": "No Swiss reference customers",
+        "count": 5
+      }
+    ]
+  },
+  {
+    "segment": "serviced_apartments",
+    "hotel_count": 2,
+    "avg_buy_likelihood_3k": 34,
+    "avg_buy_likelihood_5k": 13,
+    "avg_delay_likelihood": 68,
+    "avg_priority_score": 33,
+    "avg_adr": 277,
+    "avg_rooms": 47,
+    "avg_revenue": 3198094,
+    "price_band_distribution": {
+      "1000_2000": 2
+    },
+    "top_wedges": [
+      {
+        "wedge": "clearer_weekly_decisions",
+        "count": 1
+      },
+      {
+        "wedge": "Clear weekly commercial actions + multilingual content that replaces agency/junior hire time",
+        "count": 1
+      }
+    ],
+    "top_blockers": [
+      {
+        "blocker": "Integration complexity with PMS/booking engine and owner’s caution on recurring spend creating extra workload without clear attribution",
+        "count": 1
+      },
+      {
+        "blocker": "Statistical attribution and seasonality noise with only 10 rooms, making ROI proof within 3–6 months hard to trust.",
+        "count": 1
+      }
+    ],
+    "top_deal_killers": [
+      {
+        "killer": "No PMS/CRM integration",
+        "count": 1
+      },
+      {
+        "killer": "Cannot prove attribution / ROI",
+        "count": 1
+      }
+    ]
+  },
+  {
+    "segment": "upscale",
+    "hotel_count": 3,
+    "avg_buy_likelihood_3k": 32,
+    "avg_buy_likelihood_5k": 10,
+    "avg_delay_likelihood": 68,
+    "avg_priority_score": 32,
+    "avg_adr": 309,
+    "avg_rooms": 41,
+    "avg_revenue": 2900166,
+    "price_band_distribution": {
+      "1000_2000": 3
+    },
+    "top_wedges": [
+      {
+        "wedge": "Lead with a Swiss-hosted 60–90 day pilot tied to PMS/BE integration and a weekly 3-action decision pack (<3 hours/week). Commit to clear attribution of direct revenue and provide Lucerne/Swiss references. Include seasonal pricing or credits if KPIs aren’t met.",
+        "count": 1
+      },
+      {
+        "wedge": "clearer_weekly_decisions",
+        "count": 1
+      },
+      {
+        "wedge": "Time-saving weekly action list plus multilingual review/content engine, proven on a Swiss boutique reference, delivered via a 60–90 day pilot with minimal IT and simple attribution (codes/call-tracking).",
+        "count": 1
+      }
+    ],
+    "top_blockers": [
+      {
+        "blocker": "Owner/finance conservatism on recurring SaaS and data/privacy gatekeeping for PMS/BE access",
+        "count": 1
+      },
+      {
+        "blocker": "Head of Finance demanding provable attribution and clarity on integration costs/effort; risk that limited staff capacity undermines execution and ROI.",
+        "count": 1
+      },
+      {
+        "blocker": "No current direct-booking engine and owner’s caution on recurring spend; small absolute ROI after fees in a 24-room, seasonal property.",
+        "count": 1
+      }
+    ],
+    "top_deal_killers": [
+      {
+        "killer": "No PMS/CRM integration",
+        "count": 2
+      },
+      {
+        "killer": "Cannot prove attribution / ROI",
+        "count": 1
+      }
+    ]
+  }
+]

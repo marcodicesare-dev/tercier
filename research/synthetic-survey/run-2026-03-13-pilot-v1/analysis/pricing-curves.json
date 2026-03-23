@@ -1,0 +1,12 @@
+[
+  {
+    "segment": "unknown",
+    "hotel_count": 5,
+    "avg_buy_3k": 37,
+    "avg_buy_5k": 15,
+    "band_distribution": {
+      "1000_2000": 4,
+      "2000_3000": 1
+    }
+  }
+]

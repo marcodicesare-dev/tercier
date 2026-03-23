@@ -1,0 +1,28 @@
+{
+  "total_hotels": 272,
+  "filter": {
+    "min_stars": 4,
+    "min_adr_chf": 250,
+    "require_selected": true
+  },
+  "mode": "full",
+  "by_stars": {
+    "4": 189,
+    "5": 83
+  },
+  "by_category": {
+    "Luxury": 14,
+    "Premium": 219,
+    "null": 39
+  },
+  "by_segment": {
+    "upper_upscale": 164,
+    "luxury": 97,
+    "business_conference": 6,
+    "upscale": 3,
+    "serviced_apartments": 2
+  },
+  "revenue_median": 6218417,
+  "revenue_max": 75839942,
+  "total_interview_requests": 1632
+}

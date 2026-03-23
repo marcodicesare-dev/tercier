@@ -1,0 +1,548 @@
+{
+  "meta": {
+    "date": "2026-03-14",
+    "simulation_count": 10000,
+    "seed": 13,
+    "purpose": "Improve business plan and financial model with two AI-native scenarios.",
+    "planning_anchors": {
+      "seed_cap_chf": 200000,
+      "month_6_target_hotels": "2-5",
+      "month_12_target_hotels": "15-21",
+      "month_18_target_hotels": "25-45",
+      "month_30_target_hotels": "70-100",
+      "month_36_target_hotels": "100-150"
+    }
+  },
+  "scenarios": {
+    "operator_seeded_ai_native": {
+      "scenario": {
+        "key": "operator_seeded_ai_native",
+        "label": "Operator-Seeded AI-Native",
+        "description": "CHF 200K-ish operator seed, Marco + Amedeo distribution network, no large VC round. AI-native leverage keeps the team lean, and revenue is reinvested after breakeven.",
+        "warm_intro_range": [
+          3.0,
+          3.5,
+          4.2
+        ],
+        "early_demo_to_pov": [
+          0.55,
+          0.68,
+          0.8
+        ],
+        "late_demo_to_pov": [
+          0.48,
+          0.6,
+          0.74
+        ],
+        "early_pov_to_full": [
+          0.4,
+          0.47,
+          0.55
+        ],
+        "late_pov_to_full": [
+          0.44,
+          0.52,
+          0.62
+        ],
+        "non_network_demo_ramp": [
+          0.2,
+          0.6,
+          1.2
+        ],
+        "monthly_group_rollout_prob": [
+          0.004,
+          0.01,
+          0.018
+        ],
+        "group_rollout_size": [
+          2.0,
+          3.2,
+          5.0
+        ],
+        "annual_churn": [
+          0.05,
+          0.07,
+          0.1
+        ],
+        "content_upgrade_prob": [
+          0.005,
+          0.012,
+          0.02
+        ],
+        "expansion_mrr_growth": [
+          1.001,
+          1.004,
+          1.008
+        ],
+        "later_geo_boost": 1.0,
+        "exit_multiple": [
+          3.8,
+          5.0,
+          6.5
+        ]
+      },
+      "month_12": {
+        "active_full_hotels": {
+          "p10": 8,
+          "p50": 13,
+          "p90": 18,
+          "mean": 12.8374
+        },
+        "active_pov_hotels": {
+          "p10": 2,
+          "p50": 6,
+          "p90": 10,
+          "mean": 5.9447
+        },
+        "active_total_hotels": {
+          "p10": 12,
+          "p50": 19,
+          "p90": 26,
+          "mean": 18.7821
+        },
+        "property_equivalent": {
+          "p10": 12,
+          "p50": 19,
+          "p90": 26,
+          "mean": 19.0591
+        },
+        "mrr": {
+          "p10": 25056.643351870902,
+          "p50": 38607.608700195444,
+          "p90": 54574.39591436839,
+          "mean": 39352.45313963988
+        },
+        "arr": {
+          "p10": 300679.7202224508,
+          "p50": 463291.3044023453,
+          "p90": 654892.7509724207,
+          "mean": 472229.4376756785
+        }
+      },
+      "month_18": {
+        "active_full_hotels": {
+          "p10": 15,
+          "p50": 22,
+          "p90": 30,
+          "mean": 22.1911
+        },
+        "active_pov_hotels": {
+          "p10": 3,
+          "p50": 6,
+          "p90": 11,
+          "mean": 6.682
+        },
+        "active_total_hotels": {
+          "p10": 21,
+          "p50": 29,
+          "p90": 38,
+          "mean": 28.8731
+        },
+        "property_equivalent": {
+          "p10": 21,
+          "p50": 30,
+          "p90": 39,
+          "mean": 29.875
+        },
+        "mrr": {
+          "p10": 45879.83157285337,
+          "p50": 64817.41013853184,
+          "p90": 86754.27898290227,
+          "mean": 65685.16589780364
+        },
+        "arr": {
+          "p10": 550557.9788742404,
+          "p50": 777808.9216623821,
+          "p90": 1041051.3477948272,
+          "mean": 788221.9907736437
+        }
+      },
+      "month_30": {
+        "active_full_hotels": {
+          "p10": 38,
+          "p50": 49,
+          "p90": 61,
+          "mean": 49.3611
+        },
+        "active_pov_hotels": {
+          "p10": 5,
+          "p50": 10,
+          "p90": 17,
+          "mean": 10.7047
+        },
+        "active_total_hotels": {
+          "p10": 47,
+          "p50": 60,
+          "p90": 74,
+          "mean": 60.0658
+        },
+        "property_equivalent": {
+          "p10": 49,
+          "p50": 64,
+          "p90": 79,
+          "mean": 63.969
+        },
+        "mrr": {
+          "p10": 116411.9496540019,
+          "p50": 150531.38459124538,
+          "p90": 187856.90951687976,
+          "mean": 151575.73397631117
+        },
+        "arr": {
+          "p10": 1396943.3958480228,
+          "p50": 1806376.6150949446,
+          "p90": 2254282.914202557,
+          "mean": 1818908.807715734
+        }
+      },
+      "month_36": {
+        "active_full_hotels": {
+          "p10": 54,
+          "p50": 68,
+          "p90": 84,
+          "mean": 68.5845
+        },
+        "active_pov_hotels": {
+          "p10": 9,
+          "p50": 15,
+          "p90": 23,
+          "mean": 15.7244
+        },
+        "active_total_hotels": {
+          "p10": 68,
+          "p50": 84,
+          "p90": 102,
+          "mean": 84.3089
+        },
+        "property_equivalent": {
+          "p10": 72,
+          "p50": 90,
+          "p90": 110,
+          "mean": 90.4242
+        },
+        "mrr": {
+          "p10": 170432.93821713288,
+          "p50": 214894.03428914564,
+          "p90": 263265.9115975927,
+          "mean": 216173.76947680066
+        },
+        "arr": {
+          "p10": 2045195.2586055945,
+          "p50": 2578728.411469748,
+          "p90": 3159190.939171112,
+          "mean": 2594085.233721608
+        }
+      },
+      "month_60": {
+        "active_full_hotels": {
+          "p10": 187,
+          "p50": 220,
+          "p90": 254,
+          "mean": 220.431
+        },
+        "active_pov_hotels": {
+          "p10": 23,
+          "p50": 33,
+          "p90": 46,
+          "mean": 33.9927
+        },
+        "active_total_hotels": {
+          "p10": 219,
+          "p50": 254,
+          "p90": 290,
+          "mean": 254.4237
+        },
+        "property_equivalent": {
+          "p10": 238,
+          "p50": 278,
+          "p90": 319,
+          "mean": 277.9679
+        },
+        "mrr": {
+          "p10": 622328.363105107,
+          "p50": 731066.2983713436,
+          "p90": 840441.8836857419,
+          "mean": 731258.7360244872
+        },
+        "arr": {
+          "p10": 7467940.357261283,
+          "p50": 8772795.580456123,
+          "p90": 10085302.604228903,
+          "mean": 8775104.832293846
+        }
+      },
+      "exit_value_60m": {
+        "p10": 35833927.356212124,
+        "p50": 44372669.32783381,
+        "p90": 54205367.701514766,
+        "mean": 44764555.14269718
+      },
+      "probability_exit_gte_100m": 0.0
+    },
+    "vc_accelerated_ai_native": {
+      "scenario": {
+        "key": "vc_accelerated_ai_native",
+        "label": "VC-Accelerated AI-Native",
+        "description": "Same AI-native operating model, but external capital compresses integrations, case-study production, GTM hiring, and portfolio / group expansion.",
+        "warm_intro_range": [
+          3.2,
+          3.8,
+          4.8
+        ],
+        "early_demo_to_pov": [
+          0.58,
+          0.72,
+          0.84
+        ],
+        "late_demo_to_pov": [
+          0.54,
+          0.66,
+          0.8
+        ],
+        "early_pov_to_full": [
+          0.43,
+          0.5,
+          0.6
+        ],
+        "late_pov_to_full": [
+          0.48,
+          0.57,
+          0.67
+        ],
+        "non_network_demo_ramp": [
+          0.4,
+          1.2,
+          2.2
+        ],
+        "monthly_group_rollout_prob": [
+          0.01,
+          0.02,
+          0.035
+        ],
+        "group_rollout_size": [
+          2.5,
+          4.0,
+          6.5
+        ],
+        "annual_churn": [
+          0.04,
+          0.06,
+          0.09
+        ],
+        "content_upgrade_prob": [
+          0.01,
+          0.018,
+          0.03
+        ],
+        "expansion_mrr_growth": [
+          1.002,
+          1.006,
+          1.012
+        ],
+        "later_geo_boost": 1.2,
+        "exit_multiple": [
+          4.2,
+          5.6,
+          7.0
+        ]
+      },
+      "month_12": {
+        "active_full_hotels": {
+          "p10": 11,
+          "p50": 17,
+          "p90": 24,
+          "mean": 17.3949
+        },
+        "active_pov_hotels": {
+          "p10": 3,
+          "p50": 7,
+          "p90": 13,
+          "mean": 7.7308
+        },
+        "active_total_hotels": {
+          "p10": 17,
+          "p50": 25,
+          "p90": 33,
+          "mean": 25.1257
+        },
+        "property_equivalent": {
+          "p10": 18,
+          "p50": 26,
+          "p90": 35,
+          "mean": 26.054
+        },
+        "mrr": {
+          "p10": 37016.24644944702,
+          "p50": 53710.40782883977,
+          "p90": 73757.52945865768,
+          "mean": 54801.46290760629
+        },
+        "arr": {
+          "p10": 444194.9573933642,
+          "p50": 644524.8939460772,
+          "p90": 885090.3535038922,
+          "mean": 657617.5548912756
+        }
+      },
+      "month_18": {
+        "active_full_hotels": {
+          "p10": 22,
+          "p50": 30,
+          "p90": 39,
+          "mean": 30.0414
+        },
+        "active_pov_hotels": {
+          "p10": 3,
+          "p50": 8,
+          "p90": 13,
+          "mean": 7.9572
+        },
+        "active_total_hotels": {
+          "p10": 28,
+          "p50": 38,
+          "p90": 48,
+          "mean": 37.9986
+        },
+        "property_equivalent": {
+          "p10": 30,
+          "p50": 41,
+          "p90": 54,
+          "mean": 41.3171
+        },
+        "mrr": {
+          "p10": 67258.49635534346,
+          "p50": 92385.74443066791,
+          "p90": 121385.09514900575,
+          "mean": 93581.64813882517
+        },
+        "arr": {
+          "p10": 807101.9562641216,
+          "p50": 1108628.933168015,
+          "p90": 1456621.141788069,
+          "mean": 1122979.777665902
+        }
+      },
+      "month_30": {
+        "active_full_hotels": {
+          "p10": 52,
+          "p50": 66,
+          "p90": 81,
+          "mean": 66.4479
+        },
+        "active_pov_hotels": {
+          "p10": 7,
+          "p50": 13,
+          "p90": 20,
+          "mean": 13.3863
+        },
+        "active_total_hotels": {
+          "p10": 64,
+          "p50": 79,
+          "p90": 97,
+          "mean": 79.8342
+        },
+        "property_equivalent": {
+          "p10": 72,
+          "p50": 91,
+          "p90": 114,
+          "mean": 92.3079
+        },
+        "mrr": {
+          "p10": 175925.62055250042,
+          "p50": 222617.6981245847,
+          "p90": 276445.5060397518,
+          "mean": 224545.0010001008
+        },
+        "arr": {
+          "p10": 2111107.446630005,
+          "p50": 2671412.3774950164,
+          "p90": 3317346.0724770217,
+          "mean": 2694540.01200121
+        }
+      },
+      "month_36": {
+        "active_full_hotels": {
+          "p10": 75,
+          "p50": 93,
+          "p90": 112,
+          "mean": 93.0238
+        },
+        "active_pov_hotels": {
+          "p10": 12,
+          "p50": 19,
+          "p90": 29,
+          "mean": 20.0231
+        },
+        "active_total_hotels": {
+          "p10": 92,
+          "p50": 112,
+          "p90": 135,
+          "mean": 113.0469
+        },
+        "property_equivalent": {
+          "p10": 106,
+          "p50": 131,
+          "p90": 160,
+          "mean": 132.4637
+        },
+        "mrr": {
+          "p10": 261720.7446088074,
+          "p50": 322987.8153669128,
+          "p90": 392723.5611960706,
+          "mean": 325356.35532948613
+        },
+        "arr": {
+          "p10": 3140648.935305689,
+          "p50": 3875853.7844029535,
+          "p90": 4712682.734352847,
+          "mean": 3904276.263953834
+        }
+      },
+      "month_60": {
+        "active_full_hotels": {
+          "p10": 298,
+          "p50": 338,
+          "p90": 378,
+          "mean": 338.3022
+        },
+        "active_pov_hotels": {
+          "p10": 31,
+          "p50": 44,
+          "p90": 58,
+          "mean": 44.3152
+        },
+        "active_total_hotels": {
+          "p10": 341,
+          "p50": 382,
+          "p90": 424,
+          "mean": 382.6174
+        },
+        "property_equivalent": {
+          "p10": 403,
+          "p50": 460,
+          "p90": 518,
+          "mean": 460.6733
+        },
+        "mrr": {
+          "p10": 1094987.4835330867,
+          "p50": 1251352.1060260343,
+          "p90": 1406794.4830499378,
+          "mean": 1252350.2642194072
+        },
+        "arr": {
+          "p10": 13139849.80239704,
+          "p50": 15016225.272312412,
+          "p90": 16881533.796599254,
+          "mean": 15028203.170632888
+        }
+      },
+      "exit_value_60m": {
+        "p10": 69103267.98553763,
+        "p50": 83641195.74606663,
+        "p90": 99774292.9714477,
+        "mean": 84069189.19080219
+      },
+      "probability_exit_gte_100m": 0.0972
+    }
+  }
+}

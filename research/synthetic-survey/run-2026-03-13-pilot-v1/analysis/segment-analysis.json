@@ -1,0 +1,59 @@
+[
+  {
+    "segment": "unknown",
+    "hotel_count": 5,
+    "avg_buy_likelihood_3k": 37,
+    "avg_buy_likelihood_5k": 15,
+    "avg_delay_likelihood": 64,
+    "avg_priority_score": 24,
+    "avg_adr": 2129,
+    "avg_rooms": 38,
+    "avg_revenue": 0,
+    "price_band_distribution": {
+      "1000_2000": 4,
+      "2000_3000": 1
+    },
+    "top_wedges": [
+      {
+        "wedge": "A 90‑day, Swiss‑hosted pilot timed for shoulder season that delivers weekly revenue actions and clean direct‑revenue attribution, replacing fragmented tools and agency tasks",
+        "count": 1
+      },
+      {
+        "wedge": "Low-risk, Swiss-hosted 60–90 day pilot tied to a clear direct-booking KPI with PMS attribution, delivering a weekly action plan that saves management/agency hours.",
+        "count": 1
+      },
+      {
+        "wedge": "A Swiss-hosted, PMS-integrated 90-day pilot priced in the 1–2k/month band that replaces part of agency spend and produces a weekly, 3-step action list with attributable direct-revenue and OTA-commission savings",
+        "count": 1
+      }
+    ],
+    "top_blockers": [
+      {
+        "blocker": "Unproven direct-booking attribution and PMS/booking-engine integration access/timelines.",
+        "count": 1
+      },
+      {
+        "blocker": "Owner pushback on recurring spend and contract length without local proof and KPI guarantees.",
+        "count": 1
+      },
+      {
+        "blocker": "Owner/finance skepticism about ROI attribution and added operational burden, compounded by PMS/CRS integration lead times and potential agency resistance.",
+        "count": 1
+      }
+    ],
+    "top_deal_killers": [
+      {
+        "killer": "No reliable PMS/booking-engine integration for direct booking attribution.",
+        "count": 1
+      },
+      {
+        "killer": "no_pms_integration",
+        "count": 1
+      },
+      {
+        "killer": "Failure to demonstrate attributable ROI on direct bookings/revenue within the pilot window or inability to satisfy Swiss‑hosted GDPR/data‑governance requirements.",
+        "count": 1
+      }
+    ]
+  }
+]

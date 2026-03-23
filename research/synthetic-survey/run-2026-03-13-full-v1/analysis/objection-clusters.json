@@ -1,0 +1,1493 @@
+{
+  "deal_killers": [
+    {
+      "objection": "No PMS/CRM integration",
+      "count": 215,
+      "pct": 79
+    },
+    {
+      "objection": "Cannot prove attribution / ROI",
+      "count": 42,
+      "pct": 15
+    },
+    {
+      "objection": "No GDPR / Swiss data hosting",
+      "count": 5,
+      "pct": 2
+    },
+    {
+      "objection": "No Swiss reference customers",
+      "count": 5,
+      "pct": 2
+    },
+    {
+      "objection": "No clear, attributable uplift in direct bookings within the agreed pilot window.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "objection": "Inability to demonstrate a credible, attributable uplift in direct bookings/revenue within the agreed pilot window.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "objection": "No demonstrated increase in direct bookings or direct room revenue within the agreed pilot window.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "objection": "If uplift in direct bookings/revenue cannot be measured and credibly attributed within the pilot window.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "objection": "No demonstrable uplift in direct bookings (revenue/share) or inability to integrate and measure results cleanly within the agreed pilot window.",
+      "count": 1,
+      "pct": 0
+    }
+  ],
+  "blockers": [
+    {
+      "blocker": "Owner/Revenue risk aversion to algorithmic pricing without strong Swiss luxury references and performance assurances, plus overlap/term constraints with existing vendors and IT/legal review time.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/CFO reluctance to approve a recurring CHF 5k SaaS without Swiss luxury references, firm SLAs, and clear attribution; integration/legal reviews can further stall timelines.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Procurement/IT/legal friction around data security, Swiss hosting, and PMS/CRS integrations, plus perceived overlap with the RMS/reputation stack.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Procurement/privacy hurdles (CFO, legal/IT) plus the need for robust PMS/CRS integration and rigorous attribution; modest uplifts risk being disputed as seasonality or mix effects.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Finance owner resistance without rock-solid attribution and the risk of slow/expensive PMS-Booking Engine integration and legal/DPA review.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "PMS/CRS integration and IT/legal procurement gates (GDPR, data residency), plus limited internal bandwidth to execute recommendations and overlap with incumbent tools.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Internal adoption friction and brand-voice risk (plus Opera integration effort/IT review)",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "CFO demand for auditable attribution plus PMS/booking‑engine integration lead times and legal/DP reviews.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Integration/IT and data‑residency approvals, overlap with existing agency/vendor contracts, and CFO/Owner budget signoff timing.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Finance/Owner attribution standard combined with Opera/booking engine integration complexity and procurement/legal review timelines.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/Finance skepticism of recurring SaaS without hard, attributable ROI and security-compliant integrations.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/Finance skepticism on marginal incremental value versus existing stack, compounded by IT/security scrutiny for PMS/CRM access.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Limited control over the booking engine/website (attribution and funnel changes) combined with owner/board legal procurement and DPA/Swiss‑hosting requirements.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "External booking engine integration/attribution risk and owner conservatism on recurring software spend.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Kempinski brand IT/legal approvals and CRM/data access restrictions creating delays or denying required integrations.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner conservatism and fear of OTA/agency cannibalization combined with legal/IT friction on integrations and data privacy.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/finance signoff combined with execution bandwidth and proof-of-attribution demands.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Operational execution capacity in a small team (bandwidth to action recommendations and campaigns).",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "CFO/Owner reluctance to add recurring opex without hard ROI and the hidden implementation load/cost of PMS integration and team time.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/Finance demand auditable ROI and GDPR/legal signoff; potential PMS/vendor integration delays and agency pushback.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/Finance conservatism plus integration risk and existing agency contracts; demand for Swiss luxury references and clear guaranteed uplift.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/CFO skepticism about attributable ROI without airtight PMS data, validated Swiss luxury references, and alignment to budget cycles.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/finance skepticism of recurring SaaS without clear, auditable revenue attribution; plus PMS/booking engine integration complexity.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/Board conservatism toward recurring SaaS without risk‑sharing and strong Swiss luxury references, plus GDPR/data‑handling scrutiny.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Attribution uncertainty (seasonality and channel-mix confounders) plus integration complexity/costs and owner skepticism of recurring OPEX.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/CFO skepticism about causal direct‑revenue lift and reluctance to add recurring SaaS spend, compounded by integration timelines and vendor overlap.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/CFO skepticism on ROI and attribution, compounded by integration complexity and incumbent agency overlap.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Accor corporate procurement/IT gatekeeping and perceived duplication with brand tooling (and resulting security/compliance overhead).",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/Finance proof gate on measurable attribution plus GDPR/Swiss-hosting legal review and IT integration windows.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner veto on recurring SaaS spend without airtight attribution and Swiss data residency; potential overlap with existing revenue/pricing tools.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "PMS/CRS integration dependencies plus owner risk aversion without Swiss references and a contractual performance safeguard.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "ROI attribution credibility plus integration/legal timelines (GDPR/Swiss hosting) and multi-stakeholder governance at a seasonal luxury resort.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Brand/regional signoff due to overlap with Kempinski central revenue/commercial systems and strict IT/security/data-governance requirements.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/CFO reluctance to approve recurring SaaS without ironclad, attributable revenue proof; procurement/IT gatekeeping and agency overlap concerns.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "MOHG corporate procurement/commercial governance and data-security approval, including PMS/CRS integration and brand-compliance concerns.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Hyatt corporate procurement/IT security governance and overlap with brand-provided revenue/compset tooling.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Radisson corporate IT/procurement approvals and data-sharing restrictions on third‑party integrations.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner reluctance to approve recurring CHF 3–5k without multi-quarter, clearly attributable ROI; compounded by potential PMS/booking-engine integration delays.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Attribution credibility in a seasonal market and owner signoff on recurring SaaS (>CHF 3k); plus possible integration/IT delays.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Brand/group vendor governance and data-security approvals that restrict or delay PMS/CRM integrations, risking an inconclusive pilot.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/Finance ROI skepticism combined with GDPR/legal review and overlap with incumbent agency/tooling contracts.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner skepticism around recurring fees without ironclad attribution, plus overlap/resistance from existing agencies.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/group procurement and legal/IT reviews plus overlap with existing RMS/agency workflows causing ROI skepticism and integration delays.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "PMS/booking-engine integration complexity and seasonal timing (plus legal review for Swiss/GDPR hosting) delaying credible measurement and Owner sign-off.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/finance risk aversion to recurring SaaS without proven uplift, compounded by PMS/GDPR integration and small-team bandwidth constraints.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/finance sign-off thresholds (≥CHF 2k) and group brand/IT controls; integration timeline/cost with PMS/BE.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Integration/data access complexity and cost with the PMS/booking engine, plus IT/legal review for Swiss hosting and data flows.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/CFO approval contingent on verifiable CHF attribution and data residency, plus possible PMS connector delays/costs.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/Finance reluctance to commit to recurring OpEx without low-risk guarantees, compounded by seasonal attribution noise and potential integration delays/costs.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Attribution credibility for direct revenue uplift (and Finance sign-off tied to it)",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner ROI skepticism at CHF 3–5k plus PMS/CRS integration and Swiss‑hosting due diligence timelines.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Integration and operational capacity risk: PMS/BE connectivity plus limited team time; owner/finance caution on recurring spend.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/CFO proof-and-privacy requirements (no direct baseline, need Swiss hosting and local references) causing extended approval cycles.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Lack of current direct-booking infrastructure (PMS/booking engine/channel manager frictions) plus owner conservatism on rate/offer tests and new vendor spend.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner risk aversion combined with limited team bandwidth; if execution lags or attribution is unclear, recurring SaaS spend will be delayed or declined.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Attribution uncertainty due to seasonality and channel noise, compounded by integration timing and Finance sign-off requirements.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Finance/owner attribution skepticism plus integration lead times and existing vendor contracts.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/finance insistence on guaranteed ROI/attribution and resistance to recurring SaaS; integration lead-times with PMS/channel manager plus Swiss hosting/legal reviews.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Finance/owner insistence on clear, attributable direct revenue lift and concerns about overlap with RMS/commercial stack; integration timelines with PMS/CRS.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/CFO risk tolerance requiring in-market luxury references plus PMS integration slippage and legal/DPAs for Swiss/GDPR hosting.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner sign-off plus change-management bandwidth; added by Swiss-hosting and integration requirements increasing timeline and perceived risk.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Mandarin Oriental Group procurement/IT/brand governance and tool overlap risk (integration, security, and brand-compliance gatekeeping).",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Mandarin Oriental corporate procurement/IT-security requirements and overlap with brand-provided RMS/analytics/reputation tools.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Insufficient internal capacity to execute recommendations consistently.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Integration complexity with PMS/booking engine and owner’s caution on recurring spend creating extra workload without clear attribution",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner skepticism of recurring SaaS without rock-solid, auditable proof of incremental direct bookings; compounded by PMS/BE integration drag.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "CFO/owner risk aversion combined with legal/IT requirements for Swiss data residency and the complexity of two-way PMS/CRM integration.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Marriott corporate procurement/IT-security and brand compliance approvals that restrict data access and delay or veto integration.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner’s reluctance to add a CHF 3k–5k recurring cost without airtight attribution, plus hidden integration/TCO concerns and potential RMS/agency overlap pushback.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Attribution skepticism and corporate/IT procurement requirements (AMERON/owner group) slowing integrations and approvals.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Accor/Fairmont centralized procurement and IT/security approvals that limit or delay integrations and may duplicate existing brand tools.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "PMS/booking engine data access/attribution plus owner/investor signoff amid potential overlap with brand-group tools.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Marriott brand/vendor approval and data-integration restrictions creating overlap with corporate analytics and potential denial of access.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Attribution credibility for direct‑booking uplift in a highly seasonal, low‑sample context (and ensuing Owner/CFO skepticism).",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Hilton corporate procurement/IT security signoff and perceived overlap with brand systems (GDPR/hosting and integration approvals).",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Attribution credibility and owner’s tolerance for recurring OPEX, compounded by PMS/CRS integration complexity and GDPR/Swiss-hosting legal review.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Fear of integration causing pricing/inventory errors in high season, coupled with owner conservatism on recurring SaaS spend.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Finance skepticism on attribution/ROI and overlapping tools, amplified by integration timelines and seasonality.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Insufficient internal bandwidth combined with integration/IT overhead and Owner/Finance scrutiny of recurring spend.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "PMS/booking-engine integration and attribution complexity; without validated data the Owner will not approve recurring spend.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Accor/MGallery approvals and data access constraints, plus perceived overlap with brand revenue/marketing tooling and owner sensitivity to recurring spend.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Integration complexity and cost to prove direct uplift (PMS/booking engine), combined with owner-level approval conservatism and seasonal bandwidth constraints.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/finance demand for iron-clad, contractually enforceable ROI and aversion to duplicating existing RM/agency tools; any integration or Swiss-hosting compliance drag amplifies this.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Operational bandwidth and change management: revenue team resistance to a decision engine plus integration/brand-review overhead may stall execution and dilute ROI.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner’s scrutiny of recurring spend combined with attribution risk and potential integration/legal (GDPR) delays.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/Finance risk aversion and compliance review (Swiss-hosted data) combined with potential PMS/booking-engine integration friction.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Hyatt/me and all corporate IT and legal approvals for PMS/IBE integration and data access; potential owner hesitation on recurring OPEX without fast, provable ROI.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Accor/Mövenpick corporate vendor approval and system-integration restrictions (security, legal, mandatory vendor lists) creating long timelines and potential duplication concerns.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Control/trust over pricing and revenue decisions—owner/CFO and revenue team will resist external recommendations without airtight attribution and guardrails.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Director of Finance skepticism on provable ROI and overlap with existing agencies, plus PMS/booking engine integration lead-times.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/Finance skepticism about recurring spend without airtight attribution; integration delays or data residency/legal hurdles that stall proof of ROI.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Operational bandwidth to act on recommendations (campaign builds, localization, testing) leading to under-realized ROI even if the software works.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Integration complexity and owner risk aversion to commit without fast, attributable ROI.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Insufficient internal capacity to execute weekly actions and finance controller caution on recurring spend.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner requires auditable ROI baseline and proof; PMS/booking engine integration complexity could stall timelines.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/finance skepticism on attribution and total cost (integration, hidden operational load), amplified by winter season timing and conservative approval norms.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Finance/owner skepticism about recurring SaaS ROI for a low-volume, high-ADR hotel, compounded by potential PMS integration delays/costs.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/finance demand strict net-net ROI proof plus potential PMS integration fees/backlog and timing around low-season windows.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Proving causal uplift (attribution) and securing Finance sign-off if the pilot signal is inconclusive.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Missing/weak direct-booking infrastructure and PMS/booking-engine integration; owner/finance approval tied to annual budget cycle.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Revenue Manager resistance (overlap with existing RMS/processes) combined with budget caution above CHF 4k and potential integration lead times.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner veto on recurring SaaS without Swiss references and a guaranteed, attributable pilot outcome; integration lead times with PMS/CRM.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner’s rate-integrity/ADR risk aversion combined with need for credible Swiss alpine references and assured integrations.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Chain-level procurement/IT security approvals and perceived overlap with brand RMS/reporting tools, coupled with limited team bandwidth for adoption.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "PMS/booking-engine integration friction plus owner/finance approval cycles that push decisions to annual budgeting.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Centralized Reka cooperative procurement/data policies that limit local GM autonomy and can prolong or veto vendor selection.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Marriott corporate data/integration restrictions and perceived duplication with brand-provided RMS/analytics.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Integration and organizational capacity: PMS/CM integration timelines plus small-team bandwidth and CFO approval to act on recommendations and accept recurring spend.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Finance controller pushback on recurring SaaS + dependency on PMS/booking engine integration (and vendor/IT delays).",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Sunstar brand/chain IT and procurement constraints on PMS/CRS integrations and data residency, leading to attribution risk and CFO pushback.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Clean, credible attribution (PMS/booking engine integration + seasonality control) and owner/finance scrutiny on recurring spend for a 30-room, family-run property.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner’s insistence on absolute CHF ROI for a 30‑room base, plus PMS/booking‑engine integration and Swiss‑hosting requirements.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner-led budget conservatism combined with seasonality/attribution doubts and potential PMS/channel integration delays.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/board risk aversion on recurring SaaS without hard ROI proof and concerns about PMS integration complexity/ongoing overhead.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner conservatism on recurring SaaS without hard, comparable luxury ROI proof and full GDPR/Swiss‑hosting compliance.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner conservatism toward recurring fees and any pricing automation; plus potential PMS/API integration costs and timing.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Finance Director skepticism toward recurring SaaS plus corporate-mix constraints that limit measurable direct uplift; integration/IT lead times.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "ROI measurability at 5 keys (statistical insignificance) and owner preference for capex/hire over recurring SaaS.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Attribution and procurement: without a clean PMS/BE integration and a defendable baseline, Owner/Finance will not accept ROI claims; existing agency contracts and Swiss data-hosting/legal review extend timelines.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Brand/corporate IT and PMS/booking-engine restrictions that prevent reliable two-way integration and attribution.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/CFO skepticism on absolute CHF ROI and recurring Opex, compounded by legal/compliance review for Swiss data residency and DPAs.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "CFO/owner demand for Swiss premium-hotel references and hard ROI proof, plus integration timeline/IT review and potential resistance from existing marketing agencies.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Inability to attribute impact due to contact-only booking flow and missing baseline for direct bookings.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Finance/controller skepticism on attribution and recurring + integration costs, compounded by PMS/BE integration complexity or paid adapters.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner conservatism on recurring spend combined with attribution demands and integration/seasonality constraints.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Proof risk: failure to show a reliable >=8–10% direct-booking uplift within the proof window (seasonality, sample size, execution friction), triggering a family-owner veto.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Lack of direct-booking infrastructure/tracking and potential owner/brand approval delays for new recurring spend.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Integration and attribution credibility (owner skepticism amplified by seasonal budget caution and existing agency ties).",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Measurement and attribution credibility for promised direct uplift, amplified by owner-level scrutiny and any PMS/booking engine integration delays/costs.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Integration and revenue-risk concerns: PMS/booking-engine compatibility plus fear that automated pricing or actions could harm revenue/brand.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Attribution and proof of ROI in a seasonal environment leading to owner/CFO pushback on recurring spend.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "PMS/booking-engine/website integration cost/timeline and owner approval for a recurring subscription.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Integration dependencies and attribution skepticism due to alpine seasonality.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Insufficient internal capacity to act on recommendations consistently, compounded by integration lead times and owner risk aversion.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/CFO insist on verifiable, property‑specific ROI and GDPR/Swiss‑hosting assurances; integration timelines/fees with PMS/booking engine may slow or stall sign‑off.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Uncertain PMS/booking-engine integration coupled with finance/owner scrutiny of new OPEX.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner budget cap at CHF 1–2k combined with skepticism that uplift is measurable and material in a seasonal resort.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Brand/regional IT approval and vendor policy (approved lists, security reviews) for PMS/CRS integration and data sharing.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner conservatism on recurring SaaS plus attribution skepticism, compounded by PMS/channel-manager integration and legal/privacy review delays.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Attribution/seasonality skepticism from Finance plus integration/TCO concerns (Swiss hosting, legal review, staff bandwidth).",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "No dedicated revenue manager/implementation owner plus owner-level caution on recurring spend and integration friction with PMS/booking engine.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/CFO attribution skepticism under seasonal volatility and conservative recurring budget approvals.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Finance/owner conservatism plus hidden PMS/BE integration/API fees increasing TCO and straining team capacity.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner OPEX sensitivity combined with PMS/booking-engine integration lead times/costs.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Attribution/integration credibility (PMS/booking engine) and Owner/Board approval after security/Swiss-hosting legal review.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/Controller OPEX conservatism and legal/IT integration reviews that slow approval.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner’s seasonal cashflow conservatism and preference for capex over recurring SaaS, compounded by PMS integration lead times.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/CFO reluctance to approve recurring SaaS without clear, sustained, and attributable uplift; compounded by existing luxury-agency contracts and reputational risk in peak season.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Finance/legal skepticism about measurable, attributable uplift and data-governance (Swiss/GDPR) requirements.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Chain-level IT/security and procurement approvals for integrations and Swiss data residency, plus seasonal capacity constraints.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "PMS/booking‑engine integration and Swiss/GDPR data‑residency assurance plus Owner sign‑off on recurring spend.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Integration and operational capacity risk: PMS/BE connectors plus limited team time to execute tasks; owner sensitivity to brand/pricing automation and data privacy.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "PMS/booking-engine integration complexity and owner skepticism of recurring SaaS without fast, attributable ROI.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Attribution skepticism and integration complexity; Owner aversion to higher recurring SaaS without short, credible payback.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Attribution proof and integration complexity with the contact-based booking flow, triggering owner/legal scrutiny and slowing signoff.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/CFO insistence on clear, conservative CHF profit proof across a full season and concern about any integration that could risk the premium booking experience.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Marriott corporate IT/security and procurement approvals for data access and vendor onboarding.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "No current direct-booking engine/PMS data path to attribute uplift; owner/finance unlikely to approve without reliable measurement and easy exit.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Integration/attribution risk with current PMS/booking engine plus owner skepticism of recurring fees without fast, provable ROI.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/CFO approval contingent on reliable PMS/booking-engine integration and clear, auditable attribution of direct revenue uplift.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/board approval demanding seasonally-adjusted proof of incremental direct revenue and clarity on integration costs/risks.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner approval driven by attribution skepticism and recurring-fee sensitivity; peak-season timing and PMS/booking-engine integration friction amplify delays.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Seasonal owner budget cycles and risk aversion (plus PMS/booking-engine integration risk).",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "No functioning direct booking engine and Owner/Finance risk aversion around recurring spend and data/privacy; integration/attribution complexity during peak seasons.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/CFO skepticism about provable, causal direct‑booking uplift at small scale plus potential PMS/BE integration costs or vendor gating.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Measurement credibility under extreme seasonality plus owner sign-off contingent on legal/DPA review and contract terms.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Integration and attribution risk with current PMS/channel manager leading to unclear ROI and added workload for a small team",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner finance conservatism plus attribution skepticism; without airtight measurement and Swiss/GDPR assurances, recurring spend is likely vetoed.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Attribution and integration complexity with the booking engine/PMS, combined with a hard monthly budget ceiling (~CHF 2k) and seasonal timing delays.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Group IT/legal and central revenue governance that can veto integrations and limit pricing/channel experiments.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Integration and attribution risk with PMS/booking engine plus data residency/legal review delaying or vetoing deployment",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Finance controller skepticism toward recurring OPEX and preference for one-off/agency spend; compounded by potential agency resistance and integration risk.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner’s risk aversion to any automation that could erode ADR or breach OTA parity, compounded by PMS/channel-manager integration timing and data-privacy scrutiny.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner signoff tied to clear attribution and overlap with current agency/tooling; procurement/legal and integration windows can stretch timelines.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Attribution proof and PMS/booking-engine integration complexity, combined with owner scrutiny of recurring costs.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Integration and attribution risk: delays or partial PMS/BE data will make it hard to prove a 10%+ direct uplift in a seasonal, 67-room property; recurring fees then feel unjustified.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/finance conservatism on recurring SaaS and data/privacy gatekeeping for PMS/BE access",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner sensitivity to recurring SaaS spend and insistence on provable ROI amid PMS integration complexity.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner skepticism about recurring SaaS ROI for a 25-room property combined with execution burden on a small team and possible PMS/booking-engine integration friction.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/finance risk aversion and procurement timing, amplified by peak-season avoidance and integration/legal lead times.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Accor/brand procurement and PMS data-integration approvals (risk of denial or long delays)",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner scrutiny on recurring spend and insistence on ironclad, seasonality-adjusted ROI attribution; plus PMS/booking engine integration risk.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/Finance skepticism on ROI and attribution, combined with integration time/cost and seasonal cashflow sensitivity.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/finance skepticism about ROI and attribution at low sample sizes, compounded by integration lead times and overlap with incumbent tools/agencies.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Integration complexity and legal/GDPR review for Swiss data residency (PMS/booking engine APIs, contracts, and timeline).",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner reluctance to add recurring spend without hard Swiss proof and fear of integration overhead/overlap with existing tools.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner conservatism around recurring SaaS plus a high bar for ironclad attribution of incremental direct bookings.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "No direct‑booking stack or integration path today; requires extra time/budget and owner sign‑off.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Integration and hidden-cost risk (PMS/booking engine data access, custom work, API fees) leading the owner to reject recurring spend without hard proof.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Unclear/no direct booking flow and PMS integration; owner conservatism requiring rapid, provable Swiss-referenced ROI.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Limited team bandwidth to implement recommendations consistently (plus potential PMS/BE integration friction).",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Integration/data reliability plus owner risk-aversion on recurring spend and proof of uplift.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "No current direct-booking infrastructure/attribution and owner hesitancy to approve a CHF 3k+ recurring SaaS without fast, verifiable ROI.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner-level conservatism on recurring OPEX and skepticism about ROI attribution for direct-booking uplift.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner approval for a recurring fee without clean, attributable direct revenue proof—compounded by PMS/BE integration friction and existing agency contracts.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Finance/controller pushback on ROI attribution and data privacy (Swiss hosting, DPA), plus limited onboarding bandwidth.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner aversion to recurring spend without a proven Swiss luxury reference, plus potential PMS/booking-engine API fees and integration delays.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Lack of direct-booking infrastructure/integration, making ROI attribution to direct bookings hard and risking owner rejection of a recurring fee.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Attribution credibility under seasonality plus PMS/booking-engine integration gates/fees; owner/accountant likely to require hard proof before any recurring commitment.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "attribution_measurability",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/REKA central signoff plus attribution skepticism for a tiny inventory (seasonality and small sample sizes).",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner approval hinging on airtight attribution and absolute-CHF ROI proof, plus potential PMS/booking-engine integration delays.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner’s requirement for multi-season, auditable net profit proof plus legal/privacy review before committing to recurring fees.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Integration and attribution credibility (owner/finance skepticism that uplift can be cleanly tied to the platform).",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Attribution credibility and PMS/IBE integration delays, combined with Owner aversion to new recurring subscriptions.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Attribution/integration risk and owner approval for recurring SaaS spend; possible resistance/fees from external PMS/website vendors.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Attribution/integration complexity with PMS/booking engine and potential group‑level procurement friction.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/finance sensitivity to recurring fees combined with limited team bandwidth to operationalize recommendations during peak seasons.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner risk-aversion combined with attribution doubts and potential PMS/booking‑engine integration delays/costs.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner sign-off hinging on credible attribution of uplift and aversion to recurring SaaS without guarantees; potential integration effort/fees with PMS/booking engine.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner gatekeeping recurring spend combined with weak/uncertain direct-booking infrastructure and integration risk.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Limited staff bandwidth to implement weekly actions, compounded by conservative Owner/CFO stance on new recurring spend and seasonality-driven deferrals.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner signoff combined with PMS/booking‑engine integration effort/cost and staff adoption risk, jeopardizing measurable uplift.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner risk aversion on recurring SaaS ROI vs. small absolute uplift, compounded by PMS/booking engine integration and Swiss GDPR/hosting requirements.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Small‑team operational capacity to execute weekly actions after the pilot.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Attribution credibility and integration risk (PMS/booking engine access, consent/cookie constraints, and data quality).",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner fear of ADR erosion from vendor-led actions (brand/price integrity) and associated pushback from existing agency/PMS/BE stakeholders.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner sign-off on a recurring CHF3k–5k fee without local proof of measurable direct uplift and low-risk integration; current lack of direct-booking infrastructure heightens skepticism.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Proving attribution with sufficient statistical power on low volumes; budget sensitivity above CHF 2–3k/month.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner risk aversion to recurring SaaS plus uncertain PMS/booking‑engine integration cost/timeline.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/finance risk aversion and ROI attribution concerns, compounded by seasonal cashflow and integration uncertainty.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/finance resistance to recurring SaaS spend (and hidden integration/agency fees) given small scale and uncertain ROI.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Proving measurable direct-booking uplift (attribution) and integration lead times for a 24-room luxury apartment setup.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/family office approval driven by hard ROI attribution and data/privacy sign-off for a very small, seasonal property.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner sign-off conditioned on credible, attributable ROI and proven PMS integration; skepticism amplified by seasonality and small sample size.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner skepticism toward recurring SaaS spend versus capex, compounded by integration complexity and limited team capacity to action recommendations.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Sunstar central CRS/PMS integration constraints and owner approval for a recurring SaaS spend.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner aversion to new recurring SaaS and perceived overlap with brand-group tools; plus integration/attribution risk in a seasonal context.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Hidden integration and operational costs with PMS/booking engine causing attribution uncertainty and owner pushback on recurring SaaS.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Attribution risk from PMS/booking‑engine integration complexity, coupled with owner hesitation on a new recurring fee.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner conservatism on recurring software spend combined with risk of disrupting the embedded booking engine/PMS and vendor coordination delays.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Attribution and integration complexity (offline bookings, packages, partner flows) combined with seasonal cashflow caution and OPEX aversion.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner veto on recurring SaaS spend without Swiss references and proven integration with their exact PMS/channel manager.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner skepticism on ROI attribution for a 20-room seasonal property and potential integration friction with the booking engine/PMS.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "No reliable direct-booking baseline and potential PMS/booking engine integration delays/costs leading finance to doubt ROI.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Head of Finance demanding provable attribution and clarity on integration costs/effort; risk that limited staff capacity undermines execution and ROI.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner veto of recurring subscription without guaranteed uplift; potential integration friction/cost with booking engine/PMS.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Attribution risk and PMS/booking-engine integration delays combined with owner conservatism on recurring spend.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Attribution skepticism and tight boutique budget (owner veto) compounded by seasonality and small-team bandwidth; any integration friction will stall the deal.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner risk aversion requiring local references plus proof across peak/shoulder seasons; integration and vendor scheduling delays may push start by months.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/Finance skepticism driven by small-sample attribution noise and reluctance to approve CHF 3k+ recurring spend without hard, provable ROI.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Attribution + seasonality risk for a 19‑room property, compounded by PMS/booking‑engine integration friction and finance scrutiny above CHF 3k/month.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Integration complexity and finance-controller risk aversion around paying for software without rock-solid direct-booking attribution.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Insufficient direct-booking baseline and uncertain integrations, leading the owner to doubt CHF-attributed ROI and to delay until low season or indefinitely.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Attribution/integration uncertainty and recurring subscription approval at the owner level for a 22-room, highly seasonal property.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner reluctance to approve a CHF 3k–5k recurring spend given seasonal cashflow and attribution risk.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "No or weak direct-booking infrastructure and integration complexity, combined with owner-level scrutiny on net incremental revenue (fear of OTA cannibalization and hidden costs).",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Attribution and statistical significance for direct-booking uplift on low volumes, compounded by owner approval for recurring spend and potential integration friction.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Attribution and statistical noise for a 24-room property, compounded by PMS/booking-engine integration delays/costs.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Booking engine/PMS integration complexity and cost, plus proving uplift in a low‑sample, highly seasonal context.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Attribution credibility at small scale combined with owner/finance sensitivity to recurring fees and seasonality.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Credible revenue attribution and embedded booking engine integration under strict Swiss/GDPR and medical-privacy review.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Operational capacity and integration burden leading to skepticism about provable ROI; final owner sign-off may be slow or conservative.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "No direct booking infrastructure (OTA-first) makes attribution hard; owner is risk-averse on recurring spend for a 15-room property.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner skepticism about attribution and recurring SaaS spend, compounded by integration lead times and seasonal bandwidth constraints.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Attribution risk of proving causal uplift in direct bookings during a short pilot, coupled with owner scrutiny of recurring spend above CHF 2k/month.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Attribution/statistical power and integration complexity for a 20-room, seasonal operation (risk that uplift cannot be proven cleanly, leading to cancellation).",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "No direct-booking setup and complex integrations; owner conservatism and budget freeze outside planning windows.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Recurring budget vs. 12-room scale combined with difficulty proving ROI quickly due to low booking volumes and potential PMS/booking-engine integration or data-access hurdles.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner’s sensitivity to recurring costs and attribution risk given small sample size and seasonal variance; skepticism that uplift can be proven in <90 days.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "No current direct-booking engine and owner’s caution on recurring spend; small absolute ROI after fees in a 24-room, seasonal property.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Operational capacity and ongoing workload for a 1–2 person team relative to the small revenue upside; plus potential integration friction with PMS/booking engine and data privacy documentation.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Central REKA procurement/IT approval combined with seasonally tight cashflow and modest absolute CHF upside for an 18-room property.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Economics for a tiny inventory: owner approval and skepticism that a recurring CHF 3k–5k can pay back, plus PMS integration risk.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Integration risk with external booking engine/channel manager and perceived poor ROI vs an 8‑room scale.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Reliable booking engine/PMS integration and credible ROI attribution at very low booking volumes, alongside owner sign-off on recurring spend.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner/group signoff for recurring spend vs. small room count and inability to prove ROI quickly; potential CERVO central marketing constraints.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner conservatism focused on absolute CHF ROI for a 16-room hotel, compounded by lack of existing direct-booking engine and integration/seasonality timing risks.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Statistical attribution and seasonality noise with only 10 rooms, making ROI proof within 3–6 months hard to trust.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Recurring cost versus small absolute ROI for a 6-room property, compounded by potential integration friction with the embedded booking engine.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "ROI math for 4 units (small revenue pool) and inconclusive pilot proof due to seasonality/sample size; integration/Swiss-hosting extras can inflate TCO.",
+      "count": 1,
+      "pct": 0
+    },
+    {
+      "blocker": "Owner skepticism about ROI attribution on a tiny room base and aversion to recurring opex, compounded by integration/data‑residency hurdles.",
+      "count": 1,
+      "pct": 0
+    }
+  ],
+  "raw_deal_killers": [
+    {
+      "raw": "no_pms_crm_integration",
+      "count": 4
+    },
+    {
+      "raw": "no_pms_integration",
+      "count": 2
+    },
+    {
+      "raw": "No reliable PMS/booking‑engine integration or failure to meet Swiss GDPR/data‑residency requirements.",
+      "count": 1
+    },
+    {
+      "raw": "No reliable PMS/booking‑engine integration or inability to demonstrate measurable direct‑revenue uplift in the agreed pilot window.",
+      "count": 1
+    },
+    {
+      "raw": "No reliable integration with PMS/CRS/booking engine (inability to ingest/export transactional data).",
+      "count": 1
+    },
+    {
+      "raw": "No reliable PMS/CRM/booking-engine integration to enable auditable revenue attribution.",
+      "count": 1
+    },
+    {
+      "raw": "No secure PMS/CRS integration (and inability to meet Swiss/GDPR data requirements) preventing reliable attribution and actionable recommendations.",
+      "count": 1
+    },
+    {
+      "raw": "Failure to integrate with Opera PMS/CRM and/or inability to meet Swiss/GDPR-compliant hosting and data-processing requirements",
+      "count": 1
+    },
+    {
+      "raw": "No reliable PMS/CRS/booking‑engine integration preventing clean attribution and data sync.",
+      "count": 1
+    },
+    {
+      "raw": "Inability to integrate with PMS/booking engine to attribute direct revenue (cannot prove ROI).",
+      "count": 1
+    },
+    {
+      "raw": "If PMS/CRS/booking-engine integration cannot reliably attribute direct revenue impact (or uplift cannot be demonstrated to Finance/Owner standards within the pilot).",
+      "count": 1
+    },
+    {
+      "raw": "No demonstrable, attributable path to direct-booking revenue uplift within the agreed pilot window (or inability to integrate with PMS/booking engine).",
+      "count": 1
+    },
+    {
+      "raw": "No secure, reliable PMS/CRM integration (and inability to meet Swiss/GDPR data residency/security requirements).",
+      "count": 1
+    },
+    {
+      "raw": "No reliable PMS/CRS integration and inability to meet Swiss GDPR/data‑residency requirements; plus inability to attribute impact due to lack of booking‑funnel control.",
+      "count": 1
+    },
+    {
+      "raw": "Inability to credibly prove uplift in direct revenue due to missing or failed PMS/booking-engine integration/attribution.",
+      "count": 1
+    },
+    {
+      "raw": "No PMS/CRM integration or inability to access required guest/transactional data due to brand or privacy restrictions.",
+      "count": 1
+    },
+    {
+      "raw": "No PMS/booking engine integration for attribution or inability to demonstrate measurable direct booking uplift.",
+      "count": 1
+    },
+    {
+      "raw": "No reliable PMS/booking-engine integration and attribution for direct bookings.",
+      "count": 1
+    },
+    {
+      "raw": "No reliable PMS/booking-engine integration and/or insufficient GDPR/Suisse hosting assurances for guest and reservation data.",
+      "count": 1
+    },
+    {
+      "raw": "No reliable PMS/CRS integration access or lack of Swiss/GDPR-compliant data hosting and agreements.",
+      "count": 1
+    }
+  ]
+}

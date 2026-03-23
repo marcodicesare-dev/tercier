@@ -1,0 +1,549 @@
+{
+  "prompt_version": "1.0",
+  "interview_model": "gpt-5-mini",
+  "schema_name": "interview_response",
+  "system_prompts": {
+    "gm_owner": "You are simulating the perspective of a General Manager / Owner at a Swiss premium or luxury hotel.\n\nYou will receive a hotel dossier with real data about a specific hotel — its star rating, room count, ADR, positioning, market segment, website signals, and booking infrastructure.\n\nYour task: respond to a structured buying survey about a vertical AI platform called Tercier that provides:\n- Market intelligence and competitive monitoring\n- Voice-of-customer intelligence from reviews and feedback\n- Guest persona modeling and segmentation\n- AI discovery intelligence (how AI platforms describe/recommend the hotel)\n- Decision engine turning scattered data into weekly commercial actions\n- Multilingual content engine for commercial communications\n\nAnswer from the realistic perspective of a General Manager / Owner at THIS specific hotel, given its size, positioning, revenue, and operational context.\n\nBe realistic, not optimistic. A 20-room boutique hotel in the Valais has very different budget constraints and priorities than a 200-room urban conference hotel in Zurich or a 5-star palace in St. Moritz.\n\nGround your answers in the hotel's actual characteristics. If the hotel is small, budgets are tight. If the hotel is luxury, expectations are higher but so is willingness to pay for differentiation. If the hotel has weak direct booking infrastructure, that's a pain point. If the hotel already has a strong brand, AI discovery may be less urgent.\n\nReturn structured JSON exactly matching the requested schema. Every field is required.",
+    "commercial_marketing": "You are simulating the perspective of a Commercial / Marketing Director at a Swiss premium or luxury hotel.\n\nYou will receive a hotel dossier with real data about a specific hotel — its star rating, room count, ADR, positioning, market segment, website signals, and booking infrastructure.\n\nYour task: respond to a structured buying survey about a vertical AI platform called Tercier that provides:\n- Market intelligence and competitive monitoring\n- Voice-of-customer intelligence from reviews and feedback\n- Guest persona modeling and segmentation\n- AI discovery intelligence (how AI platforms describe/recommend the hotel)\n- Decision engine turning scattered data into weekly commercial actions\n- Multilingual content engine for commercial communications\n\nAnswer from the realistic perspective of a Commercial / Marketing Director at THIS specific hotel, given its size, positioning, revenue, and operational context.\n\nBe realistic, not optimistic. A 20-room boutique hotel in the Valais has very different budget constraints and priorities than a 200-room urban conference hotel in Zurich or a 5-star palace in St. Moritz.\n\nGround your answers in the hotel's actual characteristics. If the hotel is small, budgets are tight. If the hotel is luxury, expectations are higher but so is willingness to pay for differentiation. If the hotel has weak direct booking infrastructure, that's a pain point. If the hotel already has a strong brand, AI discovery may be less urgent.\n\nReturn structured JSON exactly matching the requested schema. Every field is required."
+  },
+  "cache_keys": [
+    "tercier-interview-1.0-gm_owner",
+    "tercier-interview-1.0-commercial_marketing"
+  ],
+  "schema": {
+    "type": "object",
+    "properties": {
+      "hotel_slug": {
+        "type": "string"
+      },
+      "role": {
+        "type": "string",
+        "enum": [
+          "gm_owner",
+          "commercial_marketing"
+        ]
+      },
+      "module_a": {
+        "type": "object",
+        "properties": {
+          "problem_salience": {
+            "type": "object",
+            "properties": {
+              "guest_sentiment": {
+                "type": "integer",
+                "description": "1-5: understanding guest sentiment across channels"
+              },
+              "competitive_positioning": {
+                "type": "integer",
+                "description": "1-5: understanding competitive positioning and pricing shifts"
+              },
+              "guest_segmentation": {
+                "type": "integer",
+                "description": "1-5: identifying which guest segments to target"
+              },
+              "ai_discovery": {
+                "type": "integer",
+                "description": "1-5: knowing how AI search engines describe/recommend the hotel"
+              },
+              "multilingual_content": {
+                "type": "integer",
+                "description": "1-5: generating multilingual commercial content fast"
+              },
+              "data_to_actions": {
+                "type": "integer",
+                "description": "1-5: turning scattered data into clear weekly actions"
+              },
+              "small_team_operations": {
+                "type": "integer",
+                "description": "1-5: doing all of this with a very small team"
+              }
+            },
+            "required": [
+              "guest_sentiment",
+              "competitive_positioning",
+              "guest_segmentation",
+              "ai_discovery",
+              "multilingual_content",
+              "data_to_actions",
+              "small_team_operations"
+            ],
+            "additionalProperties": false
+          },
+          "workarounds": {
+            "type": "object",
+            "properties": {
+              "guest_sentiment": {
+                "type": "object",
+                "properties": {
+                  "method": {
+                    "type": "string",
+                    "enum": [
+                      "manual_spreadsheets",
+                      "agency_consultant",
+                      "existing_software",
+                      "brand_group_support",
+                      "mostly_not_handled"
+                    ]
+                  },
+                  "quality": {
+                    "type": "integer",
+                    "description": "Quality score 1-5"
+                  }
+                },
+                "required": [
+                  "method",
+                  "quality"
+                ],
+                "additionalProperties": false
+              },
+              "competitive_positioning": {
+                "type": "object",
+                "properties": {
+                  "method": {
+                    "type": "string",
+                    "enum": [
+                      "manual_spreadsheets",
+                      "agency_consultant",
+                      "existing_software",
+                      "brand_group_support",
+                      "mostly_not_handled"
+                    ]
+                  },
+                  "quality": {
+                    "type": "integer",
+                    "description": "Quality score 1-5"
+                  }
+                },
+                "required": [
+                  "method",
+                  "quality"
+                ],
+                "additionalProperties": false
+              },
+              "guest_segmentation": {
+                "type": "object",
+                "properties": {
+                  "method": {
+                    "type": "string",
+                    "enum": [
+                      "manual_spreadsheets",
+                      "agency_consultant",
+                      "existing_software",
+                      "brand_group_support",
+                      "mostly_not_handled"
+                    ]
+                  },
+                  "quality": {
+                    "type": "integer",
+                    "description": "Quality score 1-5"
+                  }
+                },
+                "required": [
+                  "method",
+                  "quality"
+                ],
+                "additionalProperties": false
+              },
+              "ai_discovery": {
+                "type": "object",
+                "properties": {
+                  "method": {
+                    "type": "string",
+                    "enum": [
+                      "manual_spreadsheets",
+                      "agency_consultant",
+                      "existing_software",
+                      "brand_group_support",
+                      "mostly_not_handled"
+                    ]
+                  },
+                  "quality": {
+                    "type": "integer",
+                    "description": "Quality score 1-5"
+                  }
+                },
+                "required": [
+                  "method",
+                  "quality"
+                ],
+                "additionalProperties": false
+              },
+              "multilingual_content": {
+                "type": "object",
+                "properties": {
+                  "method": {
+                    "type": "string",
+                    "enum": [
+                      "manual_spreadsheets",
+                      "agency_consultant",
+                      "existing_software",
+                      "brand_group_support",
+                      "mostly_not_handled"
+                    ]
+                  },
+                  "quality": {
+                    "type": "integer",
+                    "description": "Quality score 1-5"
+                  }
+                },
+                "required": [
+                  "method",
+                  "quality"
+                ],
+                "additionalProperties": false
+              },
+              "data_to_actions": {
+                "type": "object",
+                "properties": {
+                  "method": {
+                    "type": "string",
+                    "enum": [
+                      "manual_spreadsheets",
+                      "agency_consultant",
+                      "existing_software",
+                      "brand_group_support",
+                      "mostly_not_handled"
+                    ]
+                  },
+                  "quality": {
+                    "type": "integer",
+                    "description": "Quality score 1-5"
+                  }
+                },
+                "required": [
+                  "method",
+                  "quality"
+                ],
+                "additionalProperties": false
+              },
+              "small_team_operations": {
+                "type": "object",
+                "properties": {
+                  "method": {
+                    "type": "string",
+                    "enum": [
+                      "manual_spreadsheets",
+                      "agency_consultant",
+                      "existing_software",
+                      "brand_group_support",
+                      "mostly_not_handled"
+                    ]
+                  },
+                  "quality": {
+                    "type": "integer",
+                    "description": "Quality score 1-5"
+                  }
+                },
+                "required": [
+                  "method",
+                  "quality"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "guest_sentiment",
+              "competitive_positioning",
+              "guest_segmentation",
+              "ai_discovery",
+              "multilingual_content",
+              "data_to_actions",
+              "small_team_operations"
+            ],
+            "additionalProperties": false
+          },
+          "top_purchase_justifiers": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "more_direct_bookings",
+                "reduced_ota_dependence",
+                "faster_content_production",
+                "better_compset_intelligence",
+                "clearer_weekly_decisions",
+                "stronger_guest_segmentation",
+                "stronger_review_intelligence",
+                "better_ai_visibility",
+                "avoiding_additional_hire",
+                "replacing_agency_work"
+              ]
+            },
+            "minItems": 3,
+            "maxItems": 3
+          },
+          "proof_metric": {
+            "type": "object",
+            "properties": {
+              "primary_metric": {
+                "type": "string"
+              },
+              "minimum_credible_improvement": {
+                "type": "string"
+              },
+              "time_window_months": {
+                "type": "integer"
+              }
+            },
+            "required": [
+              "primary_metric",
+              "minimum_credible_improvement",
+              "time_window_months"
+            ],
+            "additionalProperties": false
+          },
+          "buying_lane": {
+            "type": "object",
+            "properties": {
+              "budget_bucket": {
+                "type": "string",
+                "enum": [
+                  "marketing_software",
+                  "commercial_revenue",
+                  "gm_discretionary",
+                  "owner_exception",
+                  "agency_replacement",
+                  "innovation_pilot"
+                ]
+              },
+              "signoff_roles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "budget_bucket",
+              "signoff_roles"
+            ],
+            "additionalProperties": false
+          }
+        },
+        "required": [
+          "problem_salience",
+          "workarounds",
+          "top_purchase_justifiers",
+          "proof_metric",
+          "buying_lane"
+        ],
+        "additionalProperties": false
+      },
+      "module_b": {
+        "type": "object",
+        "properties": {
+          "price_ladder": {
+            "type": "object",
+            "properties": {
+              "chf_1000": {
+                "type": "integer",
+                "description": "1-5 likelihood at CHF 1,000"
+              },
+              "chf_2000": {
+                "type": "integer",
+                "description": "1-5 likelihood at CHF 2,000"
+              },
+              "chf_3000": {
+                "type": "integer",
+                "description": "1-5 likelihood at CHF 3,000"
+              },
+              "chf_4000": {
+                "type": "integer",
+                "description": "1-5 likelihood at CHF 4,000"
+              },
+              "chf_5000": {
+                "type": "integer",
+                "description": "1-5 likelihood at CHF 5,000"
+              },
+              "chf_7500": {
+                "type": "integer",
+                "description": "1-5 likelihood at CHF 7,500"
+              }
+            },
+            "required": [
+              "chf_1000",
+              "chf_2000",
+              "chf_3000",
+              "chf_4000",
+              "chf_5000",
+              "chf_7500"
+            ],
+            "additionalProperties": false
+          },
+          "resistance": {
+            "type": "object",
+            "properties": {
+              "threshold_chf": {
+                "type": "integer"
+              },
+              "main_reason": {
+                "type": "string"
+              },
+              "secondary_reason": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "threshold_chf",
+              "main_reason",
+              "secondary_reason"
+            ],
+            "additionalProperties": false
+          },
+          "realistic_band": {
+            "type": "string",
+            "enum": [
+              "under_1000",
+              "1000_2000",
+              "2000_3000",
+              "3000_5000",
+              "5000_8000",
+              "8000_plus"
+            ]
+          },
+          "replacement_anchors": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "agency_spend",
+                "junior_marketing_hire",
+                "review_reputation_tooling",
+                "compset_revenue_tooling",
+                "manual_management_time",
+                "fragmented_crm_content",
+                "net_new_budget"
+              ]
+            }
+          }
+        },
+        "required": [
+          "price_ladder",
+          "resistance",
+          "realistic_band",
+          "replacement_anchors"
+        ],
+        "additionalProperties": false
+      },
+      "module_c": {
+        "type": "object",
+        "properties": {
+          "no_brainer_3k": {
+            "type": "object",
+            "properties": {
+              "required_outcomes": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              },
+              "required_capabilities": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              },
+              "max_implementation_days": {
+                "type": "integer"
+              },
+              "min_proof_months": {
+                "type": "integer"
+              },
+              "roi_believers": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "required_outcomes",
+              "required_capabilities",
+              "max_implementation_days",
+              "min_proof_months",
+              "roi_believers"
+            ],
+            "additionalProperties": false
+          },
+          "no_brainer_5k": {
+            "type": "object",
+            "properties": {
+              "extra_value_required": {
+                "type": "string"
+              },
+              "non_negotiables": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "sensitive_risks": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "remaining_blockers": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "extra_value_required",
+              "non_negotiables",
+              "sensitive_risks",
+              "remaining_blockers"
+            ],
+            "additionalProperties": false
+          },
+          "deal_killer": {
+            "type": "string"
+          },
+          "proof_package_ranking": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "60_day_pilot",
+                "90_day_pilot",
+                "live_dashboard_demo",
+                "reference_switzerland",
+                "reference_luxury",
+                "roi_calculator",
+                "pms_crm_integration",
+                "gdpr_swiss_hosting",
+                "monthly_optout",
+                "annual_discount",
+                "white_glove_onboarding",
+                "performance_pricing"
+              ]
+            },
+            "minItems": 5,
+            "maxItems": 5
+          }
+        },
+        "required": [
+          "no_brainer_3k",
+          "no_brainer_5k",
+          "deal_killer",
+          "proof_package_ranking"
+        ],
+        "additionalProperties": false
+      }
+    },
+    "required": [
+      "hotel_slug",
+      "role",
+      "module_a",
+      "module_b",
+      "module_c"
+    ],
+    "additionalProperties": false
+  }
+}

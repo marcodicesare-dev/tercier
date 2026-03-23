@@ -1,0 +1,132 @@
+{
+  "outputs": {
+    "arr_12m": {
+      "p10": 383120.95996977534,
+      "p50": 618610.9133579835,
+      "p90": 943150.3069056513,
+      "mean": 646714.4707207348
+    },
+    "arr_24m": {
+      "p10": 1315318.300734988,
+      "p50": 1870031.4841030987,
+      "p90": 2585060.496017094,
+      "mean": 1919355.5950186197
+    },
+    "arr_36m": {
+      "p10": 3377321.7914298903,
+      "p50": 4669929.939020533,
+      "p90": 6351794.2626290135,
+      "mean": 4790918.153174508
+    },
+    "arr_60m": {
+      "p10": 13430008.690307997,
+      "p50": 18419176.125867084,
+      "p90": 25059585.423208162,
+      "mean": 18937849.78512537
+    },
+    "exit_value_60m": {
+      "p10": 66227917.53019617,
+      "p50": 94823345.23781276,
+      "p90": 133977593.86998932,
+      "mean": 97935237.94693811
+    },
+    "direct_properties_60m": {
+      "p10": 308.0,
+      "p50": 413.0,
+      "p90": 554.0,
+      "mean": 423.7065
+    },
+    "groups_60m": {
+      "p10": 15.0,
+      "p50": 23.0,
+      "p90": 33.0,
+      "mean": 23.7374
+    },
+    "total_properties_equivalent_60m": {
+      "p10": 490.8,
+      "p50": 672.0608552631579,
+      "p90": 905.0654761904761,
+      "mean": 687.8886479789902
+    },
+    "probability_exit_value_gte_100m": 0.4225
+  },
+  "assumptions": {
+    "purpose": "Estimate ARR and exit-value distributions for a global, software-native rollout of Tercier/Terra over 5 years.",
+    "model_notes": [
+      "Uses the Swiss synthetic buyer survey as a pricing and willingness anchor, not as direct penetration.",
+      "Treats the product as a property-led commercial system of action with later portfolio expansion.",
+      "Assumes the company expands from Switzerland to Europe to a broader global premium / upper-upscale market.",
+      "Assumes many deals are sales-assisted but not all are enterprise-grade six-month procurement cycles.",
+      "Exit value is modeled as ARR x revenue multiple, with multiples linked loosely to year-3 to year-5 growth."
+    ],
+    "phase_unlocks": [
+      {
+        "months": "1-6",
+        "accessible_direct_properties": 400,
+        "accessible_groups": 20
+      },
+      {
+        "months": "7-18",
+        "accessible_direct_properties": 2500,
+        "accessible_groups": 120
+      },
+      {
+        "months": "19-30",
+        "accessible_direct_properties": 9000,
+        "accessible_groups": 400
+      },
+      {
+        "months": "31-42",
+        "accessible_direct_properties": 25000,
+        "accessible_groups": 900
+      },
+      {
+        "months": "43-60",
+        "accessible_direct_properties": 60000,
+        "accessible_groups": 1800
+      }
+    ],
+    "survey_context": {
+      "survey_hotels": 272,
+      "price_bands": {
+        "2000_3000": 27,
+        "1000_2000": 243,
+        "under_1000": 2
+      },
+      "segments": {
+        "luxury": {
+          "count": 97,
+          "buy3": 39.5360824742268,
+          "buy5": 16.969072164948454,
+          "delay": 67.10309278350516
+        },
+        "upper_upscale": {
+          "count": 164,
+          "buy3": 35.292682926829265,
+          "buy5": 13.603658536585366,
+          "delay": 66.67682926829268
+        },
+        "business_conference": {
+          "count": 6,
+          "buy3": 39.5,
+          "buy5": 15.833333333333334,
+          "delay": 65.0
+        },
+        "serviced_apartments": {
+          "count": 2,
+          "buy3": 33.5,
+          "buy5": 12.5,
+          "delay": 67.5
+        },
+        "upscale": {
+          "count": 3,
+          "buy3": 32.0,
+          "buy5": 10.333333333333334,
+          "delay": 67.66666666666667
+        }
+      }
+    },
+    "simulation_count": 10000,
+    "seed": 2
+  }
+}

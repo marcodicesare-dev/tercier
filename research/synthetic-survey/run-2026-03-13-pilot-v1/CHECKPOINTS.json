@@ -1,0 +1,29 @@
+{
+  "run_id": "run-2026-03-13-pilot-v1",
+  "updated_at": "2026-03-13T15:53:10.942Z",
+  "phases_completed": [
+    "cohort",
+    "interview_batch_built",
+    "interviews",
+    "aggregation",
+    "adversarial",
+    "judge",
+    "merge",
+    "analysis"
+  ],
+  "current_phase": null,
+  "batch_ids": {},
+  "counts": {
+    "cohort_hotels": 5,
+    "total_interviews": 20,
+    "interview_requests": 20,
+    "interview_successes": 20,
+    "interview_failures": 0,
+    "aggregated": 10,
+    "adversarial_successes": 10,
+    "adversarial_failures": 0,
+    "judge_successes": 10,
+    "merged_hotels": 5
+  },
+  "errors": []
+}

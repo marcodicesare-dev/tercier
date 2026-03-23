@@ -1,0 +1,37 @@
+[
+  {
+    "rank": 1,
+    "proof_item": "90_day_pilot",
+    "weighted_score": 19
+  },
+  {
+    "rank": 2,
+    "proof_item": "pms_crm_integration",
+    "weighted_score": 18
+  },
+  {
+    "rank": 3,
+    "proof_item": "reference_switzerland",
+    "weighted_score": 14
+  },
+  {
+    "rank": 4,
+    "proof_item": "gdpr_swiss_hosting",
+    "weighted_score": 11
+  },
+  {
+    "rank": 5,
+    "proof_item": "reference_luxury",
+    "weighted_score": 6
+  },
+  {
+    "rank": 6,
+    "proof_item": "60_day_pilot",
+    "weighted_score": 5
+  },
+  {
+    "rank": 7,
+    "proof_item": "roi_calculator",
+    "weighted_score": 2
+  }
+]

@@ -1,0 +1,56 @@
+{
+  "deal_killers": [
+    {
+      "objection": "No reliable PMS/booking-engine integration for direct booking attribution.",
+      "count": 1,
+      "pct": 20
+    },
+    {
+      "objection": "no_pms_integration",
+      "count": 1,
+      "pct": 20
+    },
+    {
+      "objection": "Failure to demonstrate attributable ROI on direct bookings/revenue within the pilot window or inability to satisfy Swiss‑hosted GDPR/data‑governance requirements.",
+      "count": 1,
+      "pct": 20
+    },
+    {
+      "objection": "No reliable integration to track enquiries and attribute direct bookings (cannot prove revenue uplift).",
+      "count": 1,
+      "pct": 20
+    },
+    {
+      "objection": "No credible, local proof that hotels of similar size see net direct revenue uplift within 3–6 months.",
+      "count": 1,
+      "pct": 20
+    }
+  ],
+  "blockers": [
+    {
+      "blocker": "Unproven direct-booking attribution and PMS/booking-engine integration access/timelines.",
+      "count": 1,
+      "pct": 20
+    },
+    {
+      "blocker": "Owner pushback on recurring spend and contract length without local proof and KPI guarantees.",
+      "count": 1,
+      "pct": 20
+    },
+    {
+      "blocker": "Owner/finance skepticism about ROI attribution and added operational burden, compounded by PMS/CRS integration lead times and potential agency resistance.",
+      "count": 1,
+      "pct": 20
+    },
+    {
+      "blocker": "Inability to produce clean, auditable attribution from contact enquiries to confirmed bookings; the owner will not approve recurring spend without this.",
+      "count": 1,
+      "pct": 20
+    },
+    {
+      "blocker": "Owner/Finance insist on audited, local proof of net direct revenue uplift and are averse to a CHF 3k–5k recurring commitment.",
+      "count": 1,
+      "pct": 20
+    }
+  ]
+}

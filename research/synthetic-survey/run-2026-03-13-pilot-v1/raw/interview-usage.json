@@ -1,0 +1,8 @@
+{
+  "total_requests": 20,
+  "successes": 20,
+  "failures": 0,
+  "input_tokens": 51570,
+  "output_tokens": 56981,
+  "elapsed_seconds": 95.8
+}

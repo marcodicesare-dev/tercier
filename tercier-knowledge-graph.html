@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tercier Knowledge Graph</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #0a1428;
+            color: #e0e0e0;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(10, 20, 40, 0.95);
+            border-bottom: 2px solid #00d4ff;
+            padding: 16px 32px;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 22px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #00d4ff, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header-sub {
+            font-size: 12px;
+            color: #7c3aed;
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .filters {
+            display: flex;
+            gap: 6px;
+            margin-left: auto;
+        }
+
+        .filter-btn {
+            padding: 5px 12px;
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 5px;
+            background: rgba(255,255,255,0.05);
+            color: #a0a0a0;
+            cursor: pointer;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            transition: all 0.15s;
+        }
+
+        .filter-btn:hover { background: rgba(255,255,255,0.12); color: #e0e0e0; }
+        .filter-btn.active { background: #00d4ff; color: #0a1428; border-color: #00d4ff; }
+
+        /* Main layout */
+        .main {
+            display: flex;
+            min-height: calc(100vh - 60px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 260px;
+            min-width: 260px;
+            background: rgba(10, 20, 40, 0.7);
+            border-right: 1px solid rgba(124, 58, 237, 0.3);
+            padding: 20px 16px;
+            overflow-y: auto;
+        }
+
+        .sb-title {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #7c3aed;
+            margin-bottom: 10px;
+            margin-top: 18px;
+        }
+
+        .sb-title:first-child { margin-top: 0; }
+
+        .sb-item {
+            padding: 8px 10px;
+            margin-bottom: 4px;
+            border-left: 3px solid #7c3aed;
+            background: rgba(124, 58, 237, 0.08);
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.15s;
+        }
+
+        .sb-item:hover {
+            background: rgba(124, 58, 237, 0.18);
+            border-left-color: #00d4ff;
+            transform: translateX(3px);
+        }
+
+        .sb-date { font-size: 10px; color: #7c3aed; font-weight: 700; }
+        .sb-label { color: #b0b0b0; display: block; margin-top: 1px; }
+
+        /* Content area */
+        .content {
+            flex: 1;
+            padding: 24px 28px;
+            overflow-y: auto;
+        }
+
+        /* Section */
+        .section {
+            margin-bottom: 32px;
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #00d4ff;
+            margin-bottom: 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+        }
+
+        /* Node cards */
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 12px;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .card:hover {
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(255,255,255,0.15);
+            transform: translateY(-2px);
+        }
+
+        .card.expanded {
+            background: rgba(255,255,255,0.06);
+            border-color: #00d4ff;
+        }
+
+        .card-top {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+        }
+
+        .card-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 16px;
+            flex-shrink: 0;
+            font-weight: 700;
+        }
+
+        .card-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #e0e0e0;
+        }
+
+        .card-desc {
+            font-size: 12px;
+            color: #808080;
+            line-height: 1.5;
+        }
+
+        .card-details {
+            display: none;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(255,255,255,0.08);
+        }
+
+        .card.expanded .card-details { display: block; }
+
+        .detail-row {
+            margin-bottom: 8px;
+        }
+
+        .detail-key {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #7c3aed;
+            margin-bottom: 3px;
+        }
+
+        .detail-val {
+            font-size: 12px;
+            color: #b0b0b0;
+            line-height: 1.5;
+        }
+
+        .tag {
+            display: inline-block;
+            background: rgba(124, 58, 237, 0.2);
+            color: #c0c0c0;
+            padding: 3px 7px;
+            border-radius: 3px;
+            margin: 2px 3px 2px 0;
+            font-size: 11px;
+        }
+
+        /* Connections visualization (simple SVG) */
+        .connections-section {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid rgba(255,255,255,0.06);
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 32px;
+        }
+
+        .conn-title {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #00d4ff;
+            margin-bottom: 16px;
+        }
+
+        /* Platform layers — vertical pipeline */
+        .pipeline {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            max-width: 560px;
+        }
+
+        .pipeline-step {
+            display: flex;
+            align-items: stretch;
+            gap: 0;
+        }
+
+        .pipeline-num {
+            width: 44px;
+            min-width: 44px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .pipeline-circle {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #10b981;
+            color: #0a1428;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .pipeline-line {
+            width: 2px;
+            flex: 1;
+            background: rgba(16, 185, 129, 0.3);
+        }
+
+        .pipeline-body {
+            flex: 1;
+            padding: 4px 0 18px 14px;
+        }
+
+        .pipeline-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #10b981;
+            margin-bottom: 2px;
+        }
+
+        .pipeline-scope {
+            font-size: 12px;
+            color: #808080;
+            line-height: 1.4;
+        }
+
+        .pipeline-step:last-child .pipeline-line { display: none; }
+
+        /* Key metrics row */
+        .metrics-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .metric-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+        }
+
+        .metric-label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #7c3aed;
+            margin-bottom: 6px;
+        }
+
+        .metric-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: #00d4ff;
+        }
+
+        .metric-sub {
+            font-size: 11px;
+            color: #606060;
+            margin-top: 4px;
+        }
+
+        /* Color accents by category */
+        .cat-people .card-icon { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
+        .cat-people .card-name { color: #fbbf24; }
+        .cat-research .card-icon { background: rgba(59, 130, 246, 0.2); color: #3b82f6; }
+        .cat-research .card-name { color: #3b82f6; }
+        .cat-product .card-icon { background: rgba(16, 185, 129, 0.2); color: #10b981; }
+        .cat-data .card-icon { background: rgba(168, 85, 247, 0.2); color: #a855f7; }
+        .cat-data .card-name { color: #a855f7; }
+        .cat-financial .card-icon { background: rgba(249, 115, 22, 0.2); color: #f97316; }
+        .cat-financial .card-name { color: #f97316; }
+        .cat-deliverable .card-icon { background: rgba(6, 182, 212, 0.2); color: #06b6d4; }
+        .cat-deliverable .card-name { color: #06b6d4; }
+
+        /* Relationship map */
+        .rel-map {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .rel-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            background: rgba(124, 58, 237, 0.1);
+            border: 1px solid rgba(124, 58, 237, 0.2);
+            border-radius: 4px;
+            font-size: 11px;
+            color: #b0b0b0;
+        }
+
+        .rel-arrow { color: #7c3aed; font-weight: 700; }
+
+        /* Detail panel */
+        .detail-panel {
+            width: 320px;
+            min-width: 320px;
+            background: rgba(10, 20, 40, 0.9);
+            border-left: 1px solid rgba(124, 58, 237, 0.3);
+            padding: 20px;
+            overflow-y: auto;
+            transition: all 0.2s;
+        }
+
+        .detail-panel.hidden { display: none; }
+
+        .dp-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .dp-close {
+            margin-left: auto;
+            background: none;
+            border: none;
+            color: #606060;
+            cursor: pointer;
+            font-size: 18px;
+        }
+
+        .dp-close:hover { color: #e0e0e0; }
+
+        .dp-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #00d4ff;
+        }
+
+        .dp-cat {
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #7c3aed;
+            font-weight: 600;
+        }
+
+        .dp-desc {
+            font-size: 12px;
+            line-height: 1.6;
+            color: #a0a0a0;
+            margin-bottom: 16px;
+        }
+
+        .dp-section {
+            margin-bottom: 14px;
+        }
+
+        .dp-section-title {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: #7c3aed;
+            margin-bottom: 6px;
+        }
+
+        .dp-section-content {
+            font-size: 12px;
+            color: #b0b0b0;
+            line-height: 1.5;
+        }
+
+        @media (max-width: 900px) {
+            .sidebar { display: none; }
+            .detail-panel { display: none; }
+            .card-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Tercier Knowledge Graph</h1>
+        <span class="header-sub">Vertical AI for Premium Hospitality</span>
+        <div class="filters" id="filters"></div>
+    </div>
+
+    <div class="main">
+        <div class="sidebar" id="sidebar"></div>
+        <div class="content" id="content"></div>
+        <div class="detail-panel hidden" id="detailPanel"></div>
+    </div>
+
+    <script>
+        // ===== DATA =====
+        const categories = {
+            people: { label: 'People', color: '#fbbf24' },
+            research: { label: 'Research', color: '#3b82f6' },
+            product: { label: 'Product', color: '#10b981' },
+            data: { label: 'Data', color: '#a855f7' },
+            financial: { label: 'Financial', color: '#f97316' },
+            deliverable: { label: 'Deliverables', color: '#06b6d4' }
+        };
+
+        const people = [
+            {
+                id: 'marco-di-cesare', name: 'Marco Di Cesare', role: 'Founder & CEO',
+                desc: 'Italian, 33, Zurich. Full-time leader of Tercier. Solo founder/operator who built the repo research, knowledge assets, and planning system AI-native from day one.',
+                details: {
+                    'Founded Loamly': 'AI recommendation intelligence — reverse-engineers how ChatGPT, Perplexity, Claude recommend brands. 5 platforms, 2,000+ citations traced. Key finding: 74% of recommended brands change with a single word change. Methodology directly feeds Tercier Layer 5.',
+                    'Building Basquio': 'Intelligence-first presentation generator. Next.js 15 + Supabase + multi-model (GPT-5.4 analysis, Claude Opus 4.6 authoring). Production-grade monorepo with streaming parsers and agentic pipelines.',
+                    'Enterprise Background': '4+ years CRM & RevOps Lead at FELFEL (150+ users, 3,000+ monthly tickets automated). Prior: Sonova (CRM Marketing), Nielsen/NielsenIQ (3.5yr, data analyst to Salesforce consultant).',
+                    'GitHub': '11 repos: loamly, basquio, rabbhole, mappa, costfigure, ghostedbyai + 5 private. All TypeScript. 114 commits in 48hrs on Basquio.',
+                    'Key Strength': 'Ships production systems fast. Built the synthetic research pipeline and repo knowledge system in 2 days.'
+                }
+            },
+            {
+                id: 'amedeo-guffanti', name: 'Amedeo Guffanti', role: 'Co-Founder & Investor',
+                desc: 'Global MD, Activation Business Line at JAKALA. Serial entrepreneur with 2 exits.',
+                details: {
+                    'Ventures': 'Founded 77Agency (2003, with Marco Corsaro) + GotU (2016). Both acquired by JAKALA. Grew to 190 employees internationally.',
+                    'JAKALA Scale': '€100M+ net revenue, ~1,000 people across Italy, UK, Spain, Latvia, US, France, Germany.',
+                    'Media Management': 'Manages ~€500M in media investments delivering 10B+ in direct sales annually across 30+ countries.',
+                    'Hospitality': '14+ years direct experience in luxury cruising, hotelerie, airlines, retail ecommerce. JAKALA hotel chain clients = distribution channel.',
+                    'Key Strength': 'Hotel chain pipeline, capital access, and 22-year proven playbook for scaling B2B2B digital businesses internationally.'
+                }
+            },
+            {
+                id: 'marco-corsaro', name: 'Marco Corsaro', role: 'Co-Founder & Investor',
+                desc: 'Co-Managing Director at JAKALA Digital & Media. 22-year partnership with Amedeo.',
+                details: {
+                    'Ventures': 'Co-founded 77Agency with Amedeo in 2003. Created companies in UK, Italy, Latvia, US. GotU co-founder.',
+                    'Role in Tercier': 'Was on the founding call pitching Marco Di Cesare to lead Tercier as CEO.',
+                    'Oversight at JAKALA': 'Media, SEO/GEO, Web Analytics, Creativity, CRO, Content, UX/UI, Data Science.',
+                    'Thought Leadership': 'JAKALA recently hosted "Leading the AI Search Transition" event — directly relevant to GEO/AI discovery.',
+                    'Key Strength': 'Deep SEO/GEO/performance expertise complements Amedeo\'s advertising side. Feeds directly into Tercier\'s AI Discovery layer.'
+                }
+            }
+        ];
+
+        const platformLayers = [
+            { num: 1, name: 'Market Intelligence', scope: 'Real-time competitive set pricing, positioning, and promotional activity' },
+            { num: 2, name: 'Voice-of-Customer Intelligence', scope: 'Aggregated guest review sentiment, intent signals, and unmet needs' },
+            { num: 3, name: 'Persona & Intent Modeling', scope: 'Segmentation of demand profiles, booking psychology, and value drivers' },
+            { num: 4, name: 'Competitive Reading', scope: 'Comparative feature analysis, messaging gaps, and differentiation opportunities' },
+            { num: 5, name: 'AI Discovery & Visibility Intelligence', scope: 'Search demand visibility, LLM-native positioning, and discoverability (Loamly link)' },
+            { num: 6, name: 'Decision & Prioritization Engine', scope: 'Monthly priority ranking: which messages, assets, promotions drive the most direct revenue' },
+            { num: 7, name: 'Content & Asset Engine', scope: 'Automated generation and publishing of property-specific marketing narratives' }
+        ];
+
+        const timeline = [
+            { id: 'phase-1', date: 'March 10', label: 'Foundation Research', cat: 'research',
+              desc: 'Initial market exploration: parallel Firecrawl web research, social scan, framework synthesis.',
+              details: { 'Method': 'Parallel Firecrawl + social scan (LinkedIn, communities, investor news)', 'Outputs': 'TAM sizing, business model patterns, token economics, initial pricing hypothesis, competitive landscape mapping', 'File': 'hospitality-vertical-ai-research-2026-03-10.md' }
+            },
+            { id: 'phase-2', date: 'March 11', label: 'Deep Dives & Product Definition', cat: 'research',
+              desc: '7-agent parallel research, product articulation, 7-layer platform finalized.',
+              details: { 'Methods': '7-agent multi-vector research, TAM/SAM/SOM refinement, BMC development', 'Product': 'One-liner locked. 7-layer platform architecture finalized (evolved from 6 to 7 with AI Discovery layer).', 'Files': '00-RESEARCH-BRIEF-HOSPITALITY-AI.md, TERCIER-PRODUCT-ONE-PAGER.md (v1-v3), tercier-problem-product-articulation-research.md' }
+            },
+            { id: 'phase-3', date: 'March 12-13', label: 'Data & Synthetic Research', cat: 'data',
+              desc: 'Hotelleriesuisse scraper, dataset enrichment, synthetic buyer survey.',
+              details: { 'Pipeline': '2,069 HotellerieSuisse member rows → 718 selected dossiers → ICP filter: 272 premium (4-5★, ADR ≥ CHF 250)', 'Simulation': '2 roles × 3 replications × 272 hotels = 1,632 interview simulations, then adversarial critique + judge normalization. Cost: ~$25.54 at run time.', 'Key Findings': '37% buy likelihood at CHF 3,000/mo. 15% at CHF 5,000/mo. No PMS/CRM integration = 79% deal-breaker. Top proof-package items: PMS/CRM integration, Swiss reference, 60-day pilot.', 'Files': 'research/synthetic-survey/run-2026-03-13-full-v1/' }
+            },
+            { id: 'phase-4', date: 'March 14', label: 'Business Plan & Financial Model', cat: 'financial',
+              desc: 'Complete 14-section plan, 5-year FP&A, triple Monte Carlo simulation.',
+              details: { 'Business Plan': '14-section strategic plan: executive summary, market, product, GTM, financials, risk.', 'MC #1 (Plan)': '10K sims → P50: 115 hotels / €3.99M ARR at M36 operator-seeded, 154 hotels / €5.33M ARR with follow-on angel', 'MC #2 (Exit)': 'Separate global-expansion exit lens → P50: CHF 94.82M at M60 on CHF 18.42M ARR (~5.1x)', 'MC #3 (Dual-Path)': 'Exploratory legacy operator-vs-VC comparison. Much more aggressive than the canonical plan model.', 'Files': 'business-plan-v3-march-2026.md, tercier-financial-model.xlsx' }
+            }
+        ];
+
+        const keyMetrics = [
+            { label: 'TAM', value: '€240M–1.5B', sub: '10K-25K premium hotels globally' },
+            { label: 'SAM', value: '€48M–300M', sub: '2K-5K European premium properties' },
+            { label: 'SOM (3yr)', value: '€1.2M–9M', sub: '50-150 properties' },
+            { label: 'M36 ARR (P50)', value: '€3.99M–5.33M', sub: 'Operator-seeded to follow-on-angel range, 115-154 hotels' },
+            { label: 'Exit (M60 P50)', value: 'CHF 94.8M', sub: 'Separate global-expansion model, ~5.1x ARR' },
+            { label: 'Buy Likelihood', value: '37%', sub: 'At CHF 3,000/mo (synthetic survey)' }
+        ];
+
+        const deliverables = [
+            { id: 'research-brief', name: 'Research Brief', desc: '7-agent multi-vector hospitality AI landscape analysis. 60+ sources.', file: '00-RESEARCH-BRIEF-HOSPITALITY-AI.md' },
+            { id: 'business-plan', name: 'Business Plan v3', desc: 'Complete 14-section strategic & operational roadmap.', file: 'business-plan-v3-march-2026.md' },
+            { id: 'financial-model', name: 'Financial Model', desc: '5-year projection with dual-path scenarios and Monte Carlo simulations.', file: 'tercier-financial-model.xlsx' },
+            { id: 'product-spec', name: 'Product One-Pager v3', desc: '7-layer platform architecture with AI Discovery layer.', file: 'tercier-product-one-pager-v3-ai-discovery-2026-03-11.md' },
+            { id: 'dataset', name: 'Enriched Hotel Dataset', desc: '2,069 member rows, 718 selected dossiers, 272 ICP-qualified. Geo-coded, ADR estimated.', file: 'hotelleriesuisse-members-hotels-switzerland.enriched-master.csv' },
+            { id: 'survey-results', name: 'Synthetic Survey Results', desc: '1,632 simulations. Ranked targets, pricing curves, objection clusters.', file: 'research/synthetic-survey/run-2026-03-13-full-v1/' }
+        ];
+
+        const relationships = [
+            { from: 'Loamly', to: 'Layer 5 (AI Discovery)', type: 'Methodology transfer' },
+            { from: 'JAKALA Hotel Clients', to: 'Distribution Channel', type: 'GTM wedge' },
+            { from: 'Marco Corsaro (SEO/GEO)', to: 'AI Discovery Layer', type: 'Domain expertise' },
+            { from: 'Synthetic Survey', to: 'Business Plan', type: 'Data-driven validation' },
+            { from: 'Monte Carlo (10K sims)', to: 'Financial Model', type: 'Probabilistic projections' },
+            { from: 'hotelleriesuisse Dataset', to: 'ICP Definition', type: 'Ground truth' },
+            { from: '77Agency + GotU Exits', to: 'Tercier Playbook', type: 'Proven B2B2B scaling' },
+            { from: 'AI-Native Team Thesis', to: 'Cost Structure', type: '2-3 people = 10-40 engineers' }
+        ];
+
+        const comms = [
+            { date: 'March 10', label: 'Founding Call', who: 'Amedeo, Marco Corsaro, Marco Di Cesare',
+              summary: 'Amedeo & Marco Corsaro pitch the opportunity. They have MVP, AI-native dev team, pilot chain interested. Want Marco Di Cesare as CEO. Marco confirms strong interest.' },
+            { date: 'March 11, 12:09', label: 'Email: Marco confirms interest', who: 'Marco Di Cesare → Amedeo, Marco, Sara',
+              summary: 'Confirms he wants in. Proposes delivering a business plan. Asks for details on the hotel chain contact.' },
+            { date: 'March 11, 14:34', label: 'Email: Amedeo replies', who: 'Amedeo → Marco Di Cesare',
+              summary: '"Non mi aspetto un pensiero definitivo sul BP." Key question: do you feel this venture is yours? Is this your project for the next few years?' },
+            { date: 'March 11, 15:20', label: 'Email: Marco\'s clear yes', who: 'Marco Di Cesare → Amedeo, Marco',
+              summary: '"Non ho dubbi." Frames it as entrepreneurial opportunity, not a job. Highlights analytics/martech/CRM/AI fit + FELFEL hospitality contacts (EHL network). Asks again about hotel chain.' },
+            { date: 'March 12, 19:24', label: 'Email: Milan meetup proposal', who: 'Marco Di Cesare → Amedeo, Marco, Sara',
+              summary: 'Proposes meeting in person in Milan Thu/Fri. No reply.' },
+            { date: 'March 16, 22:59', label: 'Email: Follow-up + BP update', who: 'Marco Di Cesare → Amedeo, Marco, Sara',
+              summary: 'Updates on work done: FELFEL dataset + scraper, market/competitor research, BP with financial model. Proposes in-person Thu/Fri Milan or call. Awaiting reply.' }
+        ];
+
+        const principles = [
+            { name: 'AI-Native = Iron Man Suit', desc: 'The suit alone does nothing. Tony Stark is a genius — the suit makes him a superhero. Marco + AI = 10x output. Not because AI is magic, but because he uses it extremely well.' },
+            { name: 'Only Hire Enablers', desc: 'Don\'t hire until revenue justifies it. Bleed first. Lose clients from overwork before you hire. No random people — only multipliers. Start with 2 max.' },
+            { name: 'Execution Speed > Perfection', desc: 'If you iterate from mistakes at 20x speed, the cost of a mistake drops to near zero. Ship, learn, fix, ship again.' },
+            { name: 'Clients > Capital', desc: '10 paying clients from Amedeo/Marco\'s network > CHF 100K. Clients = validation + revenue + feedback + references.' }
+        ];
+
+        const salaryResearch = {
+            recommended: 'CHF 72,000/yr',
+            companyCost: 'CHF 81,492/yr',
+            netMonthlyZug: 'CHF 4,310–4,550',
+            netMonthlyZurich: 'CHF 3,710–3,948',
+            corpTaxZug: '11.8%',
+            corpTaxZurich: '19.6%',
+            fiveYearSavings: 'CHF 75K–90K',
+            pitch: '"CHF 6K/month gross. Company cost CHF 6.8K/month. Less than half my current salary. Every other franc into the business."'
+        };
+
+        const competitors = [
+            { name: 'Mews', val: '$2.5B', focus: 'Cloud PMS, payments, operations' },
+            { name: 'Canary', val: '$600M', focus: 'AI guest management, check-in, upsells' },
+            { name: 'Lighthouse', val: '65K+ hotels', focus: 'Revenue intelligence, rate optimization' },
+            { name: 'TrustYou', val: 'From $115/mo', focus: 'Review aggregation, sentiment, CDP' },
+            { name: 'Revinate', val: '—', focus: 'CRM, guest engagement, email' },
+            { name: 'Milestone', val: '—', focus: 'Hotel digital marketing, GEO agency' }
+        ];
+
+        // ===== STATE =====
+        let activeFilter = null;
+        let selectedItem = null;
+
+        // ===== RENDER =====
+        function render() {
+            renderFilters();
+            renderSidebar();
+            renderContent();
+        }
+
+        function renderFilters() {
+            const el = document.getElementById('filters');
+            let html = '';
+            Object.entries(categories).forEach(([key, cat]) => {
+                const cls = activeFilter === key ? 'active' : '';
+                html += `<button class="filter-btn ${cls}" onclick="toggleFilter('${key}')">${cat.label}</button>`;
+            });
+            html += `<button class="filter-btn ${!activeFilter ? 'active' : ''}" onclick="toggleFilter(null)">All</button>`;
+            el.innerHTML = html;
+        }
+
+        function renderSidebar() {
+            const el = document.getElementById('sidebar');
+            let html = '<div class="sb-title">Timeline</div>';
+            timeline.forEach(t => {
+                html += `<div class="sb-item" onclick="showDetail('timeline','${t.id}')">
+                    <div class="sb-date">${t.date}</div>
+                    <div class="sb-label">${t.label}</div>
+                </div>`;
+            });
+
+            html += '<div class="sb-title">Founders</div>';
+            people.forEach(p => {
+                html += `<div class="sb-item" onclick="showDetail('people','${p.id}')">
+                    <div class="sb-label">${p.name}</div>
+                </div>`;
+            });
+
+            html += '<div class="sb-title">Comms</div>';
+            comms.forEach((c, i) => {
+                html += `<div class="sb-item" onclick="showDetail('comms','${i}')">
+                    <div class="sb-date">${c.date}</div>
+                    <div class="sb-label">${c.label}</div>
+                </div>`;
+            });
+
+            html += '<div class="sb-title">Deliverables</div>';
+            deliverables.forEach(d => {
+                html += `<div class="sb-item" onclick="showDetail('deliverable','${d.id}')">
+                    <div class="sb-label">${d.name}</div>
+                </div>`;
+            });
+
+            el.innerHTML = html;
+        }
+
+        function renderContent() {
+            const el = document.getElementById('content');
+            let html = '';
+
+            // Key metrics
+            if (!activeFilter || activeFilter === 'financial') {
+                html += '<div class="section"><div class="section-title">Key Metrics</div><div class="metrics-row">';
+                keyMetrics.forEach(m => {
+                    html += `<div class="metric-card">
+                        <div class="metric-label">${m.label}</div>
+                        <div class="metric-value">${m.value}</div>
+                        <div class="metric-sub">${m.sub}</div>
+                    </div>`;
+                });
+                html += '</div></div>';
+            }
+
+            // Founders
+            if (!activeFilter || activeFilter === 'people') {
+                html += '<div class="section"><div class="section-title">Founding Team</div><div class="card-grid">';
+                people.forEach(p => {
+                    html += renderPersonCard(p);
+                });
+                html += '</div></div>';
+            }
+
+            // Platform layers
+            if (!activeFilter || activeFilter === 'product') {
+                html += '<div class="section"><div class="section-title">7-Layer Platform</div><div class="pipeline">';
+                platformLayers.forEach(l => {
+                    html += `<div class="pipeline-step">
+                        <div class="pipeline-num">
+                            <div class="pipeline-circle">${l.num}</div>
+                            <div class="pipeline-line"></div>
+                        </div>
+                        <div class="pipeline-body">
+                            <div class="pipeline-name">${l.name}</div>
+                            <div class="pipeline-scope">${l.scope}</div>
+                        </div>
+                    </div>`;
+                });
+                html += '</div></div>';
+            }
+
+            // Timeline / Research phases
+            if (!activeFilter || activeFilter === 'research' || activeFilter === 'data') {
+                html += '<div class="section"><div class="section-title">Research Timeline</div><div class="card-grid">';
+                timeline.forEach(t => {
+                    if (activeFilter && t.cat !== activeFilter) return;
+                    html += `<div class="card cat-${t.cat}" onclick="toggleCard(this)" data-id="${t.id}">
+                        <div class="card-top">
+                            <div class="card-icon">${t.date.split(' ')[1]}</div>
+                            <div class="card-name">${t.label}</div>
+                        </div>
+                        <div class="card-desc">${t.desc}</div>
+                        <div class="card-details">${renderDetails(t.details)}</div>
+                    </div>`;
+                });
+                html += '</div></div>';
+            }
+
+            // Competitive landscape
+            if (!activeFilter || activeFilter === 'data') {
+                html += '<div class="section"><div class="section-title">Competitive Landscape (March 2026)</div><div class="card-grid">';
+                competitors.forEach(c => {
+                    html += `<div class="card cat-data">
+                        <div class="card-top">
+                            <div class="card-icon" style="font-size:11px; background:rgba(168,85,247,0.15); color:#a855f7;">${c.val.substring(0,4)}</div>
+                            <div class="card-name">${c.name}</div>
+                        </div>
+                        <div class="card-desc">${c.focus}</div>
+                    </div>`;
+                });
+                html += `<div class="card" style="border-color:#00d4ff; background:rgba(0,212,255,0.05);">
+                    <div class="card-top">
+                        <div class="card-icon" style="background:rgba(0,212,255,0.2); color:#00d4ff; font-size:11px;">GAP</div>
+                        <div class="card-name" style="color:#00d4ff;">Tercier's Wedge</div>
+                    </div>
+                    <div class="card-desc">None provide property-level commercial intelligence + content execution in a unified system. Nobody tells a commercial director: "here's what to push this month, here's why, here's the ready-to-ship content."</div>
+                </div>`;
+                html += '</div></div>';
+            }
+
+            // Founder principles & strategy
+            if (!activeFilter || activeFilter === 'people') {
+                html += '<div class="section"><div class="section-title">Founder Principles</div><div class="card-grid">';
+                principles.forEach(p => {
+                    html += `<div class="card cat-people">
+                        <div class="card-top">
+                            <div class="card-icon" style="font-size:12px; background:rgba(251,191,36,0.15); color:#fbbf24;">P</div>
+                            <div class="card-name">${p.name}</div>
+                        </div>
+                        <div class="card-desc">${p.desc}</div>
+                    </div>`;
+                });
+                html += '</div></div>';
+
+                // Salary research
+                html += '<div class="section"><div class="section-title">Founder Salary — Zug/Baar vs Zurich</div><div class="metrics-row">';
+                html += `<div class="metric-card"><div class="metric-label">Gross Salary</div><div class="metric-value" style="font-size:16px;">${salaryResearch.recommended}</div><div class="metric-sub">CHF 6,000/month</div></div>`;
+                html += `<div class="metric-card"><div class="metric-label">Company Cost</div><div class="metric-value" style="font-size:16px;">${salaryResearch.companyCost}</div><div class="metric-sub">CHF 6,791/month total</div></div>`;
+                html += `<div class="metric-card"><div class="metric-label">Net (Zug)</div><div class="metric-value" style="font-size:16px; color:#10b981;">${salaryResearch.netMonthlyZug}</div><div class="metric-sub">Corp tax ${salaryResearch.corpTaxZug}</div></div>`;
+                html += `<div class="metric-card"><div class="metric-label">Net (Zurich)</div><div class="metric-value" style="font-size:16px; color:#f97316;">${salaryResearch.netMonthlyZurich}</div><div class="metric-sub">Corp tax ${salaryResearch.corpTaxZurich}</div></div>`;
+                html += `<div class="metric-card"><div class="metric-label">5yr Savings</div><div class="metric-value" style="font-size:16px; color:#00d4ff;">${salaryResearch.fiveYearSavings}</div><div class="metric-sub">Personal + corporate (Zug)</div></div>`;
+                html += '</div>';
+                html += `<div style="margin-top:12px; padding:12px 16px; background:rgba(251,191,36,0.08); border:1px solid rgba(251,191,36,0.2); border-radius:6px; font-size:13px; color:#c0c0c0; font-style:italic;">${salaryResearch.pitch}</div>`;
+                html += '</div>';
+            }
+
+            // Comms timeline
+            if (!activeFilter) {
+                html += '<div class="section"><div class="section-title">Communications</div><div class="card-grid">';
+                comms.forEach((c, i) => {
+                    html += `<div class="card cat-people" onclick="toggleCard(this)" data-id="comms-${i}">
+                        <div class="card-top">
+                            <div class="card-icon" style="font-size:10px; background:rgba(251,191,36,0.15); color:#fbbf24;">${c.date.split(',')[0].split(' ')[1]}</div>
+                            <div>
+                                <div class="card-name">${c.label}</div>
+                                <div class="card-desc" style="margin:0; font-size:11px;">${c.who}</div>
+                            </div>
+                        </div>
+                        <div class="card-desc" style="margin-top:8px;">${c.summary}</div>
+                    </div>`;
+                });
+                html += '</div></div>';
+            }
+
+            // Relationships
+            if (!activeFilter) {
+                html += '<div class="connections-section"><div class="conn-title">Key Relationships</div><div class="rel-map">';
+                relationships.forEach(r => {
+                    html += `<div class="rel-link">${r.from} <span class="rel-arrow">→</span> ${r.to} <span style="color:#606060; margin-left:4px; font-style:italic;">(${r.type})</span></div>`;
+                });
+                html += '</div></div>';
+            }
+
+            // Deliverables
+            if (!activeFilter || activeFilter === 'deliverable') {
+                html += '<div class="section"><div class="section-title">Deliverables</div><div class="card-grid">';
+                deliverables.forEach(d => {
+                    html += `<div class="card cat-deliverable" onclick="toggleCard(this)" data-id="${d.id}">
+                        <div class="card-top">
+                            <div class="card-icon" style="font-size:14px;">D</div>
+                            <div class="card-name">${d.name}</div>
+                        </div>
+                        <div class="card-desc">${d.desc}</div>
+                        <div class="card-details">
+                            <div class="detail-row">
+                                <div class="detail-key">File</div>
+                                <div class="detail-val" style="font-family:monospace; font-size:11px;">${d.file}</div>
+                            </div>
+                        </div>
+                    </div>`;
+                });
+                html += '</div></div>';
+            }
+
+            el.innerHTML = html;
+        }
+
+        function renderPersonCard(p) {
+            let detailsHtml = '';
+            Object.entries(p.details).forEach(([key, val]) => {
+                detailsHtml += `<div class="detail-row"><div class="detail-key">${key}</div><div class="detail-val">${val}</div></div>`;
+            });
+
+            return `<div class="card cat-people" onclick="toggleCard(this)" data-id="${p.id}">
+                <div class="card-top">
+                    <div class="card-icon">P</div>
+                    <div>
+                        <div class="card-name">${p.name}</div>
+                        <div class="card-desc" style="margin:0;">${p.role}</div>
+                    </div>
+                </div>
+                <div class="card-desc" style="margin-top:8px;">${p.desc}</div>
+                <div class="card-details">${detailsHtml}</div>
+            </div>`;
+        }
+
+        function renderDetails(details) {
+            let html = '';
+            Object.entries(details).forEach(([key, val]) => {
+                html += `<div class="detail-row"><div class="detail-key">${key}</div><div class="detail-val">${val}</div></div>`;
+            });
+            return html;
+        }
+
+        // ===== INTERACTIONS =====
+        function toggleFilter(cat) {
+            activeFilter = cat;
+            renderFilters();
+            renderContent();
+        }
+
+        function toggleCard(el) {
+            const wasExpanded = el.classList.contains('expanded');
+            document.querySelectorAll('.card.expanded').forEach(c => c.classList.remove('expanded'));
+            if (!wasExpanded) el.classList.add('expanded');
+        }
+
+        function showDetail(type, id) {
+            const panel = document.getElementById('detailPanel');
+            let item = null;
+            let cat = '';
+
+            if (type === 'people') {
+                item = people.find(p => p.id === id);
+                if (!item) return;
+                cat = 'People';
+                let html = `<div class="dp-header">
+                    <div><div class="dp-title">${item.name}</div><div class="dp-cat">${cat} — ${item.role}</div></div>
+                    <button class="dp-close" onclick="closeDetail()">x</button>
+                </div>
+                <div class="dp-desc">${item.desc}</div>`;
+                Object.entries(item.details).forEach(([k,v]) => {
+                    html += `<div class="dp-section"><div class="dp-section-title">${k}</div><div class="dp-section-content">${v}</div></div>`;
+                });
+                panel.innerHTML = html;
+            } else if (type === 'timeline') {
+                item = timeline.find(t => t.id === id);
+                if (!item) return;
+                cat = 'Research Timeline';
+                let html = `<div class="dp-header">
+                    <div><div class="dp-title">${item.label}</div><div class="dp-cat">${cat} — ${item.date}</div></div>
+                    <button class="dp-close" onclick="closeDetail()">x</button>
+                </div>
+                <div class="dp-desc">${item.desc}</div>`;
+                Object.entries(item.details).forEach(([k,v]) => {
+                    html += `<div class="dp-section"><div class="dp-section-title">${k}</div><div class="dp-section-content">${v}</div></div>`;
+                });
+                panel.innerHTML = html;
+            } else if (type === 'comms') {
+                item = comms[parseInt(id)];
+                if (!item) return;
+                let html = `<div class="dp-header">
+                    <div><div class="dp-title">${item.label}</div><div class="dp-cat">Comms — ${item.date}</div></div>
+                    <button class="dp-close" onclick="closeDetail()">x</button>
+                </div>
+                <div class="dp-desc">${item.summary}</div>
+                <div class="dp-section"><div class="dp-section-title">Who</div><div class="dp-section-content">${item.who}</div></div>`;
+                panel.innerHTML = html;
+            } else if (type === 'deliverable') {
+                item = deliverables.find(d => d.id === id);
+                if (!item) return;
+                cat = 'Deliverable';
+                let html = `<div class="dp-header">
+                    <div><div class="dp-title">${item.name}</div><div class="dp-cat">${cat}</div></div>
+                    <button class="dp-close" onclick="closeDetail()">x</button>
+                </div>
+                <div class="dp-desc">${item.desc}</div>
+                <div class="dp-section"><div class="dp-section-title">File</div><div class="dp-section-content" style="font-family:monospace;">${item.file}</div></div>`;
+                panel.innerHTML = html;
+            }
+
+            panel.classList.remove('hidden');
+        }
+
+        function closeDetail() {
+            document.getElementById('detailPanel').classList.add('hidden');
+        }
+
+        // ===== INIT =====
+        render();
+    </script>
+</body>
+</html>

@@ -1,0 +1,52 @@
+[
+  {
+    "rank": 1,
+    "proof_item": "pms_crm_integration",
+    "weighted_score": 1089
+  },
+  {
+    "rank": 2,
+    "proof_item": "reference_switzerland",
+    "weighted_score": 752
+  },
+  {
+    "rank": 3,
+    "proof_item": "60_day_pilot",
+    "weighted_score": 642
+  },
+  {
+    "rank": 4,
+    "proof_item": "gdpr_swiss_hosting",
+    "weighted_score": 636
+  },
+  {
+    "rank": 5,
+    "proof_item": "90_day_pilot",
+    "weighted_score": 351
+  },
+  {
+    "rank": 6,
+    "proof_item": "live_dashboard_demo",
+    "weighted_score": 225
+  },
+  {
+    "rank": 7,
+    "proof_item": "reference_luxury",
+    "weighted_score": 204
+  },
+  {
+    "rank": 8,
+    "proof_item": "roi_calculator",
+    "weighted_score": 156
+  },
+  {
+    "rank": 9,
+    "proof_item": "white_glove_onboarding",
+    "weighted_score": 24
+  },
+  {
+    "rank": 10,
+    "proof_item": "monthly_optout",
+    "weighted_score": 1
+  }
+]

@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rossella — L-Founders Interview Explorer</title>
+<style>
+  :root {
+    --navy: #0A0E1A;
+    --navyMid: #111827;
+    --navyLt: #1A2035;
+    --gold: #E8A84C;
+    --goldDim: #D4953A;
+    --white: #F2F0EB;
+    --gray: #A09FA6;
+    --dimGray: #8A8992;
+    --green: #4CC9A0;
+    --red: #E8636F;
+    --blue: #6B8EE8;
+    --teal: #3AAFB0;
+    --purple: #9B7AE0;
+    --orange: #F59E0B;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--navy);
+    color: var(--white);
+    overflow-x: hidden;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, var(--navyMid), var(--navy));
+    border-bottom: 3px solid var(--gold);
+    padding: 2rem 2rem 1.5rem;
+    text-align: center;
+  }
+  .header h1 {
+    font-family: Georgia, serif;
+    font-size: 2.5rem;
+    color: var(--white);
+    letter-spacing: 4px;
+    margin-bottom: 0.3rem;
+  }
+  .header h2 {
+    font-size: 1.1rem;
+    color: var(--gold);
+    font-weight: 400;
+  }
+  .header .subtitle {
+    font-size: 0.85rem;
+    color: var(--gray);
+    margin-top: 0.5rem;
+  }
+
+  /* NAV */
+  .nav {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+    padding: 1rem 1rem;
+    background: var(--navyMid);
+    border-bottom: 1px solid var(--navyLt);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  .nav button {
+    background: var(--navyLt);
+    border: 1px solid transparent;
+    color: var(--gray);
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+  }
+  .nav button:hover { border-color: var(--gold); color: var(--white); }
+  .nav button.active { background: var(--gold); color: var(--navy); font-weight: 600; border-color: var(--gold); }
+
+  /* SECTIONS */
+  .section {
+    display: none;
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    animation: fadeIn 0.3s ease;
+  }
+  .section.active { display: block; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+  .section-title {
+    font-family: Georgia, serif;
+    font-size: 1.8rem;
+    color: var(--white);
+    margin-bottom: 0.5rem;
+  }
+  .section-subtitle {
+    color: var(--gold);
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+    font-style: italic;
+  }
+
+  /* CARDS */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .card {
+    background: var(--navyMid);
+    border: 1px solid var(--navyLt);
+    border-radius: 8px;
+    padding: 1.2rem;
+    transition: all 0.2s;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 3px;
+  }
+  .card:hover { border-color: var(--gold); transform: translateY(-2px); box-shadow: 0 4px 20px rgba(232,168,76,0.1); }
+  .card.expanded { grid-column: 1 / -1; }
+  .card .card-title {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+  }
+  .card .card-role {
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+  }
+  .card .card-desc {
+    font-size: 0.85rem;
+    color: var(--gray);
+    line-height: 1.5;
+  }
+  .card .card-detail {
+    display: none;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--navyLt);
+    color: var(--gray);
+    font-size: 0.85rem;
+    line-height: 1.6;
+  }
+  .card.expanded .card-detail { display: block; }
+  .card .expand-hint {
+    font-size: 0.75rem;
+    color: var(--dimGray);
+    margin-top: 0.5rem;
+  }
+
+  /* COLOR ACCENTS */
+  .accent-gold::before { background: var(--gold); }
+  .accent-green::before { background: var(--green); }
+  .accent-teal::before { background: var(--teal); }
+  .accent-blue::before { background: var(--blue); }
+  .accent-purple::before { background: var(--purple); }
+  .accent-red::before { background: var(--red); }
+  .accent-orange::before { background: var(--orange); }
+
+  /* KPI ROW */
+  .kpi-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .kpi-box {
+    background: var(--navyMid);
+    border: 1px solid var(--navyLt);
+    border-radius: 8px;
+    padding: 1rem;
+    text-align: center;
+    border-top: 3px solid var(--gold);
+  }
+  .kpi-box .kpi-value {
+    font-family: Georgia, serif;
+    font-size: 1.8rem;
+    font-weight: 700;
+  }
+  .kpi-box .kpi-label {
+    font-size: 0.8rem;
+    color: var(--gray);
+    margin-top: 0.3rem;
+  }
+
+  /* TIMELINE */
+  .timeline {
+    position: relative;
+    padding-left: 2rem;
+    margin: 1.5rem 0;
+  }
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 8px;
+    top: 0; bottom: 0;
+    width: 2px;
+    background: var(--navyLt);
+  }
+  .timeline-item {
+    position: relative;
+    margin-bottom: 1.5rem;
+    padding-left: 1rem;
+    cursor: pointer;
+  }
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -1.65rem;
+    top: 6px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    border: 2px solid var(--gold);
+    background: var(--navy);
+  }
+  .timeline-item.highlight::before { background: var(--gold); }
+  .timeline-item .tl-period {
+    font-size: 0.8rem;
+    color: var(--gold);
+    font-weight: 600;
+  }
+  .timeline-item .tl-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--white);
+  }
+  .timeline-item .tl-desc {
+    font-size: 0.85rem;
+    color: var(--gray);
+    line-height: 1.5;
+    margin-top: 0.2rem;
+  }
+  .timeline-item .tl-detail {
+    display: none;
+    margin-top: 0.5rem;
+    padding: 0.8rem;
+    background: var(--navyMid);
+    border-radius: 6px;
+    font-size: 0.85rem;
+    color: var(--gray);
+    line-height: 1.5;
+  }
+  .timeline-item.expanded .tl-detail { display: block; }
+
+  /* FLOW CHART */
+  .flow-row {
+    display: flex;
+    gap: 0.5rem;
+    align-items: stretch;
+    margin-bottom: 1rem;
+    overflow-x: auto;
+    padding-bottom: 0.5rem;
+  }
+  .flow-box {
+    flex: 1;
+    min-width: 180px;
+    background: var(--navyMid);
+    border: 1px solid var(--navyLt);
+    border-radius: 8px;
+    padding: 1rem;
+    position: relative;
+  }
+  .flow-box .flow-num {
+    font-family: Georgia, serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+  }
+  .flow-box .flow-title {
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  .flow-box .flow-items {
+    font-size: 0.8rem;
+    color: var(--gray);
+    line-height: 1.5;
+  }
+  .flow-arrow {
+    display: flex;
+    align-items: center;
+    color: var(--dimGray);
+    font-size: 1.5rem;
+    flex-shrink: 0;
+  }
+
+  /* DECISION TREE */
+  .decision-node {
+    background: var(--navyMid);
+    border: 1px solid var(--navyLt);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .decision-node:hover { border-color: var(--gold); }
+  .decision-node .dn-question {
+    color: var(--gold);
+    font-weight: 600;
+    font-size: 0.95rem;
+  }
+  .decision-children {
+    display: none;
+    padding-left: 1.5rem;
+    margin-top: 0.5rem;
+    border-left: 2px solid var(--navyLt);
+  }
+  .decision-node.expanded > .decision-children { display: block; }
+  .decision-leaf {
+    padding: 0.8rem;
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+    font-size: 0.85rem;
+  }
+  .leaf-green { background: rgba(76,201,160,0.1); border: 1px solid var(--green); color: var(--green); }
+  .leaf-red { background: rgba(232,99,111,0.1); border: 1px solid var(--red); color: var(--red); }
+  .leaf-gold { background: rgba(232,168,76,0.1); border: 1px solid var(--gold); color: var(--gold); }
+  .leaf-blue { background: rgba(107,142,232,0.1); border: 1px solid var(--blue); color: var(--blue); }
+
+  /* TABLE */
+  .info-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+  }
+  .info-table th {
+    text-align: left;
+    padding: 0.6rem 0.8rem;
+    background: var(--navyLt);
+    color: var(--gold);
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  .info-table td {
+    padding: 0.6rem 0.8rem;
+    border-bottom: 1px solid var(--navyLt);
+    font-size: 0.85rem;
+    color: var(--gray);
+  }
+  .info-table tr:hover td { background: var(--navyMid); color: var(--white); }
+
+  /* QUOTE */
+  .quote-box {
+    background: var(--navyMid);
+    border-left: 4px solid var(--gold);
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    border-radius: 0 8px 8px 0;
+    font-family: Georgia, serif;
+    font-size: 1.1rem;
+    color: var(--gold);
+    font-style: italic;
+    line-height: 1.6;
+  }
+
+  /* PHRASE CARDS */
+  .phrase-card {
+    background: var(--navyMid);
+    border: 1px solid var(--navyLt);
+    border-radius: 8px;
+    padding: 1.2rem;
+    margin-bottom: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+    padding-left: 1.5rem;
+  }
+  .phrase-card::before {
+    content: '';
+    position: absolute;
+    left: 0; top: 0; bottom: 0;
+    width: 4px;
+    border-radius: 8px 0 0 8px;
+  }
+  .phrase-card:hover { border-color: var(--gold); }
+  .phrase-card .phrase-text {
+    font-style: italic;
+    font-size: 0.95rem;
+    color: var(--white);
+    line-height: 1.5;
+  }
+  .phrase-card .phrase-why {
+    display: none;
+    margin-top: 0.8rem;
+    padding-top: 0.8rem;
+    border-top: 1px solid var(--navyLt);
+    font-size: 0.85rem;
+    color: var(--gray);
+    line-height: 1.5;
+  }
+  .phrase-card.expanded .phrase-why { display: block; }
+
+  /* WARNING BOX */
+  .warning-box {
+    background: rgba(232,99,111,0.08);
+    border: 1px solid var(--red);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    margin: 1rem 0;
+    color: var(--red);
+    font-size: 0.9rem;
+  }
+
+  /* SUCCESS BOX */
+  .success-box {
+    background: rgba(76,201,160,0.08);
+    border: 1px solid var(--green);
+    border-radius: 8px;
+    padding: 1rem 1.2rem;
+    margin: 1rem 0;
+    color: var(--green);
+    font-size: 0.9rem;
+  }
+
+  /* COMPETITOR BARS */
+  .comp-bar-wrap {
+    margin-bottom: 0.8rem;
+  }
+  .comp-bar-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    margin-bottom: 0.3rem;
+  }
+  .comp-bar {
+    height: 28px;
+    border-radius: 4px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding-left: 0.8rem;
+    font-size: 0.75rem;
+    color: var(--white);
+    font-weight: 600;
+  }
+
+  @media (max-width: 768px) {
+    .header h1 { font-size: 1.8rem; }
+    .card-grid { grid-template-columns: 1fr; }
+    .kpi-row { grid-template-columns: repeat(2, 1fr); }
+    .flow-row { flex-direction: column; }
+    .flow-arrow { transform: rotate(90deg); justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>ROSSELLA</h1>
+  <h2>L-Founders of Loyalty — Interview Explorer</h2>
+  <div class="subtitle">CSS Manager, Italia & Europa — Martedì mattina, marzo 2026</div>
+</div>
+
+<div class="nav" id="nav">
+  <button class="active" data-section="overview">Quello che conta veramente</button>
+  <button data-section="company">L'azienda</button>
+  <button data-section="people">Mappa persone</button>
+  <button data-section="career">Il tuo percorso</button>
+  <button data-section="role">Il ruolo</button>
+  <button data-section="business">Come funziona</button>
+  <button data-section="competitors">Concorrenti</button>
+  <button data-section="salary">Stipendio</button>
+  <button data-section="decisions">Albero decisioni</button>
+  <button data-section="phrases">Frasi vincenti</button>
+  <button data-section="numbers">I numeri</button>
+  <button data-section="redflags">Red flag</button>
+</div>
+
+<!-- ═══════════ SECTION: THE BIG PICTURE ═══════════ -->
+<div class="section active" id="sec-overview">
+  <div class="section-title">Quello che conta veramente</div>
+  <div class="section-subtitle">Non stai andando a un colloquio. Stai andando a un incontro dove ex-colleghi Nielsen che ti stimano ti offrono un'opportunità su misura per te.</div>
+
+  <div class="card-grid">
+    <div class="card accent-green" onclick="toggleCard(this)">
+      <div class="card-title" style="color:var(--green)">Marco ha cercato TE</div>
+      <div class="card-desc">Ti ha contattata su WhatsApp. Non hai candidarti. Sei stata reclutata da uno che ti ha visto lavorare per 6 anni a NielsenIQ.</div>
+      <div class="card-detail">Marco Pellicci ha lasciato NielsenIQ a settembre 2024 dopo 12+ anni, è stato un po' a RTB House, poi si è unito a L-Founders a ottobre 2025 come Director Sales Enablement. Sa esattamente quello che sai fare perché l'ha visto di persona. Questo è un reclutamento mirato, non una candidatura da job board.</div>
+      <div class="expand-hint">Clicca per i dettagli</div>
+    </div>
+    <div class="card accent-gold" onclick="toggleCard(this)">
+      <div class="card-title" style="color:var(--gold)">Ti serve subito a loro</div>
+      <div class="card-desc">Stagione primavera/estate è alle porte. Ogni settimana senza un CSS Manager è fatturato perso.</div>
+      <div class="card-detail">L-Founders ha fatto 29 campagne nel 2025. Le campagne di loyalty della GDO hanno una stagionalità marcata — lanci primaverili per programmi estivi, lanci autunnali per campagne natalizie. Il team è già sotto pressione. La complessità cresce con bollini digitali e analytics AI. Serve subito una persona senior che coordini dalla proposta al lancio.</div>
+      <div class="expand-hint">Clicca per i dettagli</div>
+    </div>
+    <div class="card accent-teal" onclick="toggleCard(this)">
+      <div class="card-title" style="color:var(--teal)">Parli la loro lingua</div>
+      <div class="card-desc">L-Founders usa NielsenIQ per misurare il ROI. Tu hai passato 7,5 anni dentro NielsenIQ. Sei il ponte.</div>
+      <div class="card-detail">I 630 milioni di revenue incrementale di L-Founders sono misurati da NielsenIQ. Il loro modello Total Store Impact si basa sulle metodologie di analisi dati che conosci a fondo. Quando presentano i risultati ai C-level di Conad, Esselunga o Carrefour, la credibilità viene dalla validazione NielsenIQ. Conosci entrambi i lati dell'equazione — la creazione della campagna E la misurazione. Nessun altro candidato porta questo.</div>
+      <div class="expand-hint">Clicca per i dettagli</div>
+    </div>
+  </div>
+
+  <div class="quote-box">
+    "Dal misurare la loyalty al crearla" — questa è la tua narrativa. 7,5 anni a misurare quello che loro creano. Ora passi al lato della creazione.
+  </div>
+</div>
+
+<!-- ═══════════ SECTION: THE COMPANY ═══════════ -->
+<div class="section" id="sec-company">
+  <div class="section-title">L-Founders of Loyalty</div>
+  <div class="section-subtitle">Il secondo atto di un miliardario nell'industria della loyalty — non una startup.</div>
+
+  <div class="kpi-row">
+    <div class="kpi-box"><div class="kpi-value" style="color:var(--gold)">2020</div><div class="kpi-label">Fondazione</div></div>
+    <div class="kpi-box"><div class="kpi-value" style="color:var(--teal)">35</div><div class="kpi-label">Paesi</div></div>
+    <div class="kpi-box"><div class="kpi-value" style="color:var(--green)">100+</div><div class="kpi-label">Partner retailer</div></div>
+    <div class="kpi-box"><div class="kpi-value" style="color:var(--blue)">60M+</div><div class="kpi-label">Clienti / anno</div></div>
+    <div class="kpi-box"><div class="kpi-value" style="color:var(--purple)">+3,8%</div><div class="kpi-label">Incremento medio vendite</div></div>
+    <div class="kpi-box"><div class="kpi-value" style="color:var(--gold)">~1 mld$</div><div class="kpi-label">Patrimonio fondatore</div></div>
+  </div>
+
+  <div class="card-grid">
+    <div class="card accent-gold" onclick="toggleCard(this)">
+      <div class="card-title" style="color:var(--gold)">La storia di Robert van der Wallen</div>
+      <div class="card-desc">Fondò BrandLoyalty nel 1995 a Hong Kong. Vendette il 60% per ~560 milioni euro. Guadagno totale ~1 miliardo. Presidente PSV Eindhoven. Sponsor team Tour de France.</div>
+      <div class="card-detail">
+        <strong>Timeline:</strong><br>
+        1995 — Fondò BrandLoyalty<br>
+        ~2014 — Vendette per ~1 miliardo di euro<br>
+        2014 — Co-fondò team ciclistico Jumbo-Visma<br>
+        2020 — Fondò L-Founders of Loyalty (concorrente della sua stessa creazione)<br>
+        2023 — Ricomprò BrandLoyalty da Loyalty Ventures Inc.<br>
+        Prossimo — Fusione L-Founders + BrandLoyalty in una mega-entità<br><br>
+        <strong>Cosa significa:</strong> Ti unisci a un'azienda sostenuta da un miliardario con 30+ anni di loyalty. Risorse illimitate. Partner brand d'élite. Nessun rischio startup. La "L" sulle magliette del Tour de France? È L-Founders.
+      </div>
+      <div class="expand-hint">Clicca per la storia completa</div>
+    </div>
+    <div class="card accent-teal" onclick="toggleCard(this)">
+      <div class="card-title" style="color:var(--teal)">Cosa fa davvero L-Founders</div>
+      <div class="card-desc">Disegna, esegue e gestisce campagne di loyalty tattiche per retailer di groceries. Due tipi: Lifestyle (12-18 settimane, bollini) ed Entertainment (6-8 settimane, personaggi collezionabili).</div>
+      <div class="card-detail">
+        <strong>Campagne Lifestyle (12-18 settimane):</strong> Campagne a raccolta con bollini. I clienti guadagnano bollini con gli acquisti, li scambiano per prodotti premium lifestyle (Zwilling, Tupperware, Pyrex, Bosch). Obiettivo: aumentare frequenza e share of wallet.<br><br>
+        <strong>Campagne Entertainment (6-8 settimane):</strong> Basate su licenze, orientate alle famiglie. Premi istantanei a gratifica immediata (Disney, Marvel, Harry Potter, Minecraft collezionabili). Obiettivo: attirare nuovi clienti e aumentare lo scontrino.<br><br>
+        <strong>Digitale:</strong> 100+ campagne digitali su 4 continenti. 40% degli utenti attivi quotidiani partecipano. 15% di download app aggiuntivi durante le campagne.
+      </div>
+      <div class="expand-hint">Clicca per i dettagli</div>
+    </div>
+    <div class="card accent-green" onclick="toggleCard(this)">
+      <div class="card-title" style="color:var(--green)">Italia 2025 — Anno record</div>
+      <div class="card-desc">29 campagne, 5.000+ negozi, 50M+ premi, 630 milioni di euro di revenue incrementale. Da zero a leader di mercato in poco più di un anno.</div>
+      <div class="card-detail">
+        <strong>Metriche chiave 2025:</strong><br>
+        29 campagne di loyalty attivate<br>
+        5.000+ punti vendita coinvolti<br>
+        50+ milioni di premi distribuiti<br>
+        140 milioni di bollini usati<br>
+        18.000 spedizioni gestite<br>
+        630 milioni di euro di revenue incrementale (16 campagne, 8 gruppi GDO)<br>
+        ~40 persone in team<br><br>
+        <strong>Riconoscimenti:</strong> Menzione Promotion Awards 2024/25 per campagna Conad "Colleziona Freddy"<br>
+        <strong>Associazioni:</strong> Retail Institute Italy (fine 2025)<br>
+        <strong>Eventi:</strong> Food Retail Show 2025 sponsor esclusivo — Marco relatore sulla "fisica della loyalty"
+      </div>
+      <div class="expand-hint">Clicca per i numeri</div>
+    </div>
+    <div class="card accent-blue" onclick="toggleCard(this)">
+      <div class="card-title" style="color:var(--blue)">Cultura aziendale — "Founder's Mindset"</div>
+      <div class="card-desc">Tutti si chiamano "Founder." Sei principi aziendali guidano la cultura. Event annuali globali "L Live One".</div>
+      <div class="card-detail">
+        <strong>Sei principi aziendali:</strong><br>
+        1. Fai quello che è giusto per L<br>
+        2. Sii decisivo — Poi fallo<br>
+        3. Sfida lo status quo — In modo costruttivo<br>
+        4. Dai feedback per alimentare la crescita<br>
+        5. Esci dalla tua zona di comfort<br>
+        6. Guida con l'esempio<br><br>
+        Cultura imprenditoriale e orientata alla proprietà. Ufficio Italia: Via Decembrio 28, Milano.
+      </div>
+      <div class="expand-hint">Clicca per i dettagli culturali</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SECTION: PEOPLE MAP ═══════════ -->
+<div class="section" id="sec-people">
+  <div class="section-title">Le persone che devi conoscere</div>
+  <div class="section-subtitle">Clicca su chiunque per scoprire di più su di loro e come si collegano a te.</div>
+
+  <h3 style="color:var(--blue);margin-bottom:1rem;font-size:1rem;">Leadership globale</h3>
+  <div class="card-grid">
+    <div class="card accent-blue" onclick="toggleCard(this)">
+      <div class="card-title" style="color:var(--blue)">Robert van der Wallen</div>
+      <div class="card-role" style="color:var(--gold)">Founder & Chairman</div>
+      <div class="card-desc">Patrimonio ~1 miliardo. Presidente PSV Eindhoven. Fondò BrandLoyalty 1995, vendette per ~1 miliardo, fondò L nel 2020.</div>
+      <div class="card-detail">Niente LinkedIn pubblico. Ricomprò BrandLoyalty nel 2023 da Loyalty Ventures Inc. in difficoltà. Proprietario del Bernardus Golf (uno dei migliori campi d'Europa). Membro del board e co-proprietario del team ciclistico Visma | Lease a Bike (Jonas Vingegaard, Wout van Aert). La "L" sulle magliette del Tour de France = L-Founders.</div>
+    </div>
+    <div class="card accent-blue" onclick="toggleCard(this)">
+      <div class="card-title" style="color:var(--blue)">Sander Verboom</div>
+      <div class="card-role" style="color:var(--gold)">CEO</div>
+      <div class="card-desc">Ex NielsenIQ/GfK/Philips/RELX executive.</div>
+      <div class="card-detail">Un'altra connessione Nielsen. Comprende l'approccio data-driven alla loyalty da prospettiva commerciale.</div>
+    </div>
+    <div class="card accent-blue" onclick="toggleCard(this)">
+      <div class="card-title" style="color:var(--blue)">Andy Dixon</div>
+      <div class="card-role" style="color:var(--gold)">COO</div>
+      <div class="card-desc">36 anni nella loyalty. Ha supervisionato 5.000+ campagne globali.</div>
+      <div class="card-detail">La spina dorsale operativa di L-Founders. Se hai bisogno di capire l'esecuzione di campagne a scala globale, lui è il punto di riferimento. La sua esperienza copre l'intera storia delle moderne campagne di loyalty.</div>
+    </div>
+  </div>
+
+  <h3 style="color:var(--green);margin:1.5rem 0 1rem;font-size:1rem;">Team Italia (il tuo mondo quotidiano)</h3>
+  <div class="card-grid">
+    <div class="card accent-green" onclick="toggleCard(this)">
+      <div class="card-title" style="color:var(--green)">Luca De Nard</div>
+      <div class="card-role" style="color:var(--gold)">GM Italia — IL CAPO</div>
+      <div class="card-desc">Ex NielsenIQ MD Italia, Malesia, Romania. LUISS. Arrivato a L inizio 2024. Lui decide tutto per l'operazione italiana.</div>
+      <div class="card-detail"><strong>Critico:</strong> Luca era a NielsenIQ da ~2010 a ~2024. Hai avuto overlap con lui dal 2018-2024. Era MD Italia — abbastanza senior che probabilmente non ti conosce personalmente, ma conosce la cultura e i valori Nielsen. È il decision maker chiave per questa assunzione. Quando lo incontri, mostragli che capisci il ponte Nielsen → L-Founders.</div>
+    </div>
+    <div class="card accent-green" onclick="toggleCard(this)">
+      <div class="card-title" style="color:var(--green)">Marco Pellicci</div>
+      <div class="card-role" style="color:var(--gold)">Director Sales Enablement — IL TUO CONTATTO</div>
+      <div class="card-desc">Ex NielsenIQ 12 anni. Arrivato a L-Founders ottobre 2025 (solo 5 mesi fa!). Ti ha contattata su WhatsApp.</div>
+      <div class="card-detail"><strong>La tua connessione:</strong> Tu e Marco avete avuto overlap a NielsenIQ per ~6 anni (2018-2024). Lui cresceva da Commercial Business Partner → Sales Director SMB. Tu eri Data Analyst → Sr Customer Success. I suoi team si basavano su analytics come i tuoi.<br><br>Dopo NielsenIQ, ha passato 1 anno a RTB House come Country Manager, poi si è mosso a L-Founders. È stato relatore al Food Retail Show 2025 sulla "fisica della loyalty" / metafora dell'entropia. Lui sarà quello che ti difenderà internamente.</div>
+    </div>
+    <div class="card accent-teal" onclick="toggleCard(this)">
+      <div class="card-title" style="color:var(--teal)">Aixa Barassi</div>
+      <div class="card-role" style="color:var(--gold)">Brand & Product Manager</div>
+      <div class="card-desc">Bocconi. "Partner in crime" di Marco per speech e presentazioni. Collaboratrice chiave.</div>
+      <div class="card-detail">Lavora strettamente con Marco su materiali sales enablement, pitch deck e presentazioni ai clienti. Se entri, probabilmente lei sarà qualcuno con cui lavorerai quotidianamente su storytelling e direzione creativa delle campagne.</div>
+    </div>
+    <div class="card accent-teal" onclick="toggleCard(this)">
+      <div class="card-title" style="color:var(--teal)">Andrea Mezzanotte</div>
+      <div class="card-role" style="color:var(--gold)">Senior Project Manager</div>
+      <div class="card-desc">20+ anni di digital strategy. Potenziale collega diretto per il ruolo CSS.</div>
+      <div class="card-detail">PM esperto che gestisce probabilmente la logistica dell'esecuzione delle campagne. Come CSS Manager, coordinerai strettamente con lui su timeline, budget e deliverable.</div>
+    </div>
+    <div class="card accent-teal" onclick="toggleCard(this)">
+      <div class="card-title" style="color:var(--teal)">Giuseppina Navarretta</div>
+      <div class="card-role" style="color:var(--gold)">Sales & Concept Director, Entertainment</div>
+      <div class="card-desc">Bocconi. 2K follower LinkedIn. Player chiave per il business entertainment (Disney, Marvel).</div>
+      <div class="card-detail">Gestisce la vertical entertainment — campagne basate su licenze con Disney, Marvel, Paramount. Se il tuo lavoro CSS tocca campagne entertainment, lei sarà una stakeholder chiave.</div>
+    </div>
+  </div>
+
+  <h3 style="color:var(--gold);margin:1.5rem 0 1rem;font-size:1rem;">Decision-maker GDO (clienti che affronterai)</h3>
+  <div class="card-grid">
+    <div class="card accent-gold" onclick="toggleCard(this)">
+      <div class="card-title">Sebastiano Boles</div>
+      <div class="card-role" style="color:var(--gold)">Head of Loyalty, Esselunga</div>
+      <div class="card-desc">Giurato Promotion Awards. Decide le campagne Esselunga. 180+ negozi.</div>
+    </div>
+    <div class="card accent-gold" onclick="toggleCard(this)">
+      <div class="card-title">Filippo Santiccioli</div>
+      <div class="card-role" style="color:var(--gold)">Head Customer Marketing, Pac2000A Conad</div>
+      <div class="card-desc">Giurato Promotion Awards. Decide le campagne Conad. Retailer #1 Italia.</div>
+    </div>
+    <div class="card accent-gold" onclick="toggleCard(this)">
+      <div class="card-title">Giancarlo Spina</div>
+      <div class="card-role" style="color:var(--gold)">Head CRM & Loyalty, Carrefour Italia</div>
+      <div class="card-desc">Giurato Promotion Awards. Il tuo contatto per Carrefour.</div>
+    </div>
+    <div class="card accent-gold" onclick="toggleCard(this)">
+      <div class="card-title">Stefano Cini</div>
+      <div class="card-role" style="color:var(--gold)">Commercial Director, NielsenIQ</div>
+      <div class="card-desc">Opinion leader del FMCG italiano. Marco condivide i suoi post. Lo conosci già.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SECTION: YOUR CAREER ═══════════ -->
+<div class="section" id="sec-career">
+  <div class="section-title">Il tuo percorso di carriera</div>
+  <div class="section-subtitle">Clicca su qualsiasi tappa per vedere i dettagli e come si collega al ruolo L-Founders.</div>
+
+  <div class="timeline">
+    <div class="timeline-item" onclick="toggleTimeline(this)">
+      <div class="tl-period">Apr 2017 — Ott 2018</div>
+      <div class="tl-title">Le fondamenta: Ipsos, EY, Cattolica</div>
+      <div class="tl-desc">Radici di analisi dati tra ricerca, consulenza e mondo accademico</div>
+      <div class="tl-detail">Tre esperienze brevi che hanno costruito le tue fondamenta analitiche: Ipsos (ricerca di mercato), Ernst & Young (consulenza), Università Cattolica (ricerca accademica). Ognuna ha aggiunto una dimensione diversa alle tue competenze di analisi dati. <strong>Per L-Founders:</strong> Mostra versatilità e curiosità intellettuale.</div>
+    </div>
+    <div class="timeline-item" onclick="toggleTimeline(this)">
+      <div class="tl-period">Ott 2018 — Lug 2022</div>
+      <div class="tl-title">NielsenIQ Milano — Data Analyst & Salesforce Specialist</div>
+      <div class="tl-desc">3 anni 10 mesi. Il tuo approfondimento nella dinamica della GDO italiana e analisi loyalty.</div>
+      <div class="tl-detail">Qui hai imparato tutto sulle dinamiche della GDO italiana, comportamento dei consumatori e analytics loyalty. Come Salesforce Specialist, hai guadagnato anche esperienza in CRM e gestione pipeline. <strong>L'overlap con Marco Pellicci inizia qui.</strong> <strong>Per L-Founders:</strong> Conoscenza diretta della metodologia dati che usano per validare le campagne.</div>
+    </div>
+    <div class="timeline-item" onclick="toggleTimeline(this)">
+      <div class="tl-period">Giu 2022 — Dic 2023</div>
+      <div class="tl-title">NielsenIQ Oxford — Senior Analytics Executive</div>
+      <div class="tl-desc">1 anno 7 mesi. Esperienza internazionale attraverso i mercati europei.</div>
+      <div class="tl-detail">Il tuo incarico UK ti dà credibilità internazionale. Lavorare dai mercati europei da Oxford significa che sei a tuo agio con la collaborazione cross-border. <strong>Per L-Founders:</strong> Il ruolo CSS ha scope europeo. Questa esperienza affronta direttamente il requisito "Italia AND Europa" nella job description.</div>
+    </div>
+    <div class="timeline-item" onclick="toggleTimeline(this)">
+      <div class="tl-period">Dic 2023 — Gen 2026</div>
+      <div class="tl-title">NielsenIQ Milano — Senior Customer Success</div>
+      <div class="tl-desc">2 anni. Vertical SMB, poi vertical Liquor. Ruolo advisory con i clienti.</div>
+      <div class="tl-detail">Qui hai fatto il passaggio da pure analytics a <strong>lavoro con i clienti</strong>. "Customer Success" significa che eri il ponte tra i prodotti dati di Nielsen e i clienti che li usavano. Hai imparato a presentare insights ai decision-maker, gestire relazioni e tradurre i dati in raccomandazioni actionabili. <strong>Per L-Founders:</strong> Mappa direttamente alle responsabilità di relazione con i clienti del CSS Manager.</div>
+    </div>
+    <div class="timeline-item highlight" onclick="toggleTimeline(this)">
+      <div class="tl-period">Gen 2026 — Oggi</div>
+      <div class="tl-title">NielsenIQ Milano — Consultant Industry Lead</div>
+      <div class="tl-desc">Il tuo ruolo attuale. Consulenza strategica ai clienti del settore.</div>
+      <div class="tl-detail">Il titolo più senior della tua carriera Nielsen. "Consultant" e "Industry Lead" significano che stai consigliando clienti C-level su decisioni strategiche. <strong>Per L-Founders:</strong> Dimostra che puoi stare alla pari con i C-suite executives di Conad, Esselunga e Carrefour.</div>
+    </div>
+    <div class="timeline-item highlight" onclick="toggleTimeline(this)">
+      <div class="tl-period">2026</div>
+      <div class="tl-title">L-FOUNDERS — CSS Manager, Italia & Europa</div>
+      <div class="tl-desc">Target: 62-65K RAL. Il passaggio da misurazione a creazione.</div>
+      <div class="tl-detail">Tutto nella tua carriera è stato costruito verso questo: conosci i dati, conosci i clienti, conosci la metodologia, hai lavorato con le persone. Ora passi al lato che <strong>crea</strong> le campagne che hai misurato. È un'evoluzione di carriera, non solo un cambio di lavoro.</div>
+    </div>
+  </div>
+
+  <div class="success-box">
+    <strong>L'overlap Nielsen:</strong> Tu e Marco Pellicci: 6 anni nella stessa azienda (2018-2024). Tu e Luca De Nard: lo stesso periodo. Se entri, questo fa TRE ex-Nielsen nella leadership italiana. Chiaramente valutano questa provenienza.
+  </div>
+</div>
+
+<!-- ═══════════ SECTION: THE ROLE ═══════════ -->
+<div class="section" id="sec-role">
+  <div class="section-title">Il ruolo CSS Manager — Decodificato</div>
+  <div class="section-subtitle">Un ibrido tra project manager / account manager / strategist creativo seduto tra commerciale e operations.</div>
+
+  <div class="card-grid">
+    <div class="card accent-teal" onclick="toggleCard(this)">
+      <div class="card-title" style="color:var(--teal)">Pre-sale: Pitch Coordination</div>
+      <div class="card-desc">Attiva esperti, trovi partner, prepari proposte su misura ai brief cliente, costruisci storytelling e narrativa ROI affascinanti.</div>
+      <div class="card-detail"><strong>Il tuo vantaggio:</strong> A Nielsen costruivi regolarmente presentazioni per clienti C-level. La differenza a L-Founders è che la tua storia non è solo "ecco cosa è successo" — è "ecco cosa possiamo fare accadere." Conosci i dati che provano che le campagne funzionano. Ora li usi per VENDERLE.</div>
+    </div>
+    <div class="card accent-green" onclick="toggleCard(this)">
+      <div class="card-title" style="color:var(--green)">Campaign Delivery</div>
+      <div class="card-desc">Coordina l'implementazione per Italia AND Europa. Gestisci designer, fasi di produzione, quality control, budget, timeline.</div>
+      <div class="card-detail"><strong>Il tuo vantaggio:</strong> Nielsen ti ha insegnato rigore di progetto e disciplina data. Gestire team cross-functional non è nuovo per te. I dettagli di produzione (materiali in-store, sourcing) sono imparabili — le competenze analitiche e di gestione clienti sono quello di cui hanno davvero bisogno.</div>
+    </div>
+    <div class="card accent-gold" onclick="toggleCard(this)">
+      <div class="card-title" style="color:var(--gold)">Relazioni con i clienti</div>
+      <div class="card-desc">Referente giornaliero per i clienti assegnati. Interfaccia con C-level della GDO a Conad, Esselunga, Carrefour.</div>
+      <div class="card-detail"><strong>Il tuo vantaggio:</strong> Stai già facendo lavoro con i clienti come Senior Customer Success e Consultant Industry Lead. Conosci il mondo dei retailer. Hai presentato loro prima dal lato Nielsen. Ora presenteresti dal lato dell'esecuzione delle campagne.</div>
+    </div>
+    <div class="card accent-blue" onclick="toggleCard(this)">
+      <div class="card-title" style="color:var(--blue)">Sviluppo Partnership Strategiche</div>
+      <div class="card-desc">Trovi nuovi partner strategici, supporti sales con strumenti e documenti, partecipa attivamente alla creazione di proposte.</div>
+      <div class="card-detail"><strong>Il tuo vantaggio:</strong> La tua rete Nielsen copre l'ecosistema FMCG italiano. Sai quali brand crescono, quali retailer investono, quali sono i trend. Questa conoscenza di settore è oro per lo sviluppo dei partner.</div>
+    </div>
+  </div>
+
+  <h3 style="color:var(--orange);margin:1.5rem 0 0.5rem;font-size:1rem;">Gaps da affrontare</h3>
+  <table class="info-table">
+    <tr><th>Gap</th><th>Come reincorniciarlo</th></tr>
+    <tr><td>Niente esperienza "agency" (JD chiede 5 anni)</td><td>Nielsen è una ditta di servizi/consulenza che lavora con agenzie e brand. I tuoi ruoli client-facing erano da agenzia: delivering insights, presentazioni, raccomandazioni strategiche.</td></tr>
+    <tr><td>Niente esperienza creativa/produzione esplicita</td><td>Il lato creativo del ruolo CSS è storytelling e narrativa strategica, non design grafico. Coordini le risorse creative — non hai bisogno di ESSERE una. La tua forza è tradurre dati in storie.</td></tr>
+    <tr><td>Laurea di marketing non specificata</td><td>L'Università Cattolica è prestigiosa. Focalizzati su risultati e conoscenza del settore, non su credenziali.</td></tr>
+  </table>
+</div>
+
+<!-- ═══════════ SECTION: HOW BUSINESS WORKS ═══════════ -->
+<div class="section" id="sec-business">
+  <div class="section-title">Come funziona una campagna di loyalty</div>
+  <div class="section-subtitle">Dal brief cliente ai 630 milioni di euro di revenue incrementale — e dove stai tu nel processo.</div>
+
+  <div class="flow-row">
+    <div class="flow-box" style="border-top:3px solid var(--teal)">
+      <div class="flow-num" style="color:var(--teal)">1</div>
+      <div class="flow-title">PITCH & STRATEGIA</div>
+      <div class="flow-items">Il cliente chiama: "Vogliamo una campagna Natale"<br>Benchmark con dati Nielsen<br>Concept: Disney? Zwilling? Tupperware?<br>Proposta con ROI proiettato</div>
+    </div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-box" style="border-top:3px solid var(--green)">
+      <div class="flow-num" style="color:var(--green)">2</div>
+      <div class="flow-title">ESECUZIONE (12-18 sett)</div>
+      <div class="flow-items">Design creativo + materiali in-store<br>Sourcing prodotti + produzione<br>Attivazione digitale: app + bollini<br>Logistica: 18K spedizioni → 5K+ negozi</div>
+    </div>
+    <div class="flow-arrow">&rarr;</div>
+    <div class="flow-box" style="border-top:3px solid var(--gold)">
+      <div class="flow-num" style="color:var(--gold)">3</div>
+      <div class="flow-title">MISURAZIONE</div>
+      <div class="flow-items">Dashboard analytics campagna con AI<br>ROI Total Store Impact Nielsen<br>Report finale: 630M incrementali<br>Learnings per prossima campagna</div>
+    </div>
+  </div>
+
+  <div class="success-box" style="margin:1rem 0 2rem">
+    <strong>CSS Manager = TE</strong> — Coordini tutto questo. Sei la colla client-facing tra sales enablement e operations.
+  </div>
+
+  <h3 style="color:var(--gold);margin-bottom:1rem;font-size:1.1rem;">Total Store Impact — Il cuore del loro modello</h3>
+  <div class="card-grid">
+    <div class="card accent-teal" onclick="toggleCard(this)">
+      <div class="card-title" style="color:var(--teal)">SPEND</div>
+      <div class="card-desc">Quanto spende un cliente per guadagnare il premio. Es. 15 euro per bollino. Guida frequenza e scontrino medio.</div>
+    </div>
+    <div class="card accent-green" onclick="toggleCard(this)">
+      <div class="card-title" style="color:var(--green)">REWARD</div>
+      <div class="card-desc">Il valore percepito del premio. Disney, Zwilling, Tupperware — la connessione emotiva conta quanto la qualità del prodotto.</div>
+    </div>
+    <div class="card accent-gold" onclick="toggleCard(this)">
+      <div class="card-title" style="color:var(--gold)">TIMEFRAME</div>
+      <div class="card-desc">Durata campagna: 14-18 settimane ottimale. Abbastanza lunga per comportamento di raccolta, abbastanza breve per urgenza.</div>
+    </div>
+  </div>
+
+  <div class="card-grid" style="margin-top:0.5rem">
+    <div class="card accent-green" onclick="toggleCard(this)">
+      <div class="card-title" style="color:var(--green)">Business Getting (breve termine)</div>
+      <div class="card-desc">+3,8% vendite incrementali. +1,4 miliardi di euro di revenue incrementale negli ultimi 12 mesi globalmente.</div>
+    </div>
+    <div class="card accent-blue" onclick="toggleCard(this)">
+      <div class="card-title" style="color:var(--blue)">Business Building (lungo termine)</div>
+      <div class="card-desc">+11% percezione brand. +19% digital engagement. Costruisce relazioni cliente durature.</div>
+    </div>
+  </div>
+
+  <div class="quote-box">
+    Le Golden Rules di Marco Pellicci: Investment = 0,3-0,5% del fatturato retailer nel periodo | Durata = 14-18 settimane | Collezionabilità = calibrata alle abitudini cliente di ogni retailer
+  </div>
+</div>
+
+<!-- ═══════════ SECTION: COMPETITORS ═══════════ -->
+<div class="section" id="sec-competitors">
+  <div class="section-title">Landscape competitivo</div>
+  <div class="section-subtitle">Ecosistema loyalty/promotion italiano — chi compete con chi.</div>
+
+  <table class="info-table">
+    <tr><th>Agenzia</th><th>Clienti chiave</th><th>Note</th></tr>
+    <tr style="background:rgba(76,201,160,0.05)"><td style="color:var(--green);font-weight:600">L-Founders</td><td>Conad, Esselunga + altri</td><td>29 campagne 2025, 630M incrementali, vincitore Promotion Awards</td></tr>
+    <tr><td>Promotica</td><td>Coop Italia</td><td>Quotata AIM Italia, campagne Edo Alessi</td></tr>
+    <tr><td>tcc Global</td><td>Carrefour</td><td>Campagna Looney Tunes, player globale</td></tr>
+    <tr><td>Coro Marketing</td><td>Sigma, Sisa</td><td>Puzzle Ball 3D, catene più piccole</td></tr>
+    <tr><td>Advice Group</td><td>A2A, Samsung</td><td>Gamification-focused, loyalty B2C</td></tr>
+    <tr><td>Jakala</td><td>Plenitude</td><td>Data & tech, servizi marketing più ampi</td></tr>
+  </table>
+
+  <h3 style="color:var(--teal);margin:1.5rem 0 1rem;font-size:1rem;">Contesto mercato GDO italiano</h3>
+  <div class="kpi-row">
+    <div class="kpi-box"><div class="kpi-value" style="color:var(--red)">29%</div><div class="kpi-label">Fedeli brand veri</div></div>
+    <div class="kpi-box"><div class="kpi-value" style="color:var(--orange)">41%</div><div class="kpi-label">Cambiano marca regolarmente</div></div>
+    <div class="kpi-box"><div class="kpi-value" style="color:var(--teal)">53%</div><div class="kpi-label">Vogliono provare brand nuovi (+7pp)</div></div>
+    <div class="kpi-box"><div class="kpi-value" style="color:var(--purple)">47%</div><div class="kpi-label">Promozioni con lift ridotto</div></div>
+    <div class="kpi-box"><div class="kpi-value" style="color:var(--green)">+8,1%</div><div class="kpi-label">Crescita eCommerce</div></div>
+    <div class="kpi-box"><div class="kpi-value" style="color:var(--blue)">32,2%</div><div class="kpi-label">Share MDD (Private Label)</div></div>
+  </div>
+  <div class="success-box">
+    <strong>Perché è buono per L-Founders:</strong> La dislealtà consumatore sta CRESCENDO. Solo il 29% è fedele ai brand. I retailer disperatamente hanno bisogno di campagne di loyalty per combattere il nomadismo consumatore. Le condizioni di mercato sono perfette per la crescita di L-Founders.
+  </div>
+</div>
+
+<!-- ═══════════ SECTION: SALARY STRATEGY ═══════════ -->
+<div class="section" id="sec-salary">
+  <div class="section-title">Strategia stipendio</div>
+  <div class="section-subtitle">Conosci i tuoi numeri, usa le tue leve, e non parlare mai per primo di soldi.</div>
+
+  <h3 style="color:var(--dimGray);margin-bottom:1rem;font-size:1rem;">Benchmark Milano 2026 (RAL)</h3>
+  <div class="comp-bar-wrap">
+    <div class="comp-bar-label"><span>Project Manager (generico)</span><span style="color:var(--white)">44.000 euro</span></div>
+    <div class="comp-bar" style="width:55%;background:var(--dimGray)">44K</div>
+  </div>
+  <div class="comp-bar-wrap">
+    <div class="comp-bar-label"><span>Campaign Manager</span><span style="color:var(--white)">61.000 euro</span></div>
+    <div class="comp-bar" style="width:72%;background:var(--teal)">61K</div>
+  </div>
+  <div class="comp-bar-wrap">
+    <div class="comp-bar-label"><span>Marketing Manager</span><span style="color:var(--white)">55.000-75.000 euro</span></div>
+    <div class="comp-bar" style="width:82%;background:var(--blue)">55-75K</div>
+  </div>
+  <div class="comp-bar-wrap">
+    <div class="comp-bar-label"><span>Digital Marketing Mgr</span><span style="color:var(--white)">64.000 euro</span></div>
+    <div class="comp-bar" style="width:76%;background:var(--purple)">64K</div>
+  </div>
+  <div class="comp-bar-wrap">
+    <div class="comp-bar-label"><span>Growth Marketing Mgr</span><span style="color:var(--white)">75.000 euro</span></div>
+    <div class="comp-bar" style="width:90%;background:var(--green)">75K</div>
+  </div>
+
+  <h3 style="color:var(--gold);margin:2rem 0 1rem;font-size:1.1rem;">I tuoi target</h3>
+  <div class="kpi-row" style="grid-template-columns: repeat(4, 1fr);">
+    <div class="kpi-box" style="border-top-color:var(--dimGray)"><div class="kpi-value" style="color:var(--dimGray)">50-52K</div><div class="kpi-label">Attuale (Nielsen)</div></div>
+    <div class="kpi-box" style="border-top-color:var(--orange)"><div class="kpi-value" style="color:var(--orange)">60K</div><div class="kpi-label">Target MINIMO</div></div>
+    <div class="kpi-box" style="border-top-color:var(--green)"><div class="kpi-value" style="color:var(--green)">65K</div><div class="kpi-label">Target OTTIMALE</div></div>
+    <div class="kpi-box" style="border-top-color:var(--gold)"><div class="kpi-value" style="color:var(--gold)">68-70K</div><div class="kpi-label">Target STRETCH</div></div>
+  </div>
+
+  <h3 style="color:var(--gold);margin:2rem 0 1rem;font-size:1.1rem;">Le 7 leve</h3>
+  <div class="card-grid" style="grid-template-columns: 1fr;">
+    <div class="card accent-gold" onclick="toggleCard(this)">
+      <div class="card-title"><span style="color:var(--gold)">1.</span> L'azienda del miliardario</div>
+      <div class="card-desc">"So che L-Founders è una realtà solida, fondata da van der Wallen. Mi aspetto che la compensation rifletta il calibro dell'azienda."</div>
+      <div class="card-detail">Un'azienda fondata da un miliardario non può offrire stipendi da PMI. Li metti con le spalle al muro — con eleganza. Non possono dire che non se lo possono permettere.</div>
+    </div>
+    <div class="card accent-teal" onclick="toggleCard(this)">
+      <div class="card-title"><span style="color:var(--teal)">2.</span> Scope europeo</div>
+      <div class="card-desc">"Il ruolo include coordinamento europeo — va oltre un ruolo domestico."</div>
+      <div class="card-detail">La JD dice "Italia AND Europa." Questo giustifica +15-20% rispetto a un ruolo solo Italia. Pratica standard nelle multinazionali.</div>
+    </div>
+    <div class="card accent-green" onclick="toggleCard(this)">
+      <div class="card-title"><span style="color:var(--green)">3.</span> Il ponte Nielsen</div>
+      <div class="card-desc">"Porto 7 anni e mezzo di conoscenza della metodologia Nielsen che voi usate per misurare le campagne. Questo valore è unico — non lo trovate sul mercato."</div>
+      <div class="card-detail">Crei FOMO: se non ti prendono, perdono un vantaggio competitivo irrecuperabile. Questa è la tua leva più forte.</div>
+    </div>
+    <div class="card accent-blue" onclick="toggleCard(this)">
+      <div class="card-title"><span style="color:var(--blue)">4.</span> Ti hanno trovata loro</div>
+      <div class="card-desc">"Marco mi ha contattata direttamente perché sa cosa porto. Non sto cercando attivamente — sto valutando un'opportunità specifica."</div>
+      <div class="card-detail">Ribalta il potere negoziale. LORO ti vogliono. Non sei disperata. Stai facendo una scelta selettiva.</div>
+    </div>
+    <div class="card accent-orange" onclick="toggleCard(this)">
+      <div class="card-title"><span style="color:var(--orange)">5.</span> Urgenza campagne</div>
+      <div class="card-desc">"Le campagne partono a breve. Ogni settimana senza un CSS Manager è fatturato perso."</div>
+      <div class="card-detail">Urgenza = leverage. Lo sanno. Non esagerare, ma lascia che sentano la pressione dei tempi.</div>
+    </div>
+    <div class="card accent-purple" onclick="toggleCard(this)">
+      <div class="card-title"><span style="color:var(--purple)">6.</span> Gestione C-level</div>
+      <div class="card-desc">"Interfacciarsi con i C-level di Conad, Esselunga, Carrefour richiede seniority. Il mio track record di Customer Success lo dimostra."</div>
+      <div class="card-detail">Gestire relazioni clienti C-level comanda sempre un premium salariale. Standard in ogni industria.</div>
+    </div>
+    <div class="card accent-red" onclick="toggleCard(this)">
+      <div class="card-title"><span style="color:var(--red)">7.</span> Package, non solo RAL</div>
+      <div class="card-desc">Se sulla RAL fissa resistono: negozia bonus (5-10% su KPI campagne), auto aziendale, buoni pasto 8 euro/giorno, smart working 2 giorni, formazione internazionale.</div>
+      <div class="card-detail">62K RAL + 5K bonus + auto = equivalente a 72-75K totale. Non fissarti su un numero solo.</div>
+    </div>
+  </div>
+
+  <h3 style="color:var(--red);margin:2rem 0 1rem;font-size:1.1rem;">Dipendente vs P.IVA — la tabella che serve</h3>
+  <table class="info-table">
+    <tr><th>Voce</th><th>Dipendente 65K RAL</th><th>P.IVA equivalente</th></tr>
+    <tr><td>Lordo annuo</td><td>65.000 euro</td><td style="color:var(--red)">Deve essere 85.000+</td></tr>
+    <tr><td>Netto mensile (13 mensilità)</td><td>~3.400 euro</td><td>~3.400 (dopo tasse + INPS)</td></tr>
+    <tr><td>TFR accumulato</td><td>~4.800/anno</td><td>Zero</td></tr>
+    <tr><td>Ferie pagate</td><td>26 giorni</td><td>Zero</td></tr>
+    <tr><td>Malattia</td><td>Coperta</td><td>Zero</td></tr>
+    <tr><td>Maternità</td><td>Coperta INPS</td><td>Copertura minima</td></tr>
+    <tr><td>Buoni pasto</td><td>~1.760/anno</td><td>Zero</td></tr>
+    <tr><td style="color:var(--gold);font-weight:600">Valore reale totale</td><td style="color:var(--green);font-weight:600">~75.000 euro</td><td style="color:var(--red);font-weight:600">85.000+ per pareggiare</td></tr>
+  </table>
+
+  <div class="warning-box">
+    <strong>La regola d'oro:</strong> Se ti offrono P.IVA, il lordo deve essere almeno il 130% della RAL dipendente equivalente. Sotto 80K lordo = DEAL BREAKER.
+  </div>
+
+  <div class="quote-box">
+    "Sto valutando un cambio di carriera importante — da misurazione a creazione. Porto un'esperienza unica che collega direttamente Nielsen, i vostri clienti GDO, e la vostra metodologia Total Store Impact. Cerco un pacchetto che rifletta sia il valore immediato che porto, sia il potenziale di crescita in un ruolo con scope europeo."
+  </div>
+</div>
+
+<!-- ═══════════ SECTION: DECISION TREE ═══════════ -->
+<div class="section" id="sec-decisions">
+  <div class="section-title">Albero delle decisioni — Ogni scenario</div>
+  <div class="section-subtitle">Clicca su ogni ramo per esplorare cosa fare in ogni situazione.</div>
+
+  <div class="decision-node" onclick="toggleDecision(this)">
+    <div class="dn-question">Chi c'è al tavolo?</div>
+    <div class="decision-children">
+      <div class="decision-leaf leaf-green" style="margin-bottom:1rem">
+        <strong>Solo Marco</strong><br>
+        Tono informale. Parla da ex collega. Mostra entusiasmo. Chiedi di Luca. Questa è una conversazione, non un colloquio. Lascia che la chimica fluisca naturalmente.
+      </div>
+      <div class="decision-leaf leaf-blue" style="margin-bottom:1rem">
+        <strong>Marco + Luca</strong><br>
+        Tono più strutturato. Avere il pitch di 30 secondi pronto. Fai domande strategiche su crescita 2026 e struttura team. Mostra che capisci il business profondamente.
+      </div>
+      <div class="decision-leaf leaf-gold">
+        <strong>Marco + Luca + HR</strong><br>
+        Modalità intervista completa. Usa tutti i talking points. Avere esempi concreti da Nielsen pronti. Preparati a domande di competenza.
+      </div>
+    </div>
+  </div>
+
+  <div class="decision-node" onclick="toggleDecision(this)">
+    <div class="dn-question">Parlano di contratto?</div>
+    <div class="decision-children">
+      <div class="decision-node" onclick="event.stopPropagation();toggleDecision(this)">
+        <div class="dn-question">Ti offrono contratto dipendente</div>
+        <div class="decision-children">
+          <div class="decision-node" onclick="event.stopPropagation();toggleDecision(this)">
+            <div class="dn-question">Cosa ti offrono?</div>
+            <div class="decision-children">
+              <div class="decision-leaf leaf-gold" style="margin-bottom:0.5rem">
+                <strong>Sotto 60K:</strong> Usa leva 3 (ponte Nielsen) + leva 6 (gestione C-level). Enfatizza scope europeo. Se non muovono, chiedi clausola di salary review a 6 mesi.
+              </div>
+              <div class="decision-leaf leaf-green" style="margin-bottom:0.5rem">
+                <strong>60-65K:</strong> ACCETTA — e negozia il bonus (bonus performance 5-10% su KPI campagne).
+              </div>
+              <div class="decision-leaf leaf-green">
+                <strong>65K+:</strong> ACCETTA immediatamente. Questo è sopra il tuo target ottimale.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="decision-leaf leaf-red" style="margin:0.5rem 0">
+        <strong>Ti offrono P.IVA</strong><br>
+        Target: 85K+ lordo. Sotto 80K = declina con eleganza. "Apprezzo l'opportunità, ma dato lo scope e la mia esperienza, credo che un contratto dipendente sia più appropriato per questo tipo di ruolo."
+      </div>
+      <div class="decision-leaf leaf-blue">
+        <strong>Non ne parlano</strong><br>
+        NON sollevare tu il tema. Aspetta il secondo incontro. Focalizzati su mostrare il tuo valore e fit.
+      </div>
+    </div>
+  </div>
+
+  <div class="decision-node" onclick="toggleDecision(this)">
+    <div class="dn-question">E se ti chiedono lo stipendio attuale?</div>
+    <div class="decision-children">
+      <div class="decision-leaf leaf-gold">
+        <strong>Redireziona:</strong> "Preferisco focalizzarmi sul valore che porto a questo ruolo specifico piuttosto che ancorarmi alla mia compensation attuale. Lo scope qui — coordinamento europeo, gestione clienti C-level, strategia campagne — è significativamente più ampio del mio ruolo attuale."
+      </div>
+    </div>
+  </div>
+
+  <div class="decision-node" onclick="toggleDecision(this)">
+    <div class="dn-question">E se ti chiedono su esperienza agenzia?</div>
+    <div class="decision-children">
+      <div class="decision-leaf leaf-green">
+        <strong>Reincorniccia:</strong> "Nielsen opera come una ditta di servizi e consulenza. Per 7,5 anni, ho delivered insights, presentazioni strategiche e raccomandazioni a clienti FMCG e retail — quello è fondamentalmente la stessa cosa del client service di agenzia. La differenza è che porto anche rigore analitico profondo che i background puri di agenzia spesso non hanno."
+      </div>
+    </div>
+  </div>
+
+  <div class="decision-node" onclick="toggleDecision(this)">
+    <div class="dn-question">E se ti chiedono "Perché lasci Nielsen?"</div>
+    <div class="decision-children">
+      <div class="decision-leaf leaf-green">
+        <strong>Incornicia come crescita:</strong> "Dopo 7,5 anni misurando l'impatto delle campagne di loyalty, voglio muovermi al lato della creazione. Ho visto dai dati cosa funziona e cosa no. Ora voglio applicare quella conoscenza proattivamente — disegnando ed eseguendo campagne piuttosto che solo misurandole."
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ SECTION: KILLER PHRASES ═══════════ -->
+<div class="section" id="sec-phrases">
+  <div class="section-title">Frasi vincenti</div>
+  <div class="section-subtitle">Tira fuori queste casualmente durante la conversazione. Clicca su ognuna per vedere perché funziona.</div>
+
+  <div class="phrase-card accent-gold" onclick="togglePhrase(this)" style="--accent:var(--gold)">
+    <div class="phrase-text">"I 630 milioni di euro di revenue incrementale misurati da Nielsen? So esattamente come si calcola quel numero — l'ho fatto per anni."</div>
+    <div class="phrase-why"><strong>Perché funziona:</strong> Stabilisci istantaneamente la tua credibilità unica. Nessun altro candidato che entra per questo colloquio può dire questo. Mostra conoscenza profonda senza vantarsi — stai dichiarando un fatto.</div>
+  </div>
+  <div class="phrase-card accent-teal" onclick="togglePhrase(this)">
+    <div class="phrase-text">"L'entropia della loyalty che Marco ha presentato al Food Retail Show è una metafora perfetta — cattura esattamente perché le campagne tattiche hanno bisogno di energia continua."</div>
+    <div class="phrase-why"><strong>Perché funziona:</strong> Mostra che hai fatto ricerca seria. Citi il lavoro di Marco, che lo lusinga. Dimostri che capisci il business intellettualmente, non solo operativamente.</div>
+  </div>
+  <div class="phrase-card accent-green" onclick="togglePhrase(this)">
+    <div class="phrase-text">"Ho notato che siete entrati nel Retail Institute Italy — mossa intelligente per credibilità di settore."</div>
+    <div class="phrase-why"><strong>Perché funziona:</strong> Mostra che segui le mosse strategiche dell'azienda, non solo le campagne. L'iscrizione a associazioni di settore è un dettaglio piccolo che solo candidati ricercati a fondo conoscerebbero.</div>
+  </div>
+  <div class="phrase-card accent-blue" onclick="togglePhrase(this)">
+    <div class="phrase-text">"La campagna Conad Freddy ai Promotion Awards mostra che L-Founders può competere alla pari con Promotica e tcc Global in Italia."</div>
+    <div class="phrase-why"><strong>Perché funziona:</strong> Mostra consapevolezza del landscape competitivo. Nomini i loro concorrenti direttamente, che prova che capisci il mercato. Validi anche il loro successo.</div>
+  </div>
+  <div class="phrase-card accent-purple" onclick="togglePhrase(this)">
+    <div class="phrase-text">"29 campagne in 5.000+ negozi, con un team che esiste da poco più di un anno. Quello è scaling impressionante."</div>
+    <div class="phrase-why"><strong>Perché funziona:</strong> Combina un data point specifico con ammirazione genuina. Mostra che hai fatto la matematica sulla loro traiettoria di crescita. Li rende fieri di quello che hanno costruito.</div>
+  </div>
+  <div class="phrase-card accent-orange" onclick="togglePhrase(this)">
+    <div class="phrase-text">"Il Consumer Goods Forum ad Amsterdam a giugno — è lì che il team si allinea sulla strategia H2?"</div>
+    <div class="phrase-why"><strong>Perché funziona:</strong> Mostra che stai già pensando al calendario aziendale e alla pianificazione strategica. Forward-looking, non backward-looking. Ti fa immaginare già partecipando all'evento.</div>
+  </div>
+
+  <h3 style="color:var(--gold);margin:2rem 0 1rem;font-size:1.1rem;">La frase finale</h3>
+  <div class="quote-box" style="font-size:1.2rem;">
+    "Una sola domanda. Ho passato quasi 8 anni a misurare da fuori quello che voi create. So riconoscere una campagna che funziona dai dati — e so perché funziona. La mia domanda è: quanto velocemente posso iniziare?"
+  </div>
+  <div class="success-box">
+    Questa frase singola: riassume il tuo valore, mostra sicurezza, dimostra entusiasmo, crea urgenza, e li fa immaginare già nel ruolo.
+  </div>
+</div>
+
+<!-- ═══════════ SECTION: KEY NUMBERS ═══════════ -->
+<div class="section" id="sec-numbers">
+  <div class="section-title">I numeri da sapere a memoria</div>
+  <div class="section-subtitle">Clicca su una categoria per espandere la lista completa.</div>
+
+  <div class="card-grid">
+    <div class="card accent-blue" onclick="toggleCard(this)">
+      <div class="card-title" style="color:var(--blue)">L-Founders Globale</div>
+      <div class="card-desc">35 paesi, 100+ retailer, 60M+ clienti/anno, +1,4 miliardi di euro di revenue incrementale</div>
+      <div class="card-detail">
+        <table class="info-table">
+          <tr><td>Fondazione</td><td style="color:var(--white);font-weight:600">2020</td></tr>
+          <tr><td>Paesi</td><td style="color:var(--white);font-weight:600">35</td></tr>
+          <tr><td>Partner retailer</td><td style="color:var(--white);font-weight:600">100+</td></tr>
+          <tr><td>Vendite rappresentate</td><td style="color:var(--white);font-weight:600">500+ miliardi euro</td></tr>
+          <tr><td>Clienti / anno</td><td style="color:var(--white);font-weight:600">60M+</td></tr>
+          <tr><td>Vendite incrementali (12 mesi)</td><td style="color:var(--white);font-weight:600">+1,4 miliardi euro</td></tr>
+          <tr><td>Incremento medio vendite</td><td style="color:var(--white);font-weight:600">+3,8%</td></tr>
+          <tr><td>Dipendenti</td><td style="color:var(--white);font-weight:600">~226-298</td></tr>
+          <tr><td>HQ</td><td style="color:var(--white);font-weight:600">Den Bosch, Paesi Bassi</td></tr>
+        </table>
+      </div>
+      <div class="expand-hint">Clicca per la lista completa</div>
+    </div>
+    <div class="card accent-gold" onclick="toggleCard(this)">
+      <div class="card-title" style="color:var(--gold)">L-Founders Italia 2025</div>
+      <div class="card-desc">29 campagne, 5.000+ negozi, 50M+ premi, 630M di euro incrementali</div>
+      <div class="card-detail">
+        <table class="info-table">
+          <tr><td>Campagne</td><td style="color:var(--white);font-weight:600">29</td></tr>
+          <tr><td>Punti vendita</td><td style="color:var(--white);font-weight:600">5.000+</td></tr>
+          <tr><td>Premi distribuiti</td><td style="color:var(--white);font-weight:600">50M+</td></tr>
+          <tr><td>Bollini usati</td><td style="color:var(--white);font-weight:600">140M</td></tr>
+          <tr><td>Spedizioni</td><td style="color:var(--white);font-weight:600">18.000</td></tr>
+          <tr><td>Revenue incrementale</td><td style="color:var(--white);font-weight:600">630M euro</td></tr>
+          <tr><td>Team</td><td style="color:var(--white);font-weight:600">~40 persone</td></tr>
+          <tr><td>Ufficio</td><td style="color:var(--white);font-weight:600">Via Decembrio 28, Milano</td></tr>
+          <tr><td>Riconoscimenti</td><td style="color:var(--white);font-weight:600">Promotion Awards 2024/25</td></tr>
+        </table>
+      </div>
+      <div class="expand-hint">Clicca per la lista completa</div>
+    </div>
+    <div class="card accent-teal" onclick="toggleCard(this)">
+      <div class="card-title" style="color:var(--teal)">Mercato GDO italiano</div>
+      <div class="card-desc">29% fedeli, 41% cambiano marca, 53% vogliono brand nuovi — dislealtà crescente</div>
+      <div class="card-detail">
+        <table class="info-table">
+          <tr><td>FMCG 2025</td><td style="color:var(--white);font-weight:600">+2,6% valore, +1,1% volume</td></tr>
+          <tr><td>Share MDD</td><td style="color:var(--white);font-weight:600">32,2% (+0,6pp)</td></tr>
+          <tr><td>Fedeli brand</td><td style="color:var(--white);font-weight:600">Solo 29%</td></tr>
+          <tr><td>Cambiano marca</td><td style="color:var(--white);font-weight:600">41%</td></tr>
+          <tr><td>Vogliono brand nuovi</td><td style="color:var(--white);font-weight:600">53% (+7pp)</td></tr>
+          <tr><td>Promo con lift ridotto</td><td style="color:var(--white);font-weight:600">47%</td></tr>
+          <tr><td>Crescita eComm</td><td style="color:var(--white);font-weight:600">+8,1%</td></tr>
+          <tr><td>Crescita Drug</td><td style="color:var(--white);font-weight:600">+3,5%</td></tr>
+          <tr><td>Crescita Discount</td><td style="color:var(--white);font-weight:600">+3,2%</td></tr>
+        </table>
+      </div>
+      <div class="expand-hint">Clicca per la lista completa</div>
+    </div>
+  </div>
+
+  <div class="quote-box" style="margin-top:2rem">
+    La formula delle campagne (citala casualmente):<br>
+    Investment = 0,3-0,5% del fatturato retailer nel periodo campagne<br>
+    Durata = 14-18 settimane<br>
+    Collezionabilità = calibrata alle abitudini cliente di ogni retailer
+  </div>
+</div>
+
+<!-- ═══════════ SECTION: RED FLAGS ═══════════ -->
+<div class="section" id="sec-redflags">
+  <div class="section-title">Checklist red flag</div>
+  <div class="section-subtitle">Cose da guardare durante il colloquio. Sapere quando spingere e quando andare via.</div>
+
+  <div class="card-grid" style="grid-template-columns:1fr">
+    <div class="card accent-red" onclick="toggleCard(this)">
+      <div class="card-title" style="color:var(--red)">P.IVA sotto 80K lordo</div>
+      <div class="card-role" style="color:var(--red);font-weight:700">DEAL BREAKER</div>
+      <div class="card-desc">Sotto 80K lordo come P.IVA significa che stai prendendo un taglio quando conti TFR, ferie, malattia e copertura maternità. Declina con eleganza.</div>
+      <div class="card-detail">Dì: "Apprezzo la flessibilità, ma dato lo scope del ruolo e le protezioni del lavoro che stai chiedendo di rinunciare, credo che un contratto dipendente sia più appropriato. Sono felice di discutere quella strada."</div>
+    </div>
+    <div class="card accent-orange" onclick="toggleCard(this)">
+      <div class="card-title" style="color:var(--orange)">Il ruolo è puramente operativo</div>
+      <div class="card-role" style="color:var(--orange);font-weight:700">ATTENZIONE</div>
+      <div class="card-desc">Se descrivono solo logistica e coordinamento senza input strategico, chiarisci immediatamente. La JD include "storytelling" e "proposte strategiche."</div>
+      <div class="card-detail">Chiedi: "Mi puoi aiutare a capire lo split strategico vs operativo in questo ruolo? Voglio assicurarmi che posso contribuire al design della campagna e strategia client, non solo esecuzione."</div>
+    </div>
+    <div class="card accent-orange" onclick="toggleCard(this)">
+      <div class="card-title" style="color:var(--orange)">Nessun percorso di crescita chiaro</div>
+      <div class="card-role" style="color:var(--orange);font-weight:700">ATTENZIONE</div>
+      <div class="card-desc">Se non riescono ad articolare dove va il ruolo tra 2-3 anni, quello è una preoccupazione. L-Founders sta crescendo — dovrebbe esserci un percorso.</div>
+      <div class="card-detail">Chiedi: "Dove vedi questo ruolo tra 2 anni? Con il ritmo a cui state crescendo, immagino che la funzione CSS avrà bisogno di scalare significativamente."</div>
+    </div>
+    <div class="card accent-gold" onclick="toggleCard(this)">
+      <div class="card-title" style="color:var(--gold)">Team troppo piccolo per 29+ campagne</div>
+      <div class="card-role" style="color:var(--gold);font-weight:700">CHIARIRE</div>
+      <div class="card-desc">40 persone per 29 campagne è già stretto. Se pianificano di far crescere le campagne senza far crescere il team, chiedilo.</div>
+      <div class="card-detail">Chiedi: "Con 29 campagne nel 2025 e crescita pianificata per il 2026, qual è la roadmap di assunzioni? Voglio capire il team con cui lavorerò."</div>
+    </div>
+    <div class="card accent-gold" onclick="toggleCard(this)">
+      <div class="card-title" style="color:var(--gold)">Nessuna menzione di scope internazionale</div>
+      <div class="card-role" style="color:var(--gold);font-weight:700">CHIARIRE</div>
+      <div class="card-desc">La JD dice "Italia AND Europa." Se la conversazione è tutta Italia-focused, chiedi della componente europea.</div>
+      <div class="card-detail">Chiedi: "Ho notato che il ruolo include coordinamento europeo. Mi puoi raccontare più di come quello funziona giorno per giorno?"</div>
+    </div>
+  </div>
+
+  <div class="success-box" style="margin-top:1.5rem">
+    <strong>Se nessuno di questi flag appare: GREEN LIGHT.</strong> Vai con entusiasmo, confidenza, e la conoscenza che sei la persona più preparata che abbia mai messo piede in quella sala.
+  </div>
+
+  <h3 style="color:var(--green);margin:2rem 0 1rem;font-size:1.1rem;">Segnali positivi da cercare</h3>
+  <div class="card-grid">
+    <div class="card accent-green"><div class="card-desc" style="color:var(--green)">Marco ti ha contattata — reclutamento mirato, non da job board.</div></div>
+    <div class="card accent-green"><div class="card-desc" style="color:var(--green)">Pipeline Nielsen — tre ex-Nielsen nella leadership. Valutano quella provenienza.</div></div>
+    <div class="card accent-green"><div class="card-desc" style="color:var(--green)">Record 2025 — il business prospera, non combatte per sopravvivere.</div></div>
+    <div class="card accent-green"><div class="card-desc" style="color:var(--green)">Backing miliardario — nessun rischio finanziario, risorse profonde.</div></div>
+    <div class="card accent-green"><div class="card-desc" style="color:var(--green)">Percorsi di carriera globali — 35 paesi, spazio per crescita internazionale.</div></div>
+    <div class="card accent-green"><div class="card-desc" style="color:var(--green)">Riconoscimento di settore — Promotion Awards prova che il lavoro è rispettato.</div></div>
+  </div>
+</div>
+
+<script>
+// Navigation
+document.querySelectorAll('.nav button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('sec-' + btn.dataset.section).classList.add('active');
+  });
+});
+
+function toggleCard(el) {
+  el.classList.toggle('expanded');
+}
+
+function toggleTimeline(el) {
+  el.classList.toggle('expanded');
+}
+
+function toggleDecision(el) {
+  el.classList.toggle('expanded');
+}
+
+function togglePhrase(el) {
+  el.classList.toggle('expanded');
+}
+</script>
+</body>
+</html>
