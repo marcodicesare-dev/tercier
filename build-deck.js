@@ -961,10 +961,10 @@ slide11.addText("What I commit", {
 });
 
 const commitments = [
-  "Salary: CHF 4K/mo (wife earns CHF 130K, this works)",
+  "Salary: CHF 4K/mo to start",
   "Escalation: 10 hotels = CHF 8K, 25 = CHF 12K, 50 = CHF 15K",
-  "2% MRR revenue share",
-  "Equity: contribution-based, targeting 38%",
+  "Full-time operator commitment from day one",
+  "Lean company setup: burn stays disciplined until revenue scales",
   "Swiss AG in Zug (11.8% corporate tax)",
 ];
 
