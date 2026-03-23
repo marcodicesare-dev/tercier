@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tercier Financial Simulator</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0A090D; color: #F2F0EB;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            padding: 20px; line-height: 1.5;
+        }
+        .container { max-width: 1400px; margin: 0 auto; }
+        .header { text-align: center; margin-bottom: 24px; }
+        .header h1 { font-family: Georgia, serif; font-size: 36px; color: #E8A84C; letter-spacing: 4px; }
+        .header p { font-size: 13px; color: #A09FA6; margin-top: 4px; }
+
+        .toggle-row { display: flex; gap: 10px; justify-content: center; margin-bottom: 20px; }
+        .toggle-btn {
+            padding: 8px 20px; font-size: 13px; font-weight: 600;
+            border: 2px solid #272630; border-radius: 6px; cursor: pointer;
+            background: #13121A; color: #A09FA6; transition: all .2s; font-family: inherit;
+        }
+        .toggle-btn.active { background: #E8A84C; color: #0A090D; border-color: #E8A84C; }
+        .toggle-btn:hover:not(.active) { border-color: #E8A84C; color: #E8A84C; }
+
+        .controls {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 16px;
+            margin-bottom: 20px; padding: 16px; background: #13121A;
+            border: 1px solid #272630; border-radius: 10px;
+        }
+        .ctrl { display: flex; flex-direction: column; }
+        .ctrl-label { font-size: 10px; color: #A09FA6; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 2px; }
+        .ctrl-val { font-size: 18px; font-weight: 700; color: #E8A84C; font-family: 'Courier New', monospace; margin-bottom: 4px; }
+        input[type=range] { -webkit-appearance: none; width: 100%; height: 5px; background: #272630; border-radius: 3px; outline: none; }
+        input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; background: #E8A84C; border-radius: 50%; cursor: pointer; }
+
+        .kpis { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px; }
+        .kpi { background: #13121A; border: 1px solid #272630; border-radius: 8px; padding: 12px; text-align: center; }
+        .kpi-label { font-size: 10px; color: #A09FA6; text-transform: uppercase; letter-spacing: .5px; }
+        .kpi-val { font-size: 22px; font-weight: 700; font-family: 'Courier New', monospace; margin: 4px 0; }
+        .kpi-sub { font-size: 10px; color: #6B6A72; }
+        .gold { color: #E8A84C; } .green { color: #4CC9A0; } .blue { color: #6B8EE8; }
+        .teal { color: #3AAFB0; } .purple { color: #9B7AE0; } .red { color: #E8636F; }
+
+        .charts { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+        .chart-box { background: #13121A; border: 1px solid #272630; border-radius: 8px; padding: 14px; }
+        .chart-title { font-size: 12px; font-weight: 600; color: #E8A84C; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; }
+        .chart-area { height: 260px; position: relative; }
+        canvas { width: 100% !important; height: 100% !important; }
+
+        .footer { text-align: center; padding-top: 12px; border-top: 1px solid #272630; color: #6B6A72; font-size: 10px; margin-top: 16px; }
+
+        @media (max-width: 1000px) { .charts { grid-template-columns: 1fr; } }
+        @media (max-width: 700px) { .kpis { grid-template-columns: 1fr 1fr; } .controls { grid-template-columns: 1fr 1fr; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="header">
+        <h1>TERCIER</h1>
+        <p>Financial Simulator — Monte Carlo v2 (10,000 sims) + Operational Economics</p>
+    </div>
+
+    <div class="toggle-row">
+        <button class="toggle-btn active" id="btn-op" onclick="setScenario('operator')">Operator-seeded (CHF 120-150K)</button>
+        <button class="toggle-btn" id="btn-angel" onclick="setScenario('angel')">Follow-on angel (+CHF 150-300K)</button>
+    </div>
+
+    <div class="controls">
+        <div class="ctrl">
+            <div class="ctrl-label">Seed capital (CHF)</div>
+            <div class="ctrl-val" id="sv-seed">150,000</div>
+            <input type="range" id="sl-seed" min="100000" max="300000" step="10000" value="150000" oninput="update()">
+        </div>
+        <div class="ctrl">
+            <div class="ctrl-label">ARPU (EUR/mo)</div>
+            <div class="ctrl-val" id="sv-arpu">2,000</div>
+            <input type="range" id="sl-arpu" min="1000" max="5000" step="100" value="2000" oninput="update()">
+        </div>
+        <div class="ctrl">
+            <div class="ctrl-label">Founder salary (CHF/mo)</div>
+            <div class="ctrl-val" id="sv-sal">4,000</div>
+            <input type="range" id="sl-sal" min="0" max="10000" step="500" value="4000" oninput="update()">
+        </div>
+        <div class="ctrl">
+            <div class="ctrl-label">OPEX excl. salary (CHF/mo)</div>
+            <div class="ctrl-val" id="sv-opex">4,530</div>
+            <input type="range" id="sl-opex" min="2000" max="8000" step="100" value="4530" oninput="update()">
+        </div>
+        <div class="ctrl">
+            <div class="ctrl-label">Hotel ramp (months to 10)</div>
+            <div class="ctrl-val" id="sv-ramp">12</div>
+            <input type="range" id="sl-ramp" min="6" max="24" step="1" value="12" oninput="update()">
+        </div>
+        <div class="ctrl">
+            <div class="ctrl-label">Exit multiple (ARR)</div>
+            <div class="ctrl-val" id="sv-exit">5.0x</div>
+            <input type="range" id="sl-exit" min="3.0" max="8.0" step="0.25" value="5.0" oninput="update()">
+        </div>
+    </div>
+
+    <div class="kpis">
+        <div class="kpi"><div class="kpi-label">Monthly burn</div><div class="kpi-val red" id="k-burn">CHF 8,850</div><div class="kpi-sub" id="k-burn-sub">Salary + OPEX + social</div></div>
+        <div class="kpi"><div class="kpi-label">Breakeven at</div><div class="kpi-val gold" id="k-be">5 hotels</div><div class="kpi-sub" id="k-be-sub">Revenue covers all costs</div></div>
+        <div class="kpi"><div class="kpi-label">Runway (0 revenue)</div><div class="kpi-val teal" id="k-runway">17 months</div><div class="kpi-sub" id="k-runway-sub">From seed capital</div></div>
+        <div class="kpi"><div class="kpi-label">Peak cash deficit</div><div class="kpi-val purple" id="k-peak">CHF 64,300</div><div class="kpi-sub" id="k-peak-sub">Month 9</div></div>
+        <div class="kpi"><div class="kpi-label">Surplus at 10 hotels</div><div class="kpi-val green" id="k-surplus">CHF 12,750/mo</div><div class="kpi-sub">Monthly operating profit</div></div>
+        <div class="kpi"><div class="kpi-label">Hotels M36 (P50)</div><div class="kpi-val blue" id="k-h36">115</div><div class="kpi-sub" id="k-h36-sub">P10: 92 — P90: 140</div></div>
+        <div class="kpi"><div class="kpi-label">ARR M36 (P50)</div><div class="kpi-val gold" id="k-arr36">EUR 3.99M</div><div class="kpi-sub" id="k-arr36-sub">P10: 3.11M — P90: 4.94M</div></div>
+        <div class="kpi"><div class="kpi-label">Exit M60 (P50)</div><div class="kpi-val green" id="k-exit60">EUR 45.86M</div><div class="kpi-sub" id="k-exit60-sub">P10: 34.50M — P90: 60.17M</div></div>
+    </div>
+
+    <div class="charts">
+        <div class="chart-box">
+            <div class="chart-title">Monthly P&L by hotel count</div>
+            <div class="chart-area"><canvas id="ch-pl"></canvas></div>
+        </div>
+        <div class="chart-box">
+            <div class="chart-title">Cash position over time (CHF)</div>
+            <div class="chart-area"><canvas id="ch-cash"></canvas></div>
+        </div>
+        <div class="chart-box">
+            <div class="chart-title">Hotel growth — P10 / P50 / P90</div>
+            <div class="chart-area"><canvas id="ch-hotels"></canvas></div>
+        </div>
+        <div class="chart-box">
+            <div class="chart-title">ARR trajectory — P10 / P50 / P90</div>
+            <div class="chart-area"><canvas id="ch-arr"></canvas></div>
+        </div>
+    </div>
+
+    <div class="footer">Tercier Financial Simulator — Monte Carlo v2 data, March 22, 2026 — Internal use only</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+<script>
+// ── CONSTANTS ──
+const FX = 1.08; // EUR→CHF (1 EUR ≈ 1.08 CHF, per business plan)
+const SOCIAL = 0.08; // employer contributions on salary
+
+// ── MONTE CARLO v2 DATA ──
+const OP = {
+    hotels: { M0:[0,0,0], M12:[22,30,39], M18:[36,47,60], M30:[72,90,111], M36:[92,115,140], M60:[178,227,282] },
+    arr:    { M0:[0,0,0], M12:[601869,826013,1099505], M18:[1051217,1395809,1799274], M30:[2347161,2988560,3713580], M36:[3114719,3989548,4940428], M60:[7047228,9208809,11848333] },
+    exit:   [34502349, 45855683, 60165420], defMul: 5.0
+};
+const AN = {
+    hotels: { M0:[0,0,0], M12:[26,35,45], M18:[45,58,73], M30:[95,118,144], M36:[124,154,187], M60:[254,321,401] },
+    arr:    { M0:[0,0,0], M12:[704076,967456,1269099], M18:[1317758,1724431,2192847], M30:[3105495,3917484,4854497], M36:[4238665,5330168,6632199], M60:[10210432,13219788,17124692] },
+    exit:   [50689435, 67390903, 88405125], defMul: 5.15
+};
+const MK = ['M0','M12','M18','M30','M36','M60'];
+const ML = ['0','12','18','30','36','60'];
+
+let scenario = 'operator';
+let charts = {};
+
+function sl(id) { return +document.getElementById(id).value; }
+function base() { return scenario === 'operator' ? OP : AN; }
+
+function fmt(v) { return v >= 1e6 ? (v/1e6).toFixed(2)+'M' : v >= 1e3 ? Math.round(v/1e3)+'K' : Math.round(v).toString(); }
+function fmtCHF(v) { return 'CHF ' + Math.round(v).toLocaleString('de-CH'); }
+
+function update() {
+    const seed = sl('sl-seed');
+    const arpu = sl('sl-arpu');
+    const sal = sl('sl-sal');
+    const opex = sl('sl-opex');
+    const ramp = sl('sl-ramp');
+    const exitMul = sl('sl-exit');
+    const b = base();
+
+    const socialCost = Math.round(sal * SOCIAL);
+    const burn = sal + socialCost + opex;
+    const revPerHotel = Math.round(arpu * FX); // CHF
+    const breakeven = burn > 0 ? Math.ceil(burn / revPerHotel) : 0;
+
+    // Runway with zero revenue
+    const runwayMonths = burn > 0 ? Math.floor(seed / burn) : 999;
+
+    // Month-by-month cash position (with hotel ramp)
+    const months = 24;
+    const cashData = [];
+    let cumCash = 0;
+    let peakDeficit = 0;
+    let peakMonth = 0;
+    for (let m = 1; m <= months; m++) {
+        // Hotels ramp linearly to 10 at rampMonths, then to 20 at 2x ramp
+        let hotels;
+        if (m <= ramp) {
+            hotels = (m / ramp) * 10;
+        } else {
+            hotels = 10 + ((m - ramp) / ramp) * 10;
+        }
+        hotels = Math.min(hotels, 30); // cap at 30 for this view
+        const rev = Math.round(hotels * revPerHotel);
+        const net = rev - burn;
+        cumCash += net;
+        if (cumCash < peakDeficit) { peakDeficit = cumCash; peakMonth = m; }
+        cashData.push({ month: 'M' + m, cumCash, net, hotels: Math.round(hotels) });
+    }
+
+    // Surplus at 10 hotels
+    const surplus10 = 10 * revPerHotel - burn;
+
+    // MC projections
+    const mulF = exitMul / b.defMul;
+    const arpuF = arpu / (b.arr.M36[1] / b.hotels.M36[1] / 12); // ARPU adjustment relative to MC base
+    const h36 = b.hotels.M36;
+    const a36 = b.arr.M36.map(v => v * (arpu / (b.arr.M36[1] / b.hotels.M36[1] / 12)));
+    const exit60 = b.exit.map(v => v * mulF);
+
+    // Update slider displays
+    document.getElementById('sv-seed').textContent = Math.round(seed/1000).toLocaleString('de-CH') + ',000';
+    document.getElementById('sv-arpu').textContent = arpu.toLocaleString('de-CH');
+    document.getElementById('sv-sal').textContent = sal.toLocaleString('de-CH');
+    document.getElementById('sv-opex').textContent = opex.toLocaleString('de-CH');
+    document.getElementById('sv-ramp').textContent = ramp;
+    document.getElementById('sv-exit').textContent = exitMul.toFixed(2) + 'x';
+
+    // Update KPIs
+    document.getElementById('k-burn').textContent = fmtCHF(burn);
+    document.getElementById('k-burn-sub').textContent = 'Salary ' + fmtCHF(sal) + ' + social ' + fmtCHF(socialCost) + ' + OPEX ' + fmtCHF(opex);
+    document.getElementById('k-be').textContent = breakeven + ' hotels';
+    document.getElementById('k-be-sub').textContent = 'At EUR ' + arpu.toLocaleString('de-CH') + '/mo (' + fmtCHF(revPerHotel) + ')';
+    document.getElementById('k-runway').textContent = runwayMonths + ' months';
+    document.getElementById('k-runway-sub').textContent = 'From ' + fmtCHF(seed) + ' seed, 0 revenue';
+    document.getElementById('k-peak').textContent = fmtCHF(Math.abs(peakDeficit));
+    document.getElementById('k-peak-sub').textContent = 'Month ' + peakMonth + (seed + peakDeficit > 0 ? ' — covered by seed' : ' — EXCEEDS SEED');
+    document.getElementById('k-surplus').textContent = fmtCHF(surplus10) + '/mo';
+
+    document.getElementById('k-h36').textContent = Math.round(h36[1]);
+    document.getElementById('k-h36-sub').textContent = 'P10: ' + Math.round(h36[0]) + ' — P90: ' + Math.round(h36[2]);
+    document.getElementById('k-arr36').textContent = 'EUR ' + fmt(a36[1]);
+    document.getElementById('k-arr36-sub').textContent = 'P10: ' + fmt(a36[0]) + ' — P90: ' + fmt(a36[2]);
+    document.getElementById('k-exit60').textContent = 'EUR ' + fmt(exit60[1]);
+    document.getElementById('k-exit60-sub').textContent = 'P10: ' + fmt(exit60[0]) + ' — P90: ' + fmt(exit60[2]);
+
+    // Update charts
+    updateCharts(burn, revPerHotel, breakeven, cashData, b, exitMul);
+}
+
+const GOLD='#E8A84C', GREEN='#4CC9A0', BLUE='#6B8EE8', TEAL='#3AAFB0', PURPLE='#9B7AE0', RED='#E8636F';
+const GRID='rgba(255,255,255,0.06)', LABEL='#A09FA6';
+
+function chartOpts(yFmt) {
+    return {
+        responsive: true, maintainAspectRatio: false, animation: { duration: 150 },
+        plugins: { legend: { labels: { color: LABEL, font: { size: 10 } } } },
+        scales: {
+            x: { ticks: { color: LABEL, font: { size: 10 } }, grid: { color: GRID } },
+            y: { ticks: { color: LABEL, font: { size: 10 }, callback: yFmt || (v=>v) }, grid: { color: GRID } }
+        }
+    };
+}
+
+function initCharts() {
+    charts.pl = new Chart(document.getElementById('ch-pl'), {
+        type: 'bar',
+        data: { labels: [], datasets: [
+            { label: 'Revenue', data: [], backgroundColor: GREEN },
+            { label: 'Costs', data: [], backgroundColor: RED },
+            { label: 'Net P&L', data: [], backgroundColor: GOLD, type: 'line', borderColor: GOLD, borderWidth: 2, pointRadius: 3, fill: false },
+        ]},
+        options: chartOpts(v => v >= 1e3 ? (v/1e3).toFixed(0)+'K' : v)
+    });
+
+    charts.cash = new Chart(document.getElementById('ch-cash'), {
+        type: 'line',
+        data: { labels: [], datasets: [
+            { label: 'Cumulative cash', data: [], borderColor: TEAL, backgroundColor: 'rgba(58,175,176,0.1)', fill: true, borderWidth: 2, pointRadius: 2, tension: 0.3 },
+            { label: 'Seed capital', data: [], borderColor: PURPLE, borderWidth: 1, borderDash: [5,5], pointRadius: 0, fill: false },
+        ]},
+        options: chartOpts(v => v >= 1e3 ? (v/1e3).toFixed(0)+'K' : v <= -1e3 ? (v/1e3).toFixed(0)+'K' : v)
+    });
+
+    charts.hotels = new Chart(document.getElementById('ch-hotels'), {
+        type: 'line',
+        data: { labels: ML, datasets: [
+            { label: 'P90', data: [], borderColor: GOLD, borderWidth: 1, borderDash: [4,4], pointRadius: 2, tension: 0.3, fill: false },
+            { label: 'P50', data: [], borderColor: GOLD, backgroundColor: 'rgba(232,168,76,0.12)', fill: true, borderWidth: 2.5, pointRadius: 3, tension: 0.3 },
+            { label: 'P10', data: [], borderColor: GOLD, borderWidth: 1, borderDash: [4,4], pointRadius: 2, tension: 0.3, fill: false },
+        ]},
+        options: chartOpts()
+    });
+
+    charts.arr = new Chart(document.getElementById('ch-arr'), {
+        type: 'line',
+        data: { labels: ML, datasets: [
+            { label: 'P90', data: [], borderColor: GREEN, borderWidth: 1, borderDash: [4,4], pointRadius: 2, tension: 0.3, fill: false },
+            { label: 'P50', data: [], borderColor: GREEN, backgroundColor: 'rgba(76,201,160,0.12)', fill: true, borderWidth: 2.5, pointRadius: 3, tension: 0.3 },
+            { label: 'P10', data: [], borderColor: GREEN, borderWidth: 1, borderDash: [4,4], pointRadius: 2, tension: 0.3, fill: false },
+        ]},
+        options: chartOpts(v => v >= 1e6 ? (v/1e6).toFixed(1)+'M' : v >= 1e3 ? (v/1e3).toFixed(0)+'K' : v)
+    });
+
+    update();
+}
+
+function updateCharts(burn, revPerHotel, breakeven, cashData, b, exitMul) {
+    // P&L chart: hotels 0 to 25
+    const hotelCounts = [0, 2, 4, 5, 6, 8, 10, 15, 20, 25];
+    charts.pl.data.labels = hotelCounts.map(h => h + ' hotels');
+    charts.pl.data.datasets[0].data = hotelCounts.map(h => h * revPerHotel);
+    charts.pl.data.datasets[1].data = hotelCounts.map(() => -burn);
+    charts.pl.data.datasets[2].data = hotelCounts.map(h => h * revPerHotel - burn);
+    charts.pl.update();
+
+    // Cash position chart
+    const seed = sl('sl-seed');
+    charts.cash.data.labels = cashData.map(d => d.month);
+    charts.cash.data.datasets[0].data = cashData.map(d => d.cumCash);
+    charts.cash.data.datasets[1].data = cashData.map(() => seed);
+    charts.cash.update();
+
+    // Hotels P10/P50/P90
+    const mulF = exitMul / b.defMul;
+    charts.hotels.data.datasets[0].data = MK.map(m => b.hotels[m][2]);
+    charts.hotels.data.datasets[1].data = MK.map(m => b.hotels[m][1]);
+    charts.hotels.data.datasets[2].data = MK.map(m => b.hotels[m][0]);
+    charts.hotels.update();
+
+    // ARR P10/P50/P90
+    charts.arr.data.datasets[0].data = MK.map(m => b.arr[m][2]);
+    charts.arr.data.datasets[1].data = MK.map(m => b.arr[m][1]);
+    charts.arr.data.datasets[2].data = MK.map(m => b.arr[m][0]);
+    charts.arr.update();
+}
+
+function setScenario(s) {
+    scenario = s;
+    document.getElementById('btn-op').classList.toggle('active', s === 'operator');
+    document.getElementById('btn-angel').classList.toggle('active', s === 'angel');
+    const defMul = s === 'operator' ? 5.0 : 5.15;
+    document.getElementById('sl-exit').value = defMul;
+    update();
+}
+
+window.addEventListener('DOMContentLoaded', initCharts);
+</script>
+</body>
+</html>
