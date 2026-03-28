@@ -113,7 +113,7 @@ The hotel sees a virtual commercial team member. Behind the curtain: 250+ fields
 
 ## 4. TRIPADVISOR API: COMPLETE CAPABILITY MAP
 
-**API Key:** `CD2A4F8492AB4DFF8DCD851AE9DA6430`
+**API Key:** `$TRIPADVISOR_API_KEY`
 **Base URL:** `https://api.content.tripadvisor.com/api/v1`
 **Rate Limits:** 50 calls/sec
 **Status:** Verified live — all 5 endpoints tested March 28, 2026, across Zurich, Paris, Dubai, Tokyo, Maldives, Cape Town

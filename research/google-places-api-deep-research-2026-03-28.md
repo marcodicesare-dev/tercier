@@ -916,4 +916,4 @@ All raw API responses cached at:
 
 ---
 
-*Research conducted March 28, 2026. API key: AIzaSyBgWDhQoK0hffyU9IBTovIXGkLeT3GCmS0*
+*Research conducted March 28, 2026. API key: $GOOGLE_PLACES_API_KEY*

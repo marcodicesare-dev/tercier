@@ -94,8 +94,8 @@ The hotelleriesuisse dataset (2,069 hotels) is the SEED, not the scope. Every st
 
 | API | Key | Rate Limit | Cache TTL |
 |-----|-----|-----------|-----------|
-| TripAdvisor | `CD2A4F8492AB4DFF8DCD851AE9DA6430` | 50/sec | 7 days |
-| Google Places | `AIzaSyBgWDhQoK0hffyU9IBTovIXGkLeT3GCmS0` | Per-endpoint quotas | 7 days |
+| TripAdvisor | env: `TRIPADVISOR_API_KEY` | 50/sec | 7 days |
+| Google Places | env: `GOOGLE_PLACES_API_KEY` | Per-endpoint quotas | 7 days |
 
 Cache EVERY response in JSONL. Never re-fetch within TTL. Never make unbounded loops without rate limiting.
 

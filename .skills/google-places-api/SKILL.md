@@ -10,7 +10,7 @@ description: "Provides the complete reference for the Google Places API (New). A
 | Item | Value |
 |------|-------|
 | **Base URL** | `https://places.googleapis.com/v1` |
-| **API Key** | `AIzaSyBgWDhQoK0hffyU9IBTovIXGkLeT3GCmS0` |
+| **API Key** | env: `GOOGLE_PLACES_API_KEY` |
 | **Auth** | Header: `X-Goog-Api-Key: {key}` |
 | **Field Mask** | Header: `X-Goog-FieldMask: {fields}` (REQUIRED on every request) |
 | **Language** | Header: `X-Goog-Api-Language-Code: {lang}` (optional) |
