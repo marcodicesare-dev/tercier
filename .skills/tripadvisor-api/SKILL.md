@@ -10,7 +10,7 @@ description: "Provides the complete reference for the TripAdvisor Content API. A
 | Item | Value |
 |------|-------|
 | **Base URL** | `https://api.content.tripadvisor.com/api/v1` |
-| **API Key** | `CD2A4F8492AB4DFF8DCD851AE9DA6430` |
+| **API Key** | env: `TRIPADVISOR_API_KEY` |
 | **Auth** | Query parameter: `?key={key}` |
 | **Rate Limit** | 50 calls/sec |
 | **Response Format** | JSON |
@@ -30,7 +30,7 @@ description: "Provides the complete reference for the TripAdvisor Content API. A
 
 ```bash
 curl -s "https://api.content.tripadvisor.com/api/v1/location/search?\
-key=CD2A4F8492AB4DFF8DCD851AE9DA6430&\
+key=$TRIPADVISOR_API_KEY&\
 searchQuery=Baur+au+Lac+Zurich&\
 category=hotels&\
 language=en" \
@@ -69,7 +69,7 @@ language=en" \
 
 ```bash
 curl -s "https://api.content.tripadvisor.com/api/v1/location/nearby_search?\
-key=CD2A4F8492AB4DFF8DCD851AE9DA6430&\
+key=$TRIPADVISOR_API_KEY&\
 latLong=47.3769,8.5417&\
 category=hotels&\
 language=en&\
@@ -113,7 +113,7 @@ radiusUnit=km" \
 
 ```bash
 curl -s "https://api.content.tripadvisor.com/api/v1/location/196060/details?\
-key=CD2A4F8492AB4DFF8DCD851AE9DA6430&\
+key=$TRIPADVISOR_API_KEY&\
 language=en&\
 currency=CHF" \
 -H "accept: application/json"
@@ -198,7 +198,7 @@ Each has `name`, `localized_name`, `value` (string count, e.g., "267").
 
 ```bash
 curl -s "https://api.content.tripadvisor.com/api/v1/location/196060/reviews?\
-key=CD2A4F8492AB4DFF8DCD851AE9DA6430&\
+key=$TRIPADVISOR_API_KEY&\
 language=en&\
 limit=5&\
 offset=0" \
@@ -260,7 +260,7 @@ offset=0" \
 
 ```bash
 curl -s "https://api.content.tripadvisor.com/api/v1/location/196060/photos?\
-key=CD2A4F8492AB4DFF8DCD851AE9DA6430&\
+key=$TRIPADVISOR_API_KEY&\
 language=en&\
 source=Management" \
 -H "accept: application/json"
