@@ -374,6 +374,23 @@ Marco Di Cesare's Loamly (AI recommendation intelligence) is directly relevant t
 
 ---
 
+## Related Skills
+
+This skill is the **root of the knowledge graph**. It provides strategic context. For operational/technical depth, load the specialized skills:
+
+```
+tercier-knowledge (THIS SKILL — strategy, product, financials, people)
+  └── hotels-dataset (the data moat — global dataset strategy, schema, phases)
+        └── tripadvisor-api (the primary data source — endpoints, schemas, patterns)
+```
+
+- **TripAdvisor API work:** Load `.skills/tripadvisor-api/SKILL.md`
+- **Dataset pipeline work:** Load `.skills/hotels-dataset/SKILL.md`
+- **Strategic decisions:** This skill alone is sufficient
+- **Full picture:** Load all three
+
+---
+
 ## Using This Skill
 
 Invoke **tercier-knowledge** whenever:
@@ -381,5 +398,6 @@ Invoke **tercier-knowledge** whenever:
 - A user references the hotelleriesuisse dataset or synthetic research
 - Strategic decisions, competitive positioning, or market analysis are in question
 - Tercier context is needed for go-to-market planning, pitch refinement, or product roadmap decisions
+- Understanding WHY the dataset or API work matters to the business
 
-This skill provides the authoritative reference layer for all Tercier work. Pair it with specific research documents and data files for deep-dives.
+This skill provides the authoritative reference layer for all Tercier work. Pair with `tripadvisor-api` and `hotels-dataset` for operational depth.
