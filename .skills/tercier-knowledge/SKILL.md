@@ -45,13 +45,15 @@ Co-Managing Director at JAKALA Digital & Media. Co-founded 77Agency with Amedeo 
 ### AI-Native Team Thesis
 The founding team explicitly chose AI-native development: the initial developer was hired for "highest propensity for AI usage" because they "don't believe in traditional development architectures." This is validated by industry data: small AI-augmented teams (2-3 people with Claude/GPT) now achieve output parity with teams of 10-40 traditional engineers. Claude specifically scores 77.2% on SWE-bench vs GPT-5's 74.9%, with 200K token context windows enabling full codebase uploads. Marco Di Cesare's own output (114 commits in 48hrs on Basquio, entire synthetic research pipeline built in 2 days) demonstrates this thesis in practice.
 
-### Communications Status (as of March 16, 2026)
+### Communications Status (as of March 29, 2026)
 
 - **March 10:** Founding call. Amedeo & Marco Corsaro pitch the opportunity, Marco Di Cesare confirms strong interest.
-- **March 11:** Email exchange. Marco confirms he's all in ("non ho dubbi"). Amedeo's key message: "la domanda più importante è capire se te la senti addosso." Marco asks for hotel chain details — no answer on that.
-- **March 12:** Marco proposes Milan meetup Thu/Fri. No reply.
-- **March 16:** Follow-up sent. Updates on BP work (FELFEL dataset + scraper, market research, financial model with scenarios). Proposes in-person Thu/Fri Milan or call. Awaiting reply.
-- **Note:** Marco Corsaro hasn't replied to any email. Only Amedeo responded once (March 11). Sara (JAKALA assistant) CC'd throughout. Hotel chain details never shared.
+- **March 11:** Email exchange. Marco confirms he's all in ("non ho dubbi"). Amedeo: "la domanda più importante è capire se te la senti addosso."
+- **March 12:** Marco proposes Milan meetup. No reply.
+- **March 16:** Follow-up with BP work. No reply.
+- **March 23:** Corsaro email request.
+- **March 29:** **FORMAL PROPOSAL RECEIVED.** 55-min video call with Amedeo (Corsaro absent — daughter's skiing accident, both aligned). 19-slide deck: company renamed LUMINA, Swiss GmbH Zug, €200K capital, CHF 106K salary, up to 15% equity with performance vesting. Team: Elise (dev), Luisa (PM), Barbara Biffi (ex-Kempinski VP). **Kempinski pilot starting in days (Budapest + Bali).** Counter-proposal in preparation.
+- **Full proposal details:** `knowledge/lumina-proposal-2026-03-29/`
 
 ---
 
