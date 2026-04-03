@@ -125,15 +125,140 @@
 
 ---
 
+## March 22, 2026 — Monte Carlo V2
+
+**Documents:**
+- `research/synthetic-survey/run-2026-03-22-business-plan-monte-carlo-v2/` — Canonical 10K-sim model
+
+**Key Outputs:**
+- **Operator-seeded P50 (M36):** 115 hotels, EUR 3.99M ARR
+- **Operator + follow-on angel P50 (M36):** 154 hotels, EUR 5.33M ARR
+- Supersedes v1 model
+
+---
+
+## March 27, 2026 — State of the Art Research
+
+**Documents:**
+- `research/STATE-OF-THE-ART-RESEARCH-2026-03-27.md` — 900 lines, 100+ sources
+
+**Key Outputs:**
+- Competitive landscape: $2B+ VC mapped, every player with gaps
+- "What Hotels Actually Buy" — agency replacement thesis, 5 monthly deliverables
+- Corsaro & Guffanti thesis distilled from call transcripts
+- Equity & deal benchmarks (Carta 2026 data)
+
+---
+
+## March 28, 2026 — Hotels Dataset Deep Research
+
+**Phase:** Global dataset architecture, API verification, 10-hotel sample
+
+**Documents:**
+- `research/hotels-dataset-deep-research-2026-03-28.md`
+- `research/google-places-api-deep-research-2026-03-28.md`
+- `research/global-data-source-architecture-deep-research-2026-03-28.md`
+- `research/ai-native-context-engineering-state-of-art-march-2026.md`
+- `research/sample-10-hotels-core.csv` (114 cols × 10 hotels)
+- `research/sample-10-hotels-reviews.csv` (80 reviews)
+- `research/sample-10-hotels-competitors.csv`
+- `research/sample-10-hotels-amenities.csv` (854 amenity pairs)
+- `research/sample-10-hotels-lang-ratings.csv`
+
+**Key Outputs:**
+- 7 agent skills built (tercier-knowledge, hotels-dataset, tripadvisor-api, google-places-api, review-intelligence, sales-intelligence, ai-discovery)
+- CLAUDE.md master context with 5 non-negotiables
+- 8 parallel verification agents fact-checked 72 data sources
+- Debunked: Amadeus (150K not 1.5M), Semrush (replaced by SpyFu $89/mo), Wappalyzer (OSS dead)
+- Discovered: SpyFu, GSTC (3,522 certified hotels), Apollo free tier, Germany Knowledge Graph with MCP Server
+- Verified 12-source architecture at ~$820/mo total
+- 240-field intelligence schema per hotel, normalized into 5 tables
+
+---
+
+## March 29, 2026 — Lumina Proposal Received
+
+**Phase:** Formal offer from Amedeo Guffanti
+
+**Event:** 55-minute video call (Marco Di Cesare + Amedeo Guffanti). Corsaro absent — daughter broke her leg skiing. Both founders aligned on proposal.
+
+**Documents:**
+- `knowledge/lumina-proposal-2026-03-29/` — Full package:
+  - `lumina-proposal-deck.pptx` (19 slides)
+  - `amedeo-email-screenshot.png` + `amedeo-email-transcript.md`
+  - `call-transcript-summary.md` (Gemini auto-transcript summary)
+
+**Key Terms:**
+- Company renamed to LUMINA, Swiss GmbH in Zug
+- Capital: €200K (€100K each from Amedeo + Corsaro)
+- Salary: CHF 8,840/month (CHF 106K/year, market value CHF 190K)
+- Equity: up to 15% (25% pool × 60% weight), real equity confirmed (not phantom)
+- Vesting: 12-month cliff, 3 annual tranches tied to performance score
+- BP Y1: 41 hotels, €123K revenue. BP Y4: 341 hotels, €3.3M revenue, €3.8M ARR
+- Exit scenario: 10x ARR at Y4 = €38M valuation
+- Team: Elise (dev), Luisa (PM), Barbara Biffi (ex-Kempinski VP), Barbara Muckermann (MSC Cruises angel)
+- Kempinski pilot: Budapest + Bali, starting in days
+
+**Handshake Agreements (verbal, not yet in writing):**
+1. Real equity, not phantom shares
+2. Overperformance mechanism beyond 15%
+3. Anti-dilution protection
+4. Acceleration on liquidity event
+
+**Open Issues (for counter-proposal):**
+- 15% equity cap is below market for a CEO role — target 20%+
+- Performance score undefined — needs objective KPIs (ARR, hotel count, NRR)
+- No board seat or governance structure mentioned
+- No salary progression triggers
+- No PSOP/ESOP for future hires mentioned
+- Dataset and research IP (this repo) is contributed value not accounted for
+
+**Status:** Counter-proposal being prepared.
+
+---
+
+## Communications Timeline (Updated)
+
+### March 10, 2026 — Founding Call
+- Call between Amedeo Guffanti, Marco Corsaro, and Marco Di Cesare
+- Amedeo and Marco Corsaro pitch the opportunity
+- Marco Di Cesare confirms strong interest
+
+### March 11, 2026 — Email: Confirmation + Next Steps
+- Marco confirms: "non ho dubbi, è il tipo di progetto che voglio fare"
+- Amedeo: "la domanda più importante è capire se te la senti addosso"
+
+### March 12, 2026 — Email: Milan Meetup Proposal
+- Marco proposes in-person meeting. No reply.
+
+### March 16, 2026 — Email: Follow-Up with Business Plan Update
+- Marco shares FELFEL dataset, market research, financial model. No reply.
+
+### March 23, 2026 — Corsaro Email Request
+- Context in `knowledge/2026-03-23-corsaro-email-request.md`
+
+### March 29, 2026 — Video Call + Formal Proposal
+- 55-minute call, Amedeo only (Corsaro's daughter emergency)
+- 19-slide deck + recap email with full terms
+- Company now called LUMINA
+- Kempinski pilot imminent (Budapest + Bali)
+- Counter-proposal in preparation
+
+---
+
 ## Ongoing Reference
 
 All documents and datasets are stored in the repo root and subdirectories. Refer to this timeline to understand the research sequence and how each phase builds on prior work.
 
-**Current Status (as of March 16, 2026):**
+**Current Status (as of March 29, 2026):**
 - Product definition: LOCKED
-- Business plan: COMPLETE
-- Financial model: COMPLETE
-- Synthetic research: COMPLETE
-- Go-to-market strategy: DEFINED
-- Comms: Follow-up sent, awaiting reply from Amedeo & Marco. Proposed Milan meeting Thu/Fri Mar 19-20.
+- Business plan: COMPLETE (v4)
+- Financial model: COMPLETE (Monte Carlo v2)
+- Synthetic research: COMPLETE (272 hotels, 1,632 sims)
+- State of the art research: COMPLETE (900 lines, 100+ sources)
+- Global dataset architecture: COMPLETE (12 verified sources, 240-field schema)
+- 10-hotel global sample: COMPLETE (8 countries, normalized tables)
+- 7 agent skills: BUILT
+- Lumina proposal: RECEIVED — counter-proposal in preparation
+- Contact enrichment: v6 complete (420 resolved), recovery v1 running
 
