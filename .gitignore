@@ -12,3 +12,4 @@ output/
 lumina-ui/.env.local
 lumina-ui/.next/
 lumina-ui/node_modules/
+.next/
