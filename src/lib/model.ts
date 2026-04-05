@@ -302,13 +302,29 @@ export function runModel(a: Assumptions): ModelOutput {
   };
 }
 
-// Get kicker percentage for a given valuation in EUR
-export function getKickerPct(valuationEur: number, a: Assumptions): number {
-  let pct = 0.20;
-  for (const k of a.kicker) {
-    if (valuationEur >= k.thresholdEur) pct = k.percentage;
+// Marco's exit share percentage (pre-dilution).
+// Below €30M: his vested equity (max 20% if fully vested at M36).
+// At exit thresholds: kicker overrides to 23/25/30%.
+// These are PRE-DILUTION. The A/C/M relative split stays fixed through dilution.
+export function getMarcoExitPct(
+  valuationEur: number,
+  vestedPct: number,
+  kicker: Assumptions['kicker'],
+): number {
+  // Check kicker thresholds (skip the 0-threshold entry which has 0%)
+  for (let i = kicker.length - 1; i >= 0; i--) {
+    if (kicker[i].thresholdEur > 0 && valuationEur >= kicker[i].thresholdEur) {
+      return kicker[i].percentage;
+    }
   }
-  return pct;
+  // Below €30M: Marco gets his vested equity
+  return vestedPct;
+}
+
+// Get Marco's vested equity at a given month
+export function getVestedEquity(model: ModelOutput): number {
+  const lastVesting = model.vestingStatus.filter(v => v.met);
+  return lastVesting.length > 0 ? lastVesting[lastVesting.length - 1].cumulative : 0;
 }
 
 // Valuation at ARR multiple
@@ -316,16 +332,14 @@ export function getValuation(arrChf: number, multiple: number): number {
   return Math.round(arrChf * multiple);
 }
 
-// Marco's equity value at exit
+// Marco's equity value at exit (pre-dilution)
 export function getMarcoEquityValue(
   valuationChf: number,
   eurChf: number,
   kicker: Assumptions['kicker'],
+  vestedPct: number,
 ): { percentage: number; value: number } {
   const valuationEur = chfToEur(valuationChf, eurChf);
-  let pct = 0.20;
-  for (const k of kicker) {
-    if (valuationEur >= k.thresholdEur) pct = k.percentage;
-  }
+  const pct = getMarcoExitPct(valuationEur, vestedPct, kicker);
   return { percentage: pct, value: Math.round(valuationChf * pct) };
 }

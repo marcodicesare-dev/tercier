@@ -119,12 +119,14 @@ export const DEFAULT_ASSUMPTIONS: Assumptions = {
   equity: {
     amedeo: 0.40,
     corsaro: 0.40,
-    marcoBase: 0.20,
-    psopCap: 0.05,
+    marcoBase: 0, // Marco starts at 0%, earns through vesting
+    psopCap: 0.05, // off cap table (phantom)
   },
 
+  // Exit kicker: Marco's PRE-DILUTION share at exit. Under €30M he gets his vested %.
+  // Above thresholds, his share increases (pre-dilution, A/C/M relative split stays fixed).
   kicker: [
-    { thresholdEur: 0, percentage: 0.20 },
+    { thresholdEur: 0, percentage: 0 }, // no kicker below €30M — just vested equity
     { thresholdEur: 30_000_000, percentage: 0.23 },
     { thresholdEur: 50_000_000, percentage: 0.25 },
     { thresholdEur: 100_000_000, percentage: 0.30 },

@@ -1,6 +1,6 @@
 import type { Assumptions, MonteCarloParams, MonteCarloResult, MonthData } from './financial-types';
 import type { Scenario } from './financial-types';
-import { runModel, getKickerPct } from './model';
+import { runModel, getMarcoExitPct } from './model';
 import { chfToEur } from './fx';
 import { DEFAULT_ASSUMPTIONS } from './defaults';
 
@@ -172,15 +172,15 @@ export function runMonteCarlo(
 
     // Track funding injections
     let totalCash = 0;
-    let marcoOwnership = 0.20; // base
+    let marcoVested = 0; // starts at 0, earns through vesting
     let totalDilution = 1.0;
 
-    // Apply vesting
+    // Apply vesting — Marco starts at 0%, earns 5%+7%+8% = 20%
     for (const v of result.vestingStatus) {
-      if (v.met) marcoOwnership = v.cumulative;
+      if (v.met) marcoVested = v.cumulative;
     }
 
-    // Apply funding rounds
+    // Apply funding rounds — A/C/M relative split stays fixed, all diluted proportionally
     for (const fr of scenario.fundingRounds) {
       if (fr.timingMonth <= months) {
         totalCash += fr.amountChf;
@@ -188,9 +188,10 @@ export function runMonteCarlo(
       }
     }
 
-    // Anti-dilution floor
-    const antiDilutionFloor = scenario.fundingRounds.length >= 2 ? 0.08 : scenario.fundingRounds.length === 1 ? 0.10 : marcoOwnership;
-    marcoOwnership = Math.max(marcoOwnership * totalDilution, antiDilutionFloor);
+    // Apply dilution to Marco's vested equity, respecting anti-dilution floors
+    const hasSeriesB = scenario.fundingRounds.filter(fr => fr.timingMonth <= months).length >= 2;
+    const floor = hasSeriesB ? 0.08 : scenario.fundingRounds.length >= 1 ? 0.10 : 0;
+    let marcoPostDilution = Math.max(marcoVested * totalDilution, floor);
 
     let hitCashRunout = false;
 
@@ -210,8 +211,11 @@ export function runMonteCarlo(
 
       const arrEur = d.arrEur;
       const valuation = d.arr * 10; // 10x ARR multiple
-      const kickerPct = getKickerPct(chfToEur(valuation, a.eurChf), a);
-      const equityValue = valuation * Math.max(marcoOwnership, kickerPct);
+      // Marco's exit share: kicker if above threshold, else vested % (pre-dilution)
+      const exitPct = getMarcoExitPct(chfToEur(valuation, a.eurChf), marcoVested, a.kicker);
+      // Apply dilution to exit pct (kicker is pre-dilution, then diluted with everyone)
+      const exitPctPostDilution = Math.max(exitPct * totalDilution, floor);
+      const equityValue = valuation * exitPctPostDilution;
 
       arrByMilestone[mKey].push(arrEur);
       cashByMilestone[mKey].push(cashWithFunding);

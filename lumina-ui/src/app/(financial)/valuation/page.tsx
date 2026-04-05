@@ -4,7 +4,7 @@ import { useModel } from '@/components/financial/model-context';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/financial/ui/card';
 import { Badge } from '@/components/financial/ui/badge';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import { getMarcoEquityValue } from '@/lib/model';
+import { getMarcoEquityValue, getVestedEquity } from '@/lib/model';
 import { fmtChf, fmtEur, fmtPct } from '@/lib/format';
 import { chfToEur } from '@/lib/fx';
 
@@ -39,13 +39,21 @@ export default function ValuationPage() {
     };
   });
 
+  // Marco's vested equity at M36 (max before kicker)
+  const vestedPct = getVestedEquity(model);
+
   // Marco's equity at each milestone with kicker
   const equityData = MILESTONES.map(mm => {
     const d = model.monthly[mm - 1];
     const val10x = d.arr * 10;
-    const { percentage, value } = getMarcoEquityValue(val10x, assumptions.eurChf, assumptions.kicker);
+    // Vested % at this milestone
+    const vestedAtMilestone = model.vestingStatus
+      .filter(v => v.month <= mm && v.met)
+      .reduce((_, v) => v.cumulative, 0);
+    const { percentage, value } = getMarcoEquityValue(val10x, assumptions.eurChf, assumptions.kicker, vestedAtMilestone);
     return {
       month: `M${mm}`,
+      vestedPct: vestedAtMilestone,
       kickerPct: percentage,
       equityValue: value,
       companyValuation: val10x,
@@ -58,14 +66,18 @@ export default function ValuationPage() {
   const totalMarketCost = assumptions.months * 19945;
   const sacrifice = totalMarketCost - totalSalary;
 
-  // Cap table evolution
+  // Cap table evolution — CORRECT per counterproposal response Apr 4, 2026
+  // Marco starts at 0%, earns through vesting. A/C/M relative split stays fixed through dilution.
+  // Anti-dilution floors: 10% through Series A, 8% from Series B. PSOP 5% off cap table (phantom).
   const capTableStages = [
-    { stage: 'Founding', marco: 20, amedeo: 40, corsaro: 40, investors: 0, psop: 0 },
-    { stage: 'Vesting M12', marco: 25, amedeo: 37.5, corsaro: 37.5, investors: 0, psop: 0 },
-    { stage: 'Vesting M24', marco: 32, amedeo: 34, corsaro: 34, investors: 0, psop: 0 },
-    { stage: 'Vesting M36', marco: 40, amedeo: 30, corsaro: 30, investors: 0, psop: 0 },
-    { stage: 'Post Series A', marco: 32, amedeo: 24, corsaro: 24, investors: 20, psop: 0 },
-    { stage: 'Post Series B', marco: 26.2, amedeo: 19.7, corsaro: 19.7, investors: 34.4, psop: 0 },
+    { stage: 'Day 1 (unvested)', marco: 0, amedeo: 50, corsaro: 50, investors: 0 },
+    { stage: 'M12 cliff (+5%)', marco: 5, amedeo: 47.5, corsaro: 47.5, investors: 0 },
+    { stage: 'M24 vest (+7%)', marco: 12, amedeo: 44, corsaro: 44, investors: 0 },
+    { stage: 'M36 vest (+8%)', marco: 20, amedeo: 40, corsaro: 40, investors: 0 },
+    { stage: 'Post Series A (20% dilution)', marco: 16, amedeo: 32, corsaro: 32, investors: 20 },
+    { stage: 'Post A+B (18% additional)', marco: 13.1, amedeo: 26.2, corsaro: 26.2, investors: 34.4 },
+    { stage: 'Exit >€30M (kicker → 23%)', marco: 23, amedeo: 38.5, corsaro: 38.5, investors: 0 },
+    { stage: 'Exit >€100M (kicker → 30%)', marco: 30, amedeo: 35, corsaro: 35, investors: 0 },
   ];
 
   return (
@@ -162,7 +174,7 @@ export default function ValuationPage() {
             {equityData.map(d => (
               <div key={d.month} className="flex justify-between text-sm">
                 <span className="text-[var(--color-muted-foreground)]">
-                  {d.month}: {fmtPct(d.kickerPct)} kicker
+                  {d.month}: vested {fmtPct(d.vestedPct)} → exit share {fmtPct(d.kickerPct)}{d.kickerPct > d.vestedPct ? ' (kicker)' : ''}
                 </span>
                 <span className="text-[var(--color-gold)] font-medium">{fmtChf(d.equityValue)} on {fmtChf(d.companyValuation)} valuation</span>
               </div>

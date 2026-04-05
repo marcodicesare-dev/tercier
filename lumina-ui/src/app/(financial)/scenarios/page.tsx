@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/financial
 import { Tabs, TabsList, TabsTrigger } from '@/components/financial/ui/tabs';
 import { Badge } from '@/components/financial/ui/badge';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, BarChart, Bar, Cell } from 'recharts';
-import { runModel, getKickerPct } from '@/lib/model';
+import { runModel } from '@/lib/model';
 import { DEFAULT_ASSUMPTIONS } from '@/lib/defaults';
 import { SCENARIOS } from '@/lib/scenarios';
 import { chfToEur } from '@/lib/fx';
@@ -86,13 +86,19 @@ export default function ScenariosPage() {
     return point;
   });
 
-  // Dilution waterfall
+  // Dilution waterfall — CORRECT equity structure
+  // Marco starts at 0%, vests to 20% at M36. A/C/M split stays fixed through dilution.
+  // Anti-dilution floors: 10% through Series A, 8% from Series B.
   const dilutionData = SCENARIOS.map(s => {
-    let ownership = 0.40; // Marco's max with vesting+kicker
+    let marcoVested = 0.20; // assume fully vested at M36
     for (const fr of s.fundingRounds) {
-      ownership *= (1 - fr.dilution);
+      marcoVested *= (1 - fr.dilution);
     }
-    return { name: s.name, ownership: ownership * 100, id: s.id };
+    // Apply anti-dilution floors
+    const hasSeriesB = s.fundingRounds.length >= 2;
+    const floor = hasSeriesB ? 0.08 : s.fundingRounds.length >= 1 ? 0.10 : 1;
+    marcoVested = Math.max(marcoVested, floor);
+    return { name: s.name, ownership: marcoVested * 100, id: s.id };
   });
 
   const toggle = (id: string) => {
