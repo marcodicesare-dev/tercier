@@ -69,19 +69,33 @@ export function calcPreExitSavings(): { total: number; breakdown: string[] } {
 }
 
 // Zurich wealth tax rates (married, 2026)
-// Source: Steueramt Zürich. Rate on net assets, combined canton + city + federal.
-function zurichWealthTax(netAssets: number): number {
-  // Simplified progressive: ~0.3% on first 5M, ~0.4% on 5-20M, ~0.5% on 20M+
+// Source: PwC Tax Summaries 2026, official Zurich cantonal brackets
+// Basic cantonal tax × 2.14 multiplier (cantonal 0.95 + municipal 1.19)
+function zurichWealthTaxBasic(netAssets: number): number {
+  // Zurich brackets (married, basic cantonal tax):
+  // 0 – 161K: 0%, 161K–403K: 0.05%, 403K–805K: 0.10%,
+  // 805K–1,451K: 0.15%, 1,451K–2,418K: 0.20%, 2,418K–3,385K: 0.25%, 3,385K+: 0.30%
   if (netAssets <= 0) return 0;
+  const brackets: [number, number, number][] = [
+    [0, 161000, 0],
+    [161000, 403000, 0.0005],
+    [403000, 805000, 0.0010],
+    [805000, 1451000, 0.0015],
+    [1451000, 2418000, 0.0020],
+    [2418000, 3385000, 0.0025],
+    [3385000, Infinity, 0.0030],
+  ];
   let tax = 0;
-  if (netAssets <= 5_000_000) {
-    tax = netAssets * 0.003;
-  } else if (netAssets <= 20_000_000) {
-    tax = 5_000_000 * 0.003 + (netAssets - 5_000_000) * 0.004;
-  } else {
-    tax = 5_000_000 * 0.003 + 15_000_000 * 0.004 + (netAssets - 20_000_000) * 0.005;
+  for (const [low, high, rate] of brackets) {
+    if (netAssets <= low) break;
+    const taxable = Math.min(netAssets, high) - low;
+    tax += taxable * rate;
   }
-  return Math.round(tax);
+  return tax;
+}
+
+function zurichWealthTax(netAssets: number): number {
+  return Math.round(zurichWealthTaxBasic(netAssets) * 2.14); // cantonal + municipal multiplier
 }
 
 export function calcScenarios(): ExitScenario[] {
@@ -134,9 +148,9 @@ export function getLifestyle(exitChf: number): LifestyleBudget {
     return {
       travel: 25000,
       dining: 12000,
-      car: 'Keep current car. Maybe a Tesla Model 3 (CHF 42K) as a treat.',
-      carCost: 42000,
-      realEstate: 'Stay in Wiedikon. Absolutely do not upgrade. Your low housing costs are your superpower.',
+      car: 'Keep current car. Maybe a Tesla Model 3 Long Range AWD (CHF 49K) as a treat.',
+      carCost: 49000,
+      realEstate: 'Stay in Wiedikon. Do not upgrade. Your low housing costs are your superpower. A 120m2 in Wiedikon is CHF 2.1-3M now — you already own it.',
       realEstateBudget: 0,
       spontaneity: 'You can do "let\'s go to Lisbon this weekend" — but you notice it in the budget. Maybe 2-3 spontaneous trips a year.',
       giving: 'You pick up dinner for friends without thinking. You fly your parents in economy for visits. Philanthropy is small donations, not a strategy.',
@@ -149,10 +163,10 @@ export function getLifestyle(exitChf: number): LifestyleBudget {
     return {
       travel: 50000,
       dining: 20000,
-      car: 'BMW 5 Series or Porsche Taycan (CHF 95-130K). You can afford it without blinking.',
-      carCost: 110000,
-      realEstate: 'Stay in Wiedikon for now. Could upgrade to a CHF 1.5-2M apartment in Enge or Seefeld if you want, but there\'s no rush.',
-      realEstateBudget: 1800000,
+      car: 'BMW 530i M Sport (CHF 90K) or Porsche Taycan GTS (CHF 160K). You can afford it without blinking.',
+      carCost: 130000,
+      realEstate: 'Stay in Wiedikon for now. Could upgrade to Enge (CHF 2.2-3.1M for 120m2) or Seefeld (CHF 2.3-3.2M). No rush — your current setup is already solid.',
+      realEstateBudget: 2700000,
       spontaneity: '"Let\'s fly to Lisbon" is a yes without hesitation. You book business class for any flight over 4 hours. You stop checking restaurant prices.',
       giving: 'You casually pick up dinner for 8 at CHF 2K without thinking. You fly parents business class to Zurich. You give CHF 5-10K/yr to causes you care about.',
       feel: 'You\'re wealthy. Not "fuck you" money, but "I don\'t need to work" money. A CHF 500 jacket — zero thought. A CHF 5K watch — sure, why not. A CHF 50K car upgrade — a decision but not a stressful one. You fly business class without a second thought.',
@@ -164,10 +178,10 @@ export function getLifestyle(exitChf: number): LifestyleBudget {
     return {
       travel: 100000,
       dining: 35000,
-      car: 'Porsche 911 (CHF 165K) or Taycan Turbo S (CHF 195K). Or both.',
-      carCost: 180000,
-      realEstate: 'Upgrade to a CHF 2.5-3.5M apartment in Seefeld or Zürichberg. Buy a vacation place in Engadin (CHF 1.5-2M for a nice chalet in Pontresina) or Ticino (CHF 1-1.5M in Ascona).',
-      realEstateBudget: 5000000,
+      car: 'Porsche 911 Carrera S (CHF 176K) or Taycan Turbo GT (CHF 250K). Or both.',
+      carCost: 210000,
+      realEstate: 'Upgrade to Seefeld (CHF 2.5-3.2M for 120m2) or Zürichberg 150m2 (CHF 3-5M). Buy a vacation place in Engadin — Pontresina (CHF 1.7-2.4M) or St. Moritz (CHF 2.4-3.2M). Or Ascona (CHF 1.1-1.6M).',
+      realEstateBudget: 6000000,
       spontaneity: 'Completely unrestricted. "Let\'s do two weeks in Japan, Aman Tokyo and ryokans, business class" — yes, that\'s CHF 25K and you don\'t feel it. You rent villas, not hotel rooms.',
       giving: 'You gift experiences freely — fly the whole family somewhere nice, rent a villa for 12 people in Sardinia. Philanthropy becomes meaningful: CHF 50-100K/yr to things you care about.',
       feel: 'You\'re wealthy, full stop. A CHF 3M apartment upgrade is a decision, not a dream. Money is a tool. You never think about restaurant prices, flight classes, or whether you "should" buy something under CHF 10K. The psychological shift is real: you\'re making choices based on what you WANT, not what you can afford.',
@@ -179,10 +193,10 @@ export function getLifestyle(exitChf: number): LifestyleBudget {
     return {
       travel: 150000,
       dining: 50000,
-      car: 'Whatever you want. Porsche 911 Turbo S (CHF 280K), keep a second car for fun. It\'s noise.',
-      carCost: 280000,
-      realEstate: 'Buy a premium apartment in Zürichberg or Seefeld (CHF 3-5M). Plus a vacation property — Engadin chalet (CHF 2-3M) or Italian lake (Como, CHF 1.5-2.5M). Total real estate portfolio: CHF 6-8M.',
-      realEstateBudget: 7000000,
+      car: 'Whatever you want. Porsche 911 Turbo S (CHF 310K), keep a daily driver. It\'s noise.',
+      carCost: 310000,
+      realEstate: 'Premium Zürichberg 150m2 (CHF 3-5M) or Seefeld penthouse. Plus vacation: Engadin chalet (CHF 2-3M in St. Moritz) AND Como waterfront (EUR 600K-1.2M). Total real estate portfolio: CHF 7-9M.',
+      realEstateBudget: 8000000,
       spontaneity: 'Everything is a yes. First class to Tokyo? Sure. Private chef for a dinner party? Why not. You\'re not checking prices on anything under CHF 50K.',
       giving: 'You can buy a small building. You set up a small foundation or donor-advised fund. Philanthropy is strategic, not performative. You gift generously to family without any thought.',
       feel: 'Money is a tool, not a constraint. Your problems are about meaning, legacy, and what to do with your time — not money. You could buy a small apartment building as an investment. You\'re in the top 1% of wealth in Switzerland.',
@@ -194,10 +208,10 @@ export function getLifestyle(exitChf: number): LifestyleBudget {
   return {
     travel: 200000,
     dining: 60000,
-    car: 'Irrelevant. Buy whatever. Porsche 911 GT3 (CHF 240K), keep a daily driver. Cars are rounding errors.',
-    carCost: 350000,
-    realEstate: 'Premium Zürichberg villa or top-floor Seefeld penthouse (CHF 5-8M). Vacation home in Engadin AND Italian coast. Total real estate: CHF 8-12M.',
-    realEstateBudget: 10000000,
+    car: 'Irrelevant. Porsche 911 Carrera GTS (CHF 210K) or Turbo S (CHF 310K). Keep a Tesla M3 (CHF 49K) for daily. Cars are rounding errors.',
+    carCost: 360000,
+    realEstate: 'Premium Zürichberg villa or Seefeld penthouse (CHF 5-8M). Vacation home in St. Moritz (CHF 2.5-3.5M) AND Italian coast — Liguria (EUR 500K-1M) or Como waterfront (EUR 800K-1.5M). Total real estate: CHF 9-13M.',
+    realEstateBudget: 11000000,
     spontaneity: 'First class everywhere. Private jet for special occasions (CHF 15-25K one-way Europe). You literally cannot spend faster than your passive income generates.',
     giving: 'You\'re in the top 0.1% in Switzerland. Set up a proper foundation. Gift freely — fly 20 people to your birthday in Sardinia, fund a scholarship, back causes with CHF 100K+ checks.',
     feel: 'Your problems are about meaning, not money. The existential question hits harder here: "I can do literally anything, so what do I actually want?" This is where most founders discover that money was never the goal — the building was. CHF 40M in Zurich means you never need to think about money again, for generations.',
@@ -214,17 +228,17 @@ export interface TravelExample {
 
 export function getTravelExamples(exitChf: number): TravelExample[] {
   const base: TravelExample[] = [
-    { trip: '3 weeks Japan', details: 'Business class ZRH-TYO (CHF 6K×2), mix of ryokans (CHF 400-800/night) and city hotels', cost: exitChf >= 20_000_000 ? 30000 : 18000 },
-    { trip: '2 weeks Sardinia (summer)', details: exitChf >= 20_000_000 ? 'Villa rental (CHF 8-15K/week), boat charter 2 days (CHF 3K)' : 'Nice Airbnb (CHF 3-5K/week), day boat rental', cost: exitChf >= 20_000_000 ? 25000 : 12000 },
-    { trip: 'Ski week Verbier', details: 'Chalet rental (CHF 5-15K/week depending on tier), lift passes (CHF 500pp)', cost: exitChf >= 20_000_000 ? 18000 : 8000 },
-    { trip: 'Long weekends (×4)', details: 'Paris, Lisbon, Barcelona, London — flights + 2 nights nice hotel', cost: exitChf >= 10_000_000 ? 12000 : 6000 },
+    { trip: '3 weeks Japan', details: `Business class ZRH-TYO (CHF 7K×2), ryokans in Kyoto CHF 800/night (Tawaraya), Aman Tokyo CHF 4,500/night × 3`, cost: exitChf >= 20_000_000 ? 35000 : 20000 },
+    { trip: '2 weeks Sardinia (summer)', details: exitChf >= 20_000_000 ? 'Villa rental (CHF 5-8K/week), boat charter 2 days (CHF 3K)' : 'Nice villa (CHF 3.5-5K/week), day boat rental (CHF 1.5K)', cost: exitChf >= 20_000_000 ? 22000 : 12000 },
+    { trip: 'Ski week Verbier', details: 'Chalet 4-bed (CHF 10-12K/week), 4 Vallées lift passes (CHF 1,300/2 adults), ski rental, dining', cost: exitChf >= 20_000_000 ? 18000 : 16000 },
+    { trip: 'Long weekends (×4)', details: 'Paris, Lisbon (easyJet CHF 130 RT), Barcelona, London — flights + 2 nights nice hotel', cost: exitChf >= 10_000_000 ? 12000 : 6000 },
   ];
 
   if (exitChf >= 20_000_000) {
-    base.push({ trip: 'Maldives / St. Barths', details: 'Cheval Blanc St-Barths (CHF 4-5K/night × 7) or Soneva Fushi', cost: 35000 });
+    base.push({ trip: 'St. Barths (1 week)', details: 'Cheval Blanc St-Barths (CHF 7,500/night × 7) + business class flights', cost: 60000 });
   }
   if (exitChf >= 30_000_000) {
-    base.push({ trip: 'Patagonia / New Zealand', details: '3 weeks, lodges, private guides, business class', cost: 40000 });
+    base.push({ trip: 'Patagonia / New Zealand', details: '3 weeks, luxury lodges, private guides, business class ZRH-SCL (CHF 6K×2)', cost: 45000 });
   }
 
   return base;

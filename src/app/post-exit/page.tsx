@@ -135,9 +135,9 @@ export default function PostExitPage() {
             <div>
               <h3 className="text-sm font-bold text-[var(--color-terracotta)] mb-2">Dining — {fmtChf(lifestyle.dining)}/year</h3>
               <div className="text-xs text-[var(--color-muted-foreground)] space-y-1">
-                <p>Casual lunch: CHF 25-35 (Hiltl, Tibits, neighborhood spots)</p>
-                <p>Nice dinner out: CHF 150-250/couple (Kronenhalle, Brasserie Lipp, Razzia)</p>
-                <p>Fine dining: CHF 400-600/couple (The Restaurant, Pavyllon, Widder)</p>
+                <p>Casual lunch: CHF 30-40pp (Hiltl buffet CHF 28-38, bistro lunch CHF 25-35)</p>
+                <p>Nice dinner out: CHF 200-300/couple (Kronenhalle mains CHF 45-65 + wine ~CHF 150pp, Brasserie Lipp ~CHF 130pp)</p>
+                <p>Fine dining: CHF 600-900/couple (The Restaurant tasting CHF 320 + wine pairing CHF 180, Widder tasting CHF 280 + pairing CHF 160)</p>
                 <p>Frequency: {s.exitProceeds >= 20_000_000 ? '2-3 nice dinners/week, fine dining monthly' : s.exitProceeds >= 10_000_000 ? '1-2 nice dinners/week, fine dining every few months' : 'Nice dinner weekly, fine dining for occasions'}</p>
               </div>
             </div>
@@ -155,6 +155,17 @@ export default function PostExitPage() {
             </div>
           </div>
 
+          {/* Wellness */}
+          <div>
+            <h3 className="text-sm font-bold text-[var(--color-terracotta)] mb-2">Wellness & Fitness</h3>
+            <div className="text-xs text-[var(--color-muted-foreground)] space-y-0.5">
+              <p>Personal trainer: CHF 120-180/session. 2x/week = ~CHF 15,600/yr</p>
+              <p>Premium gym (David Lloyd/Aspria tier): CHF 250-350/mo = ~CHF 3,300/yr</p>
+              <p>Dolder Grand Spa day: CHF 290 (weekday) / CHF 460 (weekend)</p>
+              <p>{s.exitProceeds >= 20_000_000 ? 'At your level: PT 2x/week, premium gym, quarterly spa days. Total ~CHF 21K/yr. Feels like nothing.' : s.exitProceeds >= 10_000_000 ? 'PT 2x/week and premium gym. Total ~CHF 19K/yr. Comfortable spend.' : 'PT 1-2x/week, regular gym. Total ~CHF 10-15K/yr. Budget consciously.'}</p>
+            </div>
+          </div>
+
           {/* Real Estate */}
           <div>
             <h3 className="text-sm font-bold text-[var(--color-terracotta)] mb-2">The Apartment Question</h3>
@@ -163,13 +174,15 @@ export default function PostExitPage() {
               <div className="mt-2 text-xs text-[var(--color-muted-foreground)]">
                 <p>Zurich property reference prices (2026):</p>
                 <ul className="list-disc list-inside mt-1 space-y-0.5">
-                  <li>Wiedikon 120m2: CHF 1.2-1.6M</li>
-                  <li>Enge 120m2: CHF 1.5-2.2M</li>
-                  <li>Seefeld 120m2: CHF 1.8-2.8M</li>
-                  <li>Zürichberg 150m2: CHF 3-5M</li>
-                  <li>Engadin chalet (Pontresina): CHF 1.5-3M</li>
-                  <li>Ticino apartment (Ascona): CHF 1-2M</li>
-                  <li>Italian coast (Liguria/Como): CHF 800K-2.5M</li>
+                  <li>Wiedikon 120m2: CHF 2.1-3.0M (avg CHF 21,300/m2)</li>
+                  <li>Enge 120m2: CHF 2.2-3.1M (avg CHF 21,400/m2)</li>
+                  <li>Seefeld 120m2: CHF 2.3-3.2M (avg CHF 22,500/m2)</li>
+                  <li>Zürichberg 150m2: CHF 3.1-5M (avg CHF 20,600-23,500/m2)</li>
+                  <li>St. Moritz: CHF 2.4-3.2M (CHF 20-27K/m2)</li>
+                  <li>Pontresina: CHF 1.7-2.4M (CHF 14-20K/m2)</li>
+                  <li>Ascona (Ticino): CHF 1.1-1.6M (avg CHF 10,900/m2)</li>
+                  <li>Lake Como waterfront: EUR 600K-1.2M (EUR 10-15K/m2)</li>
+                  <li>Liguria: EUR 420-720K (EUR 3.5-6K/m2, Portofino 8-15K)</li>
                 </ul>
               </div>
             )}
