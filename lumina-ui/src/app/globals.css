@@ -29,3 +29,62 @@ a {
 ::selection {
   background: rgba(193, 127, 89, 0.22);
 }
+
+/* Financial dashboard dark theme */
+.financial-theme {
+  --background: #1A120B;
+  --foreground: #F5EFE6;
+  --card: #2A2018;
+  --card-foreground: #F5EFE6;
+  --popover: #2A2018;
+  --popover-foreground: #F5EFE6;
+  --primary: #C17F59;
+  --primary-foreground: #1A120B;
+  --secondary: #8B4A2B;
+  --secondary-foreground: #F5EFE6;
+  --muted: #3A3028;
+  --muted-foreground: #A89A8C;
+  --accent: #C9A96E;
+  --accent-foreground: #1A120B;
+  --destructive: #DC2626;
+  --border: #3A3028;
+  --input: #3A3028;
+  --ring: #C17F59;
+  --chart-1: #C17F59;
+  --chart-2: #C9A96E;
+  --chart-3: #8B4A2B;
+  --chart-4: #6B8E5A;
+  --chart-5: #5B7FB5;
+  --radius: 0.625rem;
+  --sidebar: #140E08;
+  --sidebar-foreground: #F5EFE6;
+  --sidebar-primary: #C17F59;
+  --sidebar-primary-foreground: #1A120B;
+  --sidebar-accent: #2A2018;
+  --sidebar-accent-foreground: #F5EFE6;
+  --sidebar-border: #3A3028;
+  --sidebar-ring: #C17F59;
+  --color-terracotta: #C17F59;
+  --color-deep-terracotta: #8B4A2B;
+  --color-gold: #C9A96E;
+  --color-ink: #1A120B;
+  --color-cream: #F5EFE6;
+  --color-ink-light: #2A2018;
+  --color-ink-lighter: #3A3028;
+  --color-muted-foreground: #A89A8C;
+}
+
+.financial-theme ::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.financial-theme ::-webkit-scrollbar-track {
+  background: #1A120B;
+}
+.financial-theme ::-webkit-scrollbar-thumb {
+  background: #3A3028;
+  border-radius: 3px;
+}
+.financial-theme ::-webkit-scrollbar-thumb:hover {
+  background: #C17F59;
+}

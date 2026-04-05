@@ -1,0 +1,134 @@
+{
+  "research_date": "2026-04-05",
+  "methodology_note": "Data compiled from Carta State of Private Markets Q3 2025, SaaS Capital Index (Jan 2025, Aug 2025), SaaS Capital Annual Survey (1,000+ private B2B SaaS companies), TheSaaSCFO Series A metrics, and verified hospitality tech funding rounds.",
+
+  "series_a": {
+    "median_round_size_usd": "10M-15M",
+    "median_pre_money_usd_saas": "60M",
+    "yoy_change": "+19% (from $44.5M in Q3 2024 to $60M in Q3 2025)",
+    "typical_arr_at_series_a_usd": "1.5M-3M",
+    "typical_arr_multiple": "15x-40x ARR",
+    "dilution_range_pct": "15-25%",
+    "time_from_founding_months": "18-36",
+    "key_metrics_expected": {
+      "yoy_growth": "2x-3x for top tier",
+      "gross_margin": "70%+",
+      "nrr": "110-120%+",
+      "burn_multiple": "<2.0x",
+      "cac_payback_months": "<18"
+    },
+    "vertical_ai_premium": "VCs 'paying up' for vertical AI. Winner-take-all dynamics drive higher valuations.",
+    "source": "Carta SaaS Industry Spotlight Q3 2025, TheSaaSCFO, Mercury Fund"
+  },
+
+  "series_b": {
+    "median_round_size_usd": "25M-40M",
+    "median_pre_money_usd_saas": "175M",
+    "yoy_change": "+38% (from ~$127M in Q3 2024 to $175M in Q3 2025)",
+    "typical_arr_at_series_b_usd": "5M-15M",
+    "typical_arr_multiple": "12x-25x ARR",
+    "dilution_range_pct": "15-20%",
+    "source": "Carta SaaS Industry Spotlight Q3 2025"
+  },
+
+  "series_c": {
+    "median_round_size_usd": "50M-100M",
+    "total_series_c_saas_funding_q3_2025": "$2.2B (+16% YoY, highest quarterly total in 3 years)",
+    "median_pre_money_usd_saas": "451.1M",
+    "typical_arr_at_series_c_usd": "20M-50M",
+    "typical_arr_multiple": "10x-20x ARR",
+    "dilution_range_pct": "10-15%",
+    "profitability_expectations": "Path to profitability expected. 46% of equity-backed are breakeven/profitable vs 85% of bootstrapped.",
+    "source": "Carta SaaS Industry Spotlight Q3 2025, SaaS Capital Survey 2025"
+  },
+
+  "overall_market_2025": {
+    "total_saas_funding_first_3_quarters": "$28.2B (+25% vs same period 2024)",
+    "projected_annual_saas_funding": "~$40B (approaching 2022's $40.5B record)",
+    "saas_share_of_total_vc": "33%",
+    "down_round_rate": "17% in Q3 2025 (lowest in 3 years)"
+  },
+
+  "valuation_multiples_private_saas": {
+    "public_saas_median_arr_multiple_jan_2025": "7.0x",
+    "private_saas_predicted_bootstrapped": "4.8x ARR",
+    "private_saas_predicted_equity_backed": "5.3x ARR",
+    "top_10_public_saas_median": "14.2x ARR",
+    "new_normal_range": "6.0x-8.0x"
+  },
+
+  "bootstrapped": {
+    "self_sustaining_arr_usd": "2M-3M minimum, 5M+ comfortable",
+    "typical_growth_rate_yoy": "23% median (vs 25% equity-backed)",
+    "exit_multiple_predicted": "4.8x ARR (vs 5.3x equity-backed)",
+    "profitability": "85% operate within 2ppt of breakeven or profitable",
+    "company_longevity_over_10_years": "57% (vs 46% equity-backed)",
+    "debt_alternative": {
+      "facility_size": "$2M-$20M",
+      "multiple_of_mrr": "5x-8x MRR",
+      "interest_rate": "13%-16%"
+    }
+  },
+
+  "hospitality_tech": {
+    "total_vc_ai_hospitality_2025": "$2B+ (Forbes)",
+    "investment_surge": "250% increase in 2025",
+    "recent_rounds": [
+      {"company": "Mews", "round": "Series D", "amount_usd": "300M", "valuation_usd": "2.5B", "date": "Jan 2026"},
+      {"company": "Canary Technologies", "round": "Series D", "amount_usd": "80M", "valuation_usd": "600M", "date": "Jun 2025"},
+      {"company": "Duve", "round": "Series B", "amount_usd": "60M", "date": "Dec 2025"},
+      {"company": "RoomPriceGenie", "round": "Growth", "amount_usd": "75M", "date": "Jan 2025"},
+      {"company": "Gathern", "round": "Series B", "amount_usd": "72M", "valuation_usd": "266M", "date": "Aug 2025"},
+      {"company": "Navan", "round": "IPO", "amount_usd": "923M", "date": "Oct 2025"}
+    ],
+    "acquisitions": [
+      {"acquirer": "DoorDash", "target": "SevenRooms", "amount_usd": "1.2B", "date": "May 2025"},
+      {"acquirer": "RateGain", "target": "Sojern", "amount_usd": "250M", "date": "Oct 2025"},
+      {"acquirer": "Flywire", "target": "Sertifi", "amount_usd": "330M", "date": "Feb 2025"},
+      {"acquirer": "Thoma Bravo", "target": "Olo", "amount_usd": "2B", "date": "Jul 2025"}
+    ],
+    "valuation_multiples": "5x-10x ARR general, 15-20x for AI-native (Mews implied)",
+    "vertical_discount_or_premium": "Slight discount historically (10-20% below horizontal SaaS), but AI-powered hospitality tech closing the gap in 2025-2026"
+  },
+
+  "key_metrics_2026": {
+    "burn_multiple": {
+      "excellent": "<1.0x",
+      "good": "1.0x-1.5x",
+      "acceptable_early": "1.5x-2.0x",
+      "concerning": ">2.0x"
+    },
+    "rule_of_40": {
+      "public_saas_median": "13%",
+      "series_c_target": "40%+",
+      "top_companies_target": "Rule of 60"
+    },
+    "nrr_benchmarks": {
+      "below_90": "Red flag",
+      "90_100": "Acceptable SMB",
+      "110_120": "Good / Series A expectation",
+      "120_plus": "Top tier / best in class",
+      "correlation": "Highest NRR = 83% higher median growth"
+    },
+    "default_alive": {
+      "cash_runway_preferred": "18+ months",
+      "note": "VCs want default alive even if company plans to raise"
+    }
+  },
+
+  "tercier_positioning": {
+    "conservative_series_a": {"arr_usd": "1.5M", "multiple": "20x", "valuation_usd": "30M"},
+    "base_case_series_a": {"arr_usd": "2.5M", "multiple": "25x", "valuation_usd": "62.5M"},
+    "ai_premium_series_a": {"arr_usd": "3M", "multiple": "30x", "valuation_usd": "90M"}
+  },
+
+  "sources": [
+    {"title": "SaaS Industry Spotlight Q3 2025", "publisher": "Carta"},
+    {"title": "State of Private Markets Q3 2025", "publisher": "Carta"},
+    {"title": "2025 Private SaaS Company Valuations", "publisher": "SaaS Capital"},
+    {"title": "2025 Benchmarking Private SaaS Company Growth Rates", "publisher": "SaaS Capital"},
+    {"title": "Essential SaaS Metrics for a Series A Fundraise", "publisher": "TheSaaSCFO"},
+    {"title": "2025 SaaS Benchmarks Report", "publisher": "Kyle Poyar / Growth Unhinged"},
+    {"title": "The SaaS VC Report 2025", "publisher": "SaaSRise"}
+  ]
+}
