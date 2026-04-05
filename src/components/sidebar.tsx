@@ -10,6 +10,7 @@ import {
   BarChart3,
   TrendingUp,
   MapPin,
+  Sunset,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useModel } from './model-context';
@@ -24,6 +25,7 @@ const NAV = [
   { href: '/montecarlo', label: 'Monte Carlo', icon: BarChart3 },
   { href: '/valuation', label: 'Valuation & Exit', icon: TrendingUp },
   { href: '/zug-vs-zurich', label: 'Zug vs Zurich', icon: MapPin },
+  { href: '/post-exit', label: 'Post-Exit Life', icon: Sunset },
 ];
 
 export function Sidebar() {
