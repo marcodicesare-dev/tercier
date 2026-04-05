@@ -100,7 +100,10 @@ function zurichWealthTax(netAssets: number): number {
 
 export function calcScenarios(): ExitScenario[] {
   const savings = calcPreExitSavings().total;
-  const wifeNetSalary = 105000; // CHF ~155K gross → ~105K net (married, Zurich)
+  // Wife: CHF 140K (2026) + 2.5%/yr → CHF 154.5K gross by mid-2030
+  // Zurich married: AHV 5.3% + ALV 1.1% + BVG ~4.5K + income tax ~16-18% effective on her portion
+  // Net: ~CHF 117K at exit year
+  const wifeNetSalary = 117000;
 
   const exits = [5_000_000, 10_000_000, 20_000_000, 30_000_000, 40_000_000];
   const labels = ['A', 'B', 'C', 'D', 'E'];
@@ -156,9 +159,9 @@ export function getLifestyle(exitChf: number): LifestyleBudget {
       realEstateBudget: 0,
       spontaneity: '"Let\'s go to Lisbon this weekend" — yes, every time (easyJet CHF 130 RT + hotel CHF 400). You were already doing this. Now you just don\'t check the bank account after. 4-5 spontaneous trips a year, easy.',
       giving: 'You pick up dinner for 8 (CHF 2K at Kronenhalle) without thinking. You fly your parents business class to visit (CHF 3K RT from Rome). Philanthropy: CHF 5-10K/yr targeted donations.',
-      feel: 'You\'re rich by any normal standard — but not "Zurich rich." CHF 5M generates CHF 265K/yr passive at 5%. Add wife\'s CHF 105K and you have CHF 370K/yr without working. That\'s more than most Swiss households earn. A CHF 500 jacket — zero thought. A CHF 5K weekend trip — sure. A CHF 50K splurge — you pause and think. You\'re free from financial anxiety, but you\'re not lavish.',
+      feel: 'You\'re rich by any normal standard — but not "Zurich rich." CHF 5M generates CHF 265K/yr passive at 5%. Add wife\'s CHF 117K and you have CHF 382K/yr without working. That\'s more than most Swiss households earn. A CHF 500 jacket — zero thought. A CHF 5K weekend trip — sure. A CHF 50K splurge — you pause and think. You\'re free from financial anxiety, but you\'re not lavish.',
       angelBudget: 500000,
-      recommendation: 'BUILD AGAIN or THE BARBELL. CHF 370K/yr passive + wife is comfortable but not set-for-generations. You have 2-3 years of runway to figure out what\'s next without panic. Best play: take 6 months off (travel, decompress), then build company #2 with CHF 200-300K self-funded seed. Your credibility is 10x higher now. Or: 2-3 advisory boards (CHF 50-80K each) + angel investing + keep one day/week for a side project.',
+      recommendation: 'BUILD AGAIN or THE BARBELL. CHF 382K/yr passive + wife is comfortable but not set-for-generations. You have 2-3 years of runway to figure out what\'s next without panic. Best play: take 6 months off (travel, decompress), then build company #2 with CHF 200-300K self-funded seed. Your credibility is 10x higher now. Or: 2-3 advisory boards (CHF 50-80K each) + angel investing + keep one day/week for a side project.',
     };
   }
   if (exitChf <= 10_000_000) {
@@ -171,9 +174,9 @@ export function getLifestyle(exitChf: number): LifestyleBudget {
       realEstateBudget: 2700000,
       spontaneity: 'Completely unrestricted for anything under CHF 5K. Business class on every flight over 3 hours. "Let\'s do 10 days in Japan" — yes, booked by tomorrow. You stop looking at restaurant prices entirely.',
       giving: 'Dinner for 10 at a nice restaurant (CHF 3K)? Just sign the check. Parents in business class? Obviously. You start giving CHF 10-20K/yr to causes, and it doesn\'t register as a sacrifice.',
-      feel: 'This is "I don\'t need to work, ever" money. CHF 530K/yr passive + wife\'s CHF 105K = CHF 635K/yr. In Zurich, that puts you in the top 5% of household income WITHOUT working. A CHF 500 jacket is irrelevant. A CHF 5K watch — sure. A CHF 50K car upgrade — yes. CHF 100K on a renovation — a project, not a stress. You fly business everywhere without a thought. The psychology shifts: money is a resource, not a constraint.',
+      feel: 'This is "I don\'t need to work, ever" money. CHF 530K/yr passive + wife\'s CHF 117K = CHF 647K/yr. In Zurich, that puts you in the top 5% of household income WITHOUT working. A CHF 500 jacket is irrelevant. A CHF 5K watch — sure. A CHF 50K car upgrade — yes. CHF 100K on a renovation — a project, not a stress. You fly business everywhere without a thought. The psychology shifts: money is a resource, not a constraint.',
       angelBudget: 1000000,
-      recommendation: 'THE BARBELL. This is the sweet spot where you have fuck-you money AND enough to take risks. CHF 635K/yr passive means zero pressure. Best play: take a real year off, then 80% of time on low-burn activities (2-3 advisory boards at CHF 50-80K each, 10 angel bets at CHF 100K). Keep 20% for a high-conviction project. When the right idea hits, you can self-fund to PMF without raising a cent.',
+      recommendation: 'THE BARBELL. This is the sweet spot where you have fuck-you money AND enough to take risks. CHF 647K/yr passive means zero pressure. Best play: take a real year off, then 80% of time on low-burn activities (2-3 advisory boards at CHF 50-80K each, 10 angel bets at CHF 100K). Keep 20% for a high-conviction project. When the right idea hits, you can self-fund to PMF without raising a cent.',
     };
   }
   if (exitChf <= 20_000_000) {
