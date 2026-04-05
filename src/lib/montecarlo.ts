@@ -127,26 +127,26 @@ export function runMonteCarlo(
     const a: Assumptions = {
       ...DEFAULT_ASSUMPTIONS,
       months,
-      // ARPU variance
+      // ARPU variance + scenario multiplier (VC → better product → higher ARPU)
       chainArpu: {
-        1: Math.round(1000 * (1 + uniform(rand, -params.arpuVariance, params.arpuVariance))),
-        2: Math.round(1400 * (1 + uniform(rand, -params.arpuVariance, params.arpuVariance))),
-        3: Math.round(1800 * (1 + uniform(rand, -params.arpuVariance, params.arpuVariance))),
+        1: Math.round(1000 * scenario.arpuMultiplier * (1 + uniform(rand, -params.arpuVariance, params.arpuVariance))),
+        2: Math.round(1400 * scenario.arpuMultiplier * (1 + uniform(rand, -params.arpuVariance, params.arpuVariance))),
+        3: Math.round(1800 * scenario.arpuMultiplier * (1 + uniform(rand, -params.arpuVariance, params.arpuVariance))),
       },
       indieArpu: {
-        1: Math.round(1000 * (1 + uniform(rand, -params.arpuVariance, params.arpuVariance))),
-        2: Math.round(1500 * (1 + uniform(rand, -params.arpuVariance, params.arpuVariance))),
-        3: Math.round(2000 * (1 + uniform(rand, -params.arpuVariance, params.arpuVariance))),
+        1: Math.round(1000 * scenario.arpuMultiplier * (1 + uniform(rand, -params.arpuVariance, params.arpuVariance))),
+        2: Math.round(1500 * scenario.arpuMultiplier * (1 + uniform(rand, -params.arpuVariance, params.arpuVariance))),
+        3: Math.round(2000 * scenario.arpuMultiplier * (1 + uniform(rand, -params.arpuVariance, params.arpuVariance))),
       },
       // Phase timing
       phase2Start: Math.round(uniform(rand, params.phase2TimingMin, params.phase2TimingMax)),
       phase3Start: Math.round(uniform(rand, params.phase3TimingMin, params.phase3TimingMax)),
-      // Indie params
+      // Indie params — VC scenarios have higher growth modifier (marketing, brand, data flywheel)
       indieBaseRate: Math.round(uniform(rand, params.indieRateMin, params.indieRateMax) * scenario.growthModifier),
       indieChurnAnnual: uniform(rand, params.indieChurnMin, params.indieChurnMax),
       // AI COGS
       aiCogsPerHotelEur: Math.round(uniform(rand, params.aiCogsMin, params.aiCogsMax)),
-      // Team with timing variance
+      // Team — VC scenarios hire earlier
       team: DEFAULT_ASSUMPTIONS.team.map(t => ({
         ...t,
         startMonth: Math.max(1, t.startMonth + Math.round(normal(rand, -scenario.teamAccelerator, params.hiringTimingVariance))),
@@ -158,11 +158,19 @@ export function runMonteCarlo(
           Math.round(v * (1 + uniform(rand, -params.infraVariance, params.infraVariance)))
         ) as [number, number, number, number],
       })),
-      // Chains with rollout variance
-      chains: DEFAULT_ASSUMPTIONS.chains.slice(0, Math.round(uniform(rand, params.chainPipelineMin, params.chainPipelineMax))).map(c => ({
-        ...c,
-        totalHotels: Math.round(c.totalHotels * (1 + uniform(rand, -params.chainRolloutVariance, params.chainRolloutVariance))),
-      })),
+      // Chains: base chains (varied) + additional chains from VC scenarios
+      chains: [
+        ...DEFAULT_ASSUMPTIONS.chains.slice(0, Math.round(uniform(rand, params.chainPipelineMin, params.chainPipelineMax))).map(c => ({
+          ...c,
+          totalHotels: Math.round(c.totalHotels * (1 + uniform(rand, -params.chainRolloutVariance, params.chainRolloutVariance))),
+        })),
+        // Additional chains unlocked by VC money (varied by ±20%)
+        ...scenario.additionalChains.map(c => ({
+          ...c,
+          totalHotels: Math.round(c.totalHotels * (1 + uniform(rand, -0.20, 0.20))),
+          startMonth: c.startMonth + Math.round(normal(rand, 0, 2)), // ±2 month timing variance
+        })),
+      ],
       // Keep vesting checks as functions
       vesting: DEFAULT_ASSUMPTIONS.vesting,
     };

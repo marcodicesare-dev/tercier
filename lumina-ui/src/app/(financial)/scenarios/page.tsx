@@ -16,10 +16,28 @@ const COLORS = ['#C17F59', '#C9A96E', '#8B4A2B', '#5B7FB5'];
 
 function buildScenarioModel(scenarioId: string) {
   const scenario = SCENARIOS.find(s => s.id === scenarioId)!;
+
+  // Merge additional chains from VC scenario into the base chain schedule
+  const allChains = [...DEFAULT_ASSUMPTIONS.chains, ...scenario.additionalChains];
+
+  // Apply ARPU multiplier (better product from more eng investment)
+  const arpuMult = scenario.arpuMultiplier;
+
   const a: Assumptions = {
     ...DEFAULT_ASSUMPTIONS,
     months: 60,
+    chains: allChains,
     indieBaseRate: Math.round(DEFAULT_ASSUMPTIONS.indieBaseRate * scenario.growthModifier),
+    chainArpu: {
+      1: Math.round(DEFAULT_ASSUMPTIONS.chainArpu[1] * arpuMult),
+      2: Math.round(DEFAULT_ASSUMPTIONS.chainArpu[2] * arpuMult),
+      3: Math.round(DEFAULT_ASSUMPTIONS.chainArpu[3] * arpuMult),
+    },
+    indieArpu: {
+      1: Math.round(DEFAULT_ASSUMPTIONS.indieArpu[1] * arpuMult),
+      2: Math.round(DEFAULT_ASSUMPTIONS.indieArpu[2] * arpuMult),
+      3: Math.round(DEFAULT_ASSUMPTIONS.indieArpu[3] * arpuMult),
+    },
     team: DEFAULT_ASSUMPTIONS.team.map(t => ({
       ...t,
       startMonth: Math.max(1, t.startMonth - scenario.teamAccelerator),

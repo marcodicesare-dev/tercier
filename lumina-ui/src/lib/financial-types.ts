@@ -223,6 +223,9 @@ export interface Scenario {
   fundingRounds: FundingRound[];
   growthModifier: number; // multiplier on indie acquisition rate
   teamAccelerator: number; // months earlier to hire
+  additionalChains: ChainDef[]; // chains unlocked by VC money (sales team, network, brand)
+  rolloutSpeedMultiplier: number; // 1.0 = base, 1.3 = 30% faster rollout within each chain
+  arpuMultiplier: number; // 1.0 = base, platform improvements → higher ARPU
 }
 
 // Monte Carlo
