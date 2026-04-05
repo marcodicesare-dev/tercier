@@ -1,0 +1,266 @@
+================================================================================
+TERCIER LUMINA FINANCIAL MODEL v2 - COMPREHENSIVE AUDIT REPORT
+================================================================================
+File: /sessions/fervent-hopeful-mendel/mnt/tercier/lumina-financial-model-v2.xlsx
+Date: April 4, 2026
+Auditor: Claude Code
+
+================================================================================
+EXECUTIVE SUMMARY
+================================================================================
+
+VERDICT: MODEL HAS CRITICAL ERROR - Revenue Calculations are Broken
+
+CRITICAL ISSUE FOUND: Row 8 (Chain paying hotels) formula uses incorrect column
+references (B5, C5, D5 instead of E5, F5, G5...), causing revenue to be
+undercalculated by ~27x in early months.
+
+IMPACT: Financial projections are significantly understated. The model shows
+much worse performance than the business actually achieves.
+
+RECOMMENDATION: Fix Row 8 formulas immediately before using this model for
+strategic decisions or investor presentations.
+
+================================================================================
+DETAILED FINDINGS
+================================================================================
+
+1. ASSUMPTIONS SHEET - PASSED ✓
+   All key assumptions verified:
+   ✓ EUR/CHF rate: 0.93 (April 2026 market rate)
+   ✓ Capital: EUR 200,000
+   ✓ Entry price: EUR 1,000/hotel/month
+   ✓ Churn: 10% annual
+   ✓ CEO base: CHF 106,080/year
+   ✓ CEO EUR/month: EUR 8,221.20 (correctly converted with FX)
+   ✓ Social contributions: 12.8%
+   ✓ CEO total monthly: EUR 9,273.51 (12.8% added)
+   ✓ Chain schedule: 10 chains, 561 total hotels, correct start months
+   ✓ Team schedule: 7 employees with correct start months and salaries
+   ✓ Fixed OPEX: EUR 5,550/month (M1-12)
+   ✓ One-time costs: EUR 13,400 total (5 categories)
+   ✓ ARPU phases: Chain 1K→1.5K→2K, Indie 1K→1.5K→2.5K
+
+2. MONTHLY P&L SHEET - CRITICAL ERROR FOUND ✗
+
+   *** ERROR #1: ROW 8 (CHAIN PAYING HOTELS) FORMULA IS BROKEN ***
+   
+   Location: Monthly P&L, Row 8, Columns E onwards
+   
+   What it should do:
+   - Show chain hotels that have completed their 3-month free trial
+   - M1-M3: All zeros (chains still in trial)
+   - M4+: Active chain count minus those still in trial
+   
+   What it actually does:
+   - B8-D8: Hardcoded to 0 ✓ (correct)
+   - E8: =B5 ✗ (references M1 active instead of M4 active)
+   - F8: =C5 ✗ (references M2 active instead of M5 active)
+   - G8: =D5 ✗ (references M3 active instead of M6 active)
+   - H8: =E5 ✗ (references M4 active instead of M7 active)
+   
+   This creates a 1-4 month lag and incorrect reference.
+   
+   IMPACT EXAMPLE:
+   Month 4 (Kempinski's first paid month after 3-month trial):
+   - Current calculation: 3 hotels @ 1000 EUR = EUR 3,000
+   - Correct calculation: 82 hotels @ 1000 EUR = EUR 82,000
+   - Understatement: -27x (97.5% error)
+   
+   Revenue cascade:
+   - M4 revenue: EUR 3,000 actual vs EUR 82,000 expected
+   - M5 revenue: EUR 3,000 actual vs EUR 82,000 expected
+   - M7 revenue: EUR 5,500 actual vs ~120,000 expected
+   - M10 revenue: EUR 23,500 actual vs ~225,000 expected
+   
+   *** ERROR #2: INCONSISTENT ROLLOUT LOGIC ***
+   
+   Location: Rows 5 & 8
+   
+   Problem:
+   - Row 5 (Chain active) applies rollout percentages from Assumptions E24:H24
+     Example: Kempinski at M6 = 82 * 0.15 = 12.3 active
+   - Row 8 (Chain paying) doesn't apply rollout logic
+   - This creates inconsistency: "active" has rollout, "paying" doesn't
+   
+   The correct approach would be:
+   - Row 5: Apply rollout %
+   - Row 8: Apply same rollout % AND subtract those in trial
+   
+   Currently they're misaligned.
+
+3. CASH FLOW SHEET - MOSTLY CORRECT ✓
+
+   ✓ M1 capital injection: EUR 200,000 (correct)
+   ✓ M1 one-time costs: EUR 13,400 (correct)
+   ✓ M1 cash outflow: EUR 36,423.51 (correct)
+   ✓ M1 closing balance: EUR 163,576.49 (correct)
+   ✓ Opening balance formula (B43): =B42 (correct)
+   ✓ Running sum formula (C43): =B43+C42 (correct)
+   
+   Note: Revenue is pulled from P&L row 13, so the revenue error cascades here
+
+4. OTHER ISSUES
+
+   *** ISSUE #3: AI Tokens Base Cost Not Explained ***
+   
+   Location: Monthly P&L Row 26, all months
+   Formula: =B13*Assumptions!B62+200
+   
+   This adds a hardcoded EUR 200/month base cost to AI tokens:
+   - B13*0.2 = 20% of revenue
+   - +200 = EUR 200 base
+   
+   The "+200" is not explained anywhere. It could be:
+   - Minimum monthly cost tier
+   - API subscription
+   - Dev/test tokens
+   
+   Recommendation: Add explanation in Assumptions row 62 or create new row
+   (e.g., "AI monthly base cost: EUR 200")
+
+   *** ISSUE #4: Capital Injection Timing (Minor) ***
+   
+   The EUR 200K capital appears in M1 (July 2026), not "Month 0" (pre-ops).
+   This is logically consistent but unconventional:
+   - Opening balance = 0
+   - Inject 200K in M1
+   - Spend 36.4K in M1
+   - Leave with 163.6K
+   
+   Standard practice: show opening balance as 200K after injection.
+   Current approach still works but is less intuitive.
+
+5. M48 FINAL VALUES (For Reference)
+
+   Despite Row 8 error, M48 shows:
+   - Active chain hotels: 248
+   - Active indie hotels: 122.5
+   - Chain paying: 232
+   - Total active: 370.5
+   - Total paying: 354.5
+   - Monthly revenue: EUR 770,250
+   - ARR: EUR 9,243,000
+   - Monthly costs: EUR 247,490
+   - Monthly EBITDA: EUR 522,760
+   - Cumulative EBITDA: EUR 8,569,456
+   
+   Note: These are UNDERCALCULATED due to Row 8 error throughout.
+
+================================================================================
+SPECIFIC CELLS TO FIX
+================================================================================
+
+Monthly P&L Sheet:
+- E8 (M4): Change =B5 to =E5
+- F8 (M5): Change =C5 to =F5
+- G8 (M6): Change =D5 to =G5
+- H8 (M7): Change =E5 to =H5
+- (and continue this pattern for all remaining months)
+
+Or, implement more sophisticated formula that calculates:
+- For each chain: IF(month >= start_month + 3, active_count, 0)
+- Sum all chains
+
+Assumptions Sheet (optional but recommended):
+- B62 row: Add comment explaining the "+200" base cost in AI tokens formula
+- Or create new row: "AI monthly base cost (EUR): 200"
+
+================================================================================
+IMPACT ASSESSMENT
+================================================================================
+
+Business Impact:
+- Model shows 97.5% lower revenue than actual in early months
+- Cash burn looks much worse than reality
+- Breakeven timeline appears much later than reality
+- EBITDA looks much more negative than reality
+- Valuation multiples are based on understated revenue
+
+Financial Impact:
+- If used for fundraising, investors see a much riskier profile
+- If used for planning, decisions based on overstated burn are wrong
+- If used for budgeting, cost allocation may be mis-sized
+
+Severity: CRITICAL - This breaks the model's financial credibility
+
+================================================================================
+VERIFICATION CHECKLIST
+================================================================================
+
+Assumptions: ✓ PASS
+  ✓ Exchange rates correct
+  ✓ Capital amount correct
+  ✓ Pricing correct
+  ✓ Churn rate correct
+  ✓ Chain schedule correct
+  ✓ Team schedule correct
+  ✓ OPEX amounts correct
+  ✓ One-time costs correct
+  ✓ ARPU phases correct
+
+Monthly P&L: ✗ FAIL
+  ✗ Row 8 formula references wrong columns
+  ? Row 5 & 8 rollout logic inconsistent
+  ? AI tokens base cost undocumented
+  ✓ CEO salary formula correct
+  ✓ Team cost formulas correct
+  ✓ EBITDA calculation correct
+  ✓ Cumulative EBITDA formula correct
+
+Cash Flow: ✓ PASS (given P&L input)
+  ✓ Capital injection correct
+  ✓ One-time costs correct
+  ✓ People costs reconcile with P&L
+  ✓ Running sum formula correct
+  ✓ Closing balance formula correct
+  (Note: Revenue figures inherit error from P&L)
+
+Cross-Sheet References: ✓ PASS (references correct, data wrong)
+  ✓ Cash Flow references P&L revenue correctly
+  ✓ P&L references Assumptions correctly
+  ✓ All cell references validate
+
+================================================================================
+RECOMMENDATIONS
+================================================================================
+
+IMMEDIATE (Before using model):
+1. Fix Row 8 formulas in Monthly P&L (E8 onwards)
+2. Test that M4 revenue shows ~EUR 82,000 (Kempinski 82 hotels)
+3. Verify M48 values increase significantly from current numbers
+4. Re-validate cash burn and breakeven timing
+
+SHORT-TERM (Next version):
+1. Add explanation of "+200" AI base cost in Assumptions
+2. Reconcile Row 5 & 8 rollout logic (make consistent)
+3. Add comments explaining trial period logic
+4. Consider renaming Row 8 to make logic clearer
+
+TESTING:
+1. Manually calculate M4 revenue: 82 hotels * 1000 EUR = 82,000
+2. Manually calculate M10 revenue: check formula evaluation
+3. Create sensitivity analysis to test revenue impact
+4. Compare M48 values to business plan (should be much higher)
+
+================================================================================
+CONCLUSION
+================================================================================
+
+The Lumina financial model v2 has a CRITICAL ERROR in Row 8 (Chain paying
+hotels calculation) that causes revenue to be severely undercalculated
+throughout the 48-month projection.
+
+The error affects:
+- All revenue figures (main impact)
+- All profitability metrics (EBITDA, margins)
+- Cash burn projections (indirectly)
+- Business viability assessment
+
+All other aspects of the model check out (assumptions, team costs, fixed OPEX,
+cash flow mechanics).
+
+DO NOT USE for investor presentations or strategic decisions until Row 8 is
+fixed and verified.
+
+================================================================================

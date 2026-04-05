@@ -1,0 +1,26 @@
+{
+  "batchId": "batch_69d10a38ff9c819081b62e17fffad17c",
+  "inputFileId": "file-WYvzwew7jZJ7jkAvHQH4sr",
+  "createdAt": "2026-04-04T12:55:21.243Z",
+  "reviewIds": [
+    "202e00b0-7ca2-434e-a433-3bbdd6dc3d99"
+  ],
+  "reviewCount": 1,
+  "status": "completed",
+  "outputFileId": "file-QNAse1DWGQjmZXZh8ByxEM",
+  "errorFileId": null,
+  "completedAt": "2026-04-04T12:55:31.000Z",
+  "reviews": [
+    {
+      "id": "202e00b0-7ca2-434e-a433-3bbdd6dc3d99",
+      "hotel_id": "40c8f0d3-defc-41bf-813b-975e3348ea89",
+      "source": "tripadvisor",
+      "source_review_id": "689385585",
+      "text": "Začnem asi príchodom do hotela, ktorý bol naozaj veľmi pekný. Na recepcií bola celkom milá paní, ktorá nam dala karty od izby. Neplatil som nič, prišli sme na jednu noc, rezervoval som si hotel na portlali, v cene som si zarezervoval aj vyhlad na mesto a ranajky. Avšak k mojmu prekvapeniu som dostal výhlad na starú budovu... \nPovedal som si dobre, zrejme to bude teda stiahnuté z konečnej sumy. Izba bola veľmi čistá, dobré bolo aj to že nás uvítala chyžná s papučami a mineralkou. \nPrešli sme sa mestom, ktoré nás ohromilo hlavne svojou plnosťou, avšak celkový dojem zničil aj to že sme sa nemali kde poriadne najesť. Samé fastfoody a podobné ... Tak sme sa s priateľkou rozhodli, že navštívime reštauráciu pod naším hotelom, ktorý patrí k hotelu. Výber jedál som však čakal úplne iný. Ani jedno tradičné maďarské jedlo v jedálnom lístku. Povedali sme si fajn a náš hľad riešil mcdonalds. Deň druhý nás vyrušila chyžná tým že zaklopala a hneď vošla dnu. S takýmto prístupom som sa nestretol snáď nikde v zahraničí. Chyžné by mali mať zoznam kto na raňajkách je a kto nieje. Nevadí... Boli sme zvedavý na raňajky. Šli sme dole, a videli sme že majú celkom chaos, nestíhal absolutne nikto. Slečna ktorá nás išla usadiť obkrúžila celú reštauráciu lebo nevedela kde ma volné miesto. Usadila nás k rozheglanému stolu, po chvíli sme si presadli. Nitko sa nás neprišiel spýtať či chceme kávu. Tak sme nahaňali čašníkov pohladmy. Uloženie buffetov bolo chaotické, medzi cerealiami boli vajcia na tvrdo, čo som tiež nikdy nikde nevidel a prepáčte ale aby za 35e na osobu na raňajkach bola obschnutá zelenina o osmej ráno? Nedoložené salámy, a bar zahltený ovocím a žiadne šťavy nič? \nA napokon pri odchode ma skasíroval pánko na recepcií kde mi do ceny naskladal parkovanie, ranajky, a vyhlad na mesto :) \nCelková cena za dvoch 375e ( asi najdrahšia noc čo sa týka strednej europy )\nJednoducho asi to zhrniem do jedného. Budapešť a zvlášt kempinsky corvinus už nikdy viac!",
+      "rating": 1,
+      "lang": "sk",
+      "trip_type": null,
+      "published_date": "2019-07-13T00:00:00+00:00"
+    }
+  ]
+}

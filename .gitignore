@@ -3,3 +3,12 @@ node_modules/
 .DS_Store
 *.tmp
 .~lock*
+.env
+.env.local
+.firecrawl/
+scripts/phase0-enrichment/cache/
+scripts/enrich-hotel/cache/
+output/
+lumina-ui/.env.local
+lumina-ui/.next/
+lumina-ui/node_modules/

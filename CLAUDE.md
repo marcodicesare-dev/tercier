@@ -2,7 +2,7 @@
 
 > This file is the master context for every AI agent working in this repo.
 > Load the relevant skill(s) for your task. This file tells you which one.
-> Last updated: March 28, 2026
+> Last updated: April 4, 2026
 
 ---
 
@@ -45,32 +45,31 @@ troy/                              This repo — research, strategy, data, intel
 │   ├── hotels-dataset/            Global hotel dataset strategy
 │   │   ├── SKILL.md               Vision, phases, schema, intelligence products
 │   │   └── references/
-│   │       ├── intelligence-schema.md     250+ field definitions per hotel (REDESIGNED)
-│   │       ├── city-priority-list.md      Phase-ordered discovery targets
-│   │       ├── derived-scores.md          All score formulas (sales + operational)
-│   │       └── review-intelligence-spec.md  NLP extraction pipeline spec
-│   ├── ai-discovery/              AI visibility intelligence (NEW)
-│   │   ├── SKILL.md               How to audit AI visibility per hotel
-│   │   └── references/
-│   │       ├── llm-query-methodology.md   Systematic AI model querying
-│   │       ├── schema-org-hotel.md        Schema.org Hotel markup spec
-│   │       └── geo-aeo-benchmarks.md      Industry benchmarks
-│   ├── review-intelligence/       NLP review analysis (NEW)
-│   │   ├── SKILL.md               How to extract intelligence from reviews
-│   │   └── references/
-│   │       ├── topic-extraction.md        NLP pipeline for topic clustering
-│   │       ├── sentiment-by-segment.md    Per-segment sentiment analysis
-│   │       └── content-seed-extraction.md Marketing-ready quote extraction
-│   └── sales-intelligence/        Using dataset for sales (NEW)
-│       ├── SKILL.md               How to generate per-hotel sales briefs
-│       └── references/
-│           ├── scoring-formulas.md        TOS, CPS, all derived scores
-│           ├── objection-handling.md      From synthetic survey
-│           └── sales-brief-template.md    Per-property pitch template
-├── .context/
-│   ├── notes.md                   Working notes (session-persistent)
-│   ├── todos.md                   Task tracking
-│   └── attachments/               Pasted text, images from conversations
+│   │       ├── intelligence-schema.md     297 field definitions per hotel (deployed in Supabase)
+│   │       └── city-priority-list.md      Phase-ordered discovery targets
+│   ├── ai-discovery/              AI visibility intelligence
+│   │   └── SKILL.md               How to audit AI visibility per hotel
+│   ├── review-intelligence/       NLP review analysis
+│   │   └── SKILL.md               How to extract intelligence from reviews
+│   └── sales-intelligence/        Using dataset for sales
+│       └── SKILL.md               How to generate per-hotel sales briefs
+├── scripts/
+│   ├── phase0-enrichment/         Phase 0 pipeline (Swiss CSV → Supabase, TA + Google)
+│   │   ├── 00-run-pipeline.ts     Orchestrator (6 steps)
+│   │   ├── 01-06-*.ts             Match + enrich + compute + export
+│   │   ├── supabase-schema.sql    Base DDL + additive migrations (current hotels table: 297 columns)
+│   │   └── lib/                   Shared: retry, cache, supabase, matching, logger
+│   ├── enrich-hotel/              Universal pipeline (any hotel, 7 sources, built)
+│   │   └── enrich.ts              Takes hotel name+city, fills all 297 columns + child tables
+│   ├── nlp-pipeline/              Review NLP + embeddings pipeline (built, OpenAI-key gated)
+│   │   ├── extract.ts             Batch orchestrator for GPT-4.1-nano + embeddings
+│   │   └── lib/                   OpenAI client, embedding client, NLP aggregators
+│   └── hotel-contact-enrichment/  Contact pipeline (Fiber AI + Firecrawl)
+├── lumina-ui/                     Internal hotel intelligence UI (Next.js 15, live Supabase read layer)
+│   ├── src/app/                   Portfolio, hotel card, compare views
+│   ├── src/components/            Charts, tables, content modules
+│   └── src/lib/                   Supabase service-role reads + cached data loaders
+├── supabase/migrations/           Applied DB migrations
 ├── research/
 │   ├── hotels-dataset-tripadvisor-enrichment-strategy.md  [THE STRATEGY DOC]
 │   ├── synthetic-survey/          Monte Carlo simulations, survey runs
@@ -96,6 +95,12 @@ The hotelleriesuisse dataset (2,069 hotels) is the SEED, not the scope. Every st
 |-----|-----|-----------|-----------|
 | TripAdvisor | env: `TRIPADVISOR_API_KEY` | 50/sec | 7 days |
 | Google Places | env: `GOOGLE_PLACES_API_KEY` | Per-endpoint quotas | 7 days |
+| DataForSEO | env: `DATAFORSEO_LOGIN` + `DATAFORSEO_PASSWORD` | 2000/min | 7 days |
+| SerpApi | env: `SERPAPI_KEY` | Per-plan | 7 days |
+| Firecrawl | env: `FIRECRAWL_API_KEY` (in .env.local) | 1 credit/scrape | 30 days |
+| Fiber AI | env: `FIBER_API_KEY` (in .env.local) | Per-plan | 30 days |
+| OSM Overpass | No key needed | 1 req/sec fair use | 7 days |
+| Supabase | env: `SUPABASE_URL` + `SUPABASE_SERVICE_ROLE_KEY` | n/a | n/a |
 
 Cache EVERY response in JSONL. Never re-fetch within TTL. Never make unbounded loops without rate limiting.
 
@@ -105,9 +110,9 @@ This repo has Monte Carlo simulations with 10K runs each. When citing financials
 - Business plan: `research/synthetic-survey/run-2026-03-22-business-plan-monte-carlo-v2/`
 - Exit model: `research/synthetic-survey/run-2026-03-14-exit-monte-carlo-v1/`
 
-### 4. Every Hotel Gets 200+ Structured Fields
+### 4. Every Hotel Gets 297 Structured Fields
 
-The dataset schema is defined in `.skills/hotels-dataset/references/intelligence-schema.md`. When building pipelines, ingestion scripts, or enrichment tools, every hotel record must conform to this schema. Don't flatten, don't abbreviate, don't skip fields.
+The dataset schema is defined in `.skills/hotels-dataset/references/intelligence-schema.md` and deployed in Supabase (project `rfxuxkbfpewultpuojpe`, 11 tables total). When building pipelines, ingestion scripts, or enrichment tools, every hotel record must conform to this schema. Don't flatten, don't abbreviate, don't skip fields.
 
 ### 5. The Kitchen Sink Rule
 
@@ -178,35 +183,63 @@ tercier-knowledge (root — strategy, product, market, financials)
 - Product development → `hotels-dataset` + `review-intelligence` + `ai-discovery`
 - Sales preparation → `sales-intelligence` + `hotels-dataset`
 - "What is Tercier?" → `tercier-knowledge` alone
-- Hotel data enrichment → `tripadvisor-api` + `google-places-api`
+- Hotel data enrichment → `tripadvisor-api` + `google-places-api` + `hotels-dataset`
 
 ---
 
-## Current Status (as of March 28, 2026)
+## Current Status (as of April 4, 2026)
+
+### Infrastructure
+- **Supabase database:** Live, project `rfxuxkbfpewultpuojpe`
+  - `hotels`: 297 columns
+  - 11 live tables including `hotel_qna`
+  - deep-intelligence layer live: `hotel_metric_snapshots`, `hotel_price_snapshots`, `review_topic_index`, `hotel_qna`, NLP/embedding columns on `hotel_reviews`
+- **All 7 API sources verified live:** TripAdvisor, Google Places, DataForSEO, Firecrawl, Fiber AI, SerpApi, OSM Overpass
+- **TypeScript pipeline:** `scripts/phase0-enrichment/` — 16 files, 3,012 lines, compiles clean, tested on 1 hotel
 
 ### Data Assets
-- **hotelleriesuisse enriched master:** 2,069 hotels, 50+ columns, website intelligence scraped
-- **Contact enrichment v6:** 420 resolved (GM + email), 583 partial, 1,066 unresolved
-- **Contact recovery v1:** Running (410/1,649 processed, 11 upgraded)
-- **TripAdvisor API:** Verified live, all 5 endpoints tested, pagination confirmed working
+- **hotelleriesuisse enriched master:** 2,069 hotels, 65 columns, website intelligence scraped
+- **Contact enrichment v6:** 420 resolved (GM + email), 583 partial, 1,066 unresolved (via Fiber AI)
+- **Kempinski pilot data:** both pilot hotels fully enriched in Supabase with DataForSEO full-review backfill
+  - `Kempinski Hotel Corvinus Budapest`: 7,357 reviews total (3,333 TA + 4,024 Google), 21 TA language buckets
+  - `The Apurva Kempinski Bali`: 7,358 reviews total (2,863 TA + 4,495 Google), 16 TA language buckets
+  - Q&A / GMB layer live:
+    - Budapest: 21 Google Q&A threads, claimed GMB, topic graph present
+    - Bali: no Google Q&A found, claimed GMB, hotel star rating surfaced
 
 ### What's Built
+- Supabase schema (11 tables, 297 hotel columns, indexes, triggers, PostGIS spatial index)
+- Phase 0 enrichment pipeline (`scripts/phase0-enrichment/`) — TA + Google, Swiss CSV input, 6 steps
+- Universal hotel enrichment pipeline (`scripts/enrich-hotel/`) — 7 sources, staged bootstrap/dependent execution, live-run on 2 Kempinski hotels
+- Deep intelligence layer:
+  - metric snapshots
+  - price time series
+  - competitor cascade linking
+  - Google Q&A storage + rollups
+  - Google My Business signals
+  - AI-facing SQL functions
+  - review NLP/embedding columns prepared
+  - DataForSEO review backbone live for full TA + Google corpora
+  - OpenAI batch NLP pipeline implemented under `scripts/nlp-pipeline/`
 - Synthetic survey pipeline (272 ICP hotels, 1,632 simulations)
-- Monte Carlo business plan model (10K runs, operator + follow-on angel paths)
-- Monte Carlo exit model (10K runs, global expansion lens)
+- Monte Carlo business plan + exit models (10K runs each)
 - Financial model (5-year, dual scenarios)
-- TripAdvisor API strategy doc (global, 1.5M+ hotels, 4 phases)
+- Full enrichment strategy doc + intelligence schema (16 categories A-P)
 
 ### Research
-- **State of the art corpus (Mar 27):** `research/STATE-OF-THE-ART-RESEARCH-2026-03-27.md` — 900 lines, 100+ sources
-- **Dataset deep research (Mar 28):** `research/hotels-dataset-deep-research-2026-03-28.md` — Schema redesign, context engineering, product-schema alignment
+- **State of the art corpus (Mar 27):** `research/STATE-OF-THE-ART-RESEARCH-2026-03-27.md`
+- **Dataset deep research (Mar 28):** `research/hotels-dataset-deep-research-2026-03-28.md`
+- **Source stack audit (Apr 3):** DataForSEO replaces Moz+SpyFu, all endpoints tested live
+- **Review backbone validation (Apr 4):** DataForSEO full-corpus TA + Google reviews written to Supabase for both Kempinski pilots
+- **NLP execution (Apr 4):** 10,714 text-bearing reviews processed into sentiment, topics, persona, content seeds, competitor mentions, and embeddings
+- **Hotel intelligence UI (Apr 4):** Next.js read layer live on top of materialized views + `get_hotel_card()` RPC for instant hotel cards
 
 ### What's Next
-- **Phase 0:** Match 2,069 Swiss hotels to TripAdvisor + full enrichment (1 day)
-- **Phase 0.5:** Review intelligence NLP + AI discovery audits (1 week)
-- **Phase 1:** European premium city discovery (50 cities, 3 weeks)
-- **Build scripts:** TypeScript pipeline in `scripts/tripadvisor-global/`
-- **New skills:** ai-discovery, review-intelligence, sales-intelligence
+- **Persona rollups:** review-level persona extraction is live, but hotel-level persona summary fields remain a future aggregation layer
+- **Topic/product layer:** turn `review_topic_index`, `guest_persona`, and `content_seeds` into first-class product queries and outputs
+- **UI productization:** extend `lumina-ui/` from internal demo into the sales-facing and operator-facing read layer
+- **Phase 0:** Bulk-enrich 2,069 Swiss hotels via `scripts/phase0-enrichment/`
+- **Phase 1:** European premium city discovery (50 cities, geo-grid + brand search)
 
 ---
 
@@ -219,17 +252,24 @@ tercier-knowledge (root — strategy, product, market, financials)
 - Research: date-stamped (`run-2026-03-22-business-plan-monte-carlo-v2/`)
 
 ### Data Storage
+- **Primary:** Supabase PostgreSQL
+  - Current live layer: core normalized tables, 297-column `hotels` table, spatial index
+  - Deep layer live: `hotel_metric_snapshots`, `hotel_price_snapshots`, `review_topic_index`, `hotel_qna`, NLP/embedding columns on `hotel_reviews`
 - Raw API responses: JSONL with timestamp (cacheable, replayable)
-- Master datasets: CSV (flat, queryable, diffable)
-- Review corpora: JSONL organized by country/city
-- Derived intelligence: CSV (one row per hotel, all scores)
+- CSV exports: generated from Supabase for analysis/sharing
+- Review corpora: `hotel_reviews` table (not flattened into hotels)
 
 ### Pipeline Design
-- Always cache raw API responses before processing
-- Always support resume from interruption
-- Always deduplicate by primary key (ta_location_id for TripAdvisor)
-- Always rate-limit API calls (token bucket, 50/sec for TA)
+- Always cache raw API responses in JSONL before processing
+- Always support resume from interruption (cache = safety net)
+- Always deduplicate by primary key (UUID in Supabase, `ta_location_id` for TA, `gp_place_id` for Google)
+- Always rate-limit API calls (token bucket per source)
 - Always log progress (processed/total, upgrades, errors)
+- Run enrichment in stages when sources depend on upstream identity data
+  - Bootstrap first: TripAdvisor, Google Places, OSM
+  - Dependent second: DataForSEO SEO/reviews/Q&A/GMB, Firecrawl, Fiber, SerpApi
+  - Use `Promise.allSettled()` inside each stage
+- Never let one source failure block others
 
 ---
 
@@ -242,4 +282,5 @@ tercier-knowledge (root — strategy, product, market, financials)
 - Do not cite financial numbers without referencing the Monte Carlo model
 - Do not assume hotel counts — use the actual enriched master or simulation output
 - Do not flatten review data into the hotel master CSV (reviews are a separate corpus)
-- Do not skip multilingual review harvesting (it's the core of Layer 2)
+- Do not skip multilingual review harvesting (it is the core of Layer 2)
+- Do not claim "all reviews" unless the source actually exposes them; for the Kempinski pilot the full TA + Google corpora are now sourced through DataForSEO, while other hotels may still depend on source availability and configured backfill depth

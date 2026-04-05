@@ -1,6 +1,33 @@
 # Hotel Intelligence Schema — Field Definitions
 
-Every hotel in the global dataset conforms to this schema. 200+ fields across 8 categories.
+Every hotel in the global dataset conforms to this schema. 297 fields across 17 categories (A-Q) in the `hotels` table, plus deep relational data across 10 supporting tables. Deployed in Supabase (project `rfxuxkbfpewultpuojpe`).
+
+## Database Architecture
+
+The intelligence database is **deep, not just wide**. The `hotels` table is the summary/index card. The real depth lives in relational tables:
+
+| Table | Purpose | Depth per Hotel |
+|-------|---------|-----------------|
+| `hotels` | 297-column summary card | 1 row per hotel |
+| `hotel_reviews` | Review corpus (text, rating, language, NLP, embedding, persona JSON) | All currently accessible reviews from the active source stack |
+| `hotel_qna` | Pre-booking guest questions and answers | 0-100+ Q&A threads per hotel |
+| `hotel_amenities` | Normalized amenity inventory | 30-150 amenities per hotel |
+| `hotel_competitors` | Competitive set with linked hotel data | Up to 10, each enriched as first-class hotels |
+| `hotel_lang_ratings` | Per-language rating aggregates | 1 row per language per hotel |
+| `hotel_metric_snapshots` | Monthly metric history for "What Changed" | 1 row per snapshot date |
+| `hotel_price_snapshots` | Daily OTA price time series | 1 row per price check |
+| `review_topic_index` | NLP aspect-sentiment index from reviews | ~3 topics per review |
+| `pipeline_runs` | Enrichment audit trail | 1 row per step per run |
+
+### AI-Ready Design
+- All tables and key columns have `COMMENT ON` metadata for LLM schema comprehension
+- `ai_schema_catalog()` function returns full schema overview for AI self-serve
+- `match_reviews()` function enables semantic search via pgvector embeddings
+- `hotel_changes()` function computes metric deltas for temporal reporting
+- `competitive_network` view joins hotels with their enriched competitors
+- `hotel_qna` stores pre-booking intent as a first-class AI-readable corpus, not a single summary count
+- Reviews carry `halfvec(512)` embeddings (from `text-embedding-3-small`) for semantic search via HNSW index
+- Current live APIs do **not** expose every historical review for every hotel. The schema is intentionally designed so deeper backfill sources can be added later without reshaping downstream AI consumers
 
 ---
 
@@ -255,34 +282,34 @@ Every hotel in the global dataset conforms to this schema. 200+ fields across 8 
 5. **Google Gemini summaries are unreliable** — only ~20% of hotels. Bonus when present, can't depend on it.
 6. **Temporal data requires 2+ cycles** — Month 1 product delivery is limited to snapshot intelligence. Month 2+ unlocks "What Changed."
 
-## L. Contact Enrichment (Fiber AI + Apollo + Hunter + Dropcontact)
+## L. Contact Enrichment (Fiber AI)
 
 | Field | Type | Source | Description |
 |-------|------|--------|-------------|
-| `cx_gm_name` | string | Fiber/Apollo | General Manager / Hotel Director name |
-| `cx_gm_email` | string | Hunter/Dropcontact | Verified email address |
-| `cx_gm_email_gdpr_verified` | boolean | Dropcontact | GDPR-compliant verification passed |
-| `cx_gm_phone` | string | Fiber/Apollo | Phone number |
-| `cx_gm_linkedin` | string | Fiber | LinkedIn profile URL |
-| `cx_gm_source` | string | computed | Primary source: fiber/apollo/hunter/dropcontact |
+| `cx_gm_name` | string | Fiber AI | General Manager / Hotel Director name |
+| `cx_gm_email` | string | Fiber AI | Verified email address (via contact-details/single) |
+| `cx_gm_email_gdpr_verified` | boolean | Fiber AI | Email validation status = "valid" |
+| `cx_gm_phone` | string | Fiber AI | Phone number |
+| `cx_gm_linkedin` | string | Fiber AI | LinkedIn profile URL |
+| `cx_gm_source` | string | computed | Primary source (fiber) |
 | `cx_gm_confidence` | string | computed | gold/silver/bronze/hold/unresolved |
-| `cx_company_headcount` | int | Fiber | Estimated employee count |
-| `cx_hiring_signals` | boolean | Fiber/Apollo | Active job postings detected |
+| `cx_company_headcount` | int | Fiber AI | Estimated employee count |
+| `cx_hiring_signals` | boolean | Fiber AI | Active job postings detected |
 
-## M. SEO & Digital Presence (SpyFu + Moz + Firecrawl)
+## M. SEO & Digital Presence (DataForSEO + Firecrawl)
 
 | Field | Type | Source | Description |
 |-------|------|--------|-------------|
-| `seo_domain_authority` | int | Moz | Domain Authority (0-100) |
-| `seo_monthly_traffic_est` | int | SpyFu | Estimated monthly organic visits |
-| `seo_organic_keywords` | int | SpyFu | Number of ranking organic keywords |
-| `seo_has_google_ads` | boolean | SpyFu | Currently running Google Ads |
-| `seo_ad_spend_est` | float | SpyFu | Estimated monthly ad spend (USD) |
-| `dp_website_tech_cms` | string | Firecrawl DIY | CMS: wordpress/wix/squarespace/drupal/custom |
-| `dp_website_tech_booking` | string | Firecrawl DIY | Booking engine: siteminder/cloudbeds/mews/synxis/d-edge/none |
-| `dp_website_tech_analytics` | string | Firecrawl DIY | Analytics: ga4/matomo/none |
-| `dp_instagram_handle` | string | Foursquare/Google | Instagram handle |
-| `dp_instagram_exists` | boolean | Firecrawl | Handle found and active |
+| `seo_domain_authority` | int | DataForSEO (backlinks/bulk_ranks) | Domain rank (0-100, equivalent to Moz DA) |
+| `seo_monthly_traffic_est` | int | DataForSEO (labs/domain_rank_overview) | Estimated monthly organic visits (ETV) |
+| `seo_organic_keywords` | int | DataForSEO (labs/domain_rank_overview) | Number of ranking organic keywords |
+| `seo_has_google_ads` | boolean | DataForSEO (labs/domain_rank_overview) | paid.count > 0 = running Google Ads |
+| `seo_ad_spend_est` | float | DataForSEO (labs/domain_rank_overview) | Estimated monthly paid traffic cost (USD) |
+| `dp_website_tech_cms` | string | Firecrawl (primary) / DataForSEO (fallback) | CMS: wordpress/wix/squarespace/drupal/kleecks/custom |
+| `dp_website_tech_booking` | string | Firecrawl | Booking engine: siteminder/cloudbeds/mews/synxis/d-edge/none |
+| `dp_website_tech_analytics` | string | Firecrawl (primary) / DataForSEO (fallback) | Analytics: ga4/matomo/adobe/none |
+| `dp_instagram_handle` | string | DataForSEO (social_graph_urls) | Instagram handle extracted from social profiles |
+| `dp_instagram_exists` | boolean | computed | Handle found and non-empty |
 | `dp_instagram_followers` | int | Firecrawl | Follower count (scraped once) |
 | `dp_has_active_social` | boolean | computed | Posted in last 90 days on any platform |
 
@@ -320,3 +347,48 @@ Every hotel in the global dataset conforms to this schema. 200+ fields across 8 
 | `osm_stars` | int | OSM | Star rating from OSM (if tagged) |
 | `foursquare_id` | string | Foursquare | Foursquare venue ID (Phase 2) |
 | `foursquare_popularity` | float | Foursquare | Foot traffic score 0-1 (Phase 2) |
+
+## Q. Intent, Persona & Discovery Signals
+
+| Field | Type | Source | Description |
+|-------|------|--------|-------------|
+| `qna_count` | int | computed from `hotel_qna` | Number of Google Q&A threads found |
+| `qna_unanswered_count` | int | computed from `hotel_qna` | Q&A threads with no answers |
+| `qna_response_rate` | float | computed from `hotel_qna` | Answered threads / total threads |
+| `gmb_is_claimed` | boolean | DataForSEO Google My Business Info | Claimed business profile = stronger digital maturity |
+| `gmb_popular_times` | jsonb | DataForSEO Google My Business Info | Hour/day busyness data when Google exposes it |
+| `gmb_place_topics` | jsonb | DataForSEO Google My Business Info | Google-derived topic graph / quick semantic layer |
+| `gmb_hotel_star_rating` | float | DataForSEO Google My Business Info | Google hotel-module star classification |
+| `gmb_book_online_url` | string | DataForSEO Google My Business Info | Google surfaced book-online URL |
+| `gmb_people_also_search` | jsonb | DataForSEO Google My Business Info | Nearby entities people also search for |
+| `gov_star_rating` | float | HotelGrade / official star sources | Government / tourism-board star rating |
+| `gov_star_source` | string | HotelGrade / official star sources | Provenance for official star rating |
+| `ai_visibility_score` | float | future AI audit pipeline | Aggregate discovery score across LLMs |
+| `ai_chatgpt_mentioned` | boolean | future AI audit pipeline | Whether the hotel surfaces in ChatGPT discovery checks |
+| `ai_perplexity_mentioned` | boolean | future AI audit pipeline | Whether the hotel surfaces in Perplexity discovery checks |
+| `dp_has_schema_hotel` | boolean | Firecrawl / structured data parser | Whether website exposes Hotel/HotelRoom schema |
+| `dp_schema_completeness` | float | Firecrawl / structured data parser | 0-1 completeness score for structured-data markup |
+| `cert_earthcheck` | boolean | EarthCheck / website / directory | EarthCheck certification present |
+| `cert_earthcheck_level` | string | EarthCheck / website / directory | Certification level/tier |
+| `bk_rating` | float | future Booking.com source | Booking.com rating placeholder |
+| `bk_num_reviews` | int | future Booking.com source | Booking.com review count placeholder |
+| `bk_star_rating` | float | future Booking.com source | Booking.com / OTA star rating placeholder |
+| `rating_divergence_ta_vs_bk` | float | computed | TripAdvisor rating minus Booking.com rating |
+| `cx_active_job_count` | int | future hiring-signal source | Active hotel/company hiring count |
+| `cx_hiring_departments` | string | future hiring-signal source | Pipe-separated hiring departments / functions |
+
+### Review-Level NLP Columns (`hotel_reviews`)
+
+These do not widen the `hotels` table, but they are part of the intelligence schema because they power the Lumina persona layer:
+
+| Field | Type | Description |
+|-------|------|-------------|
+| `sentiment` | text | Overall review sentiment |
+| `sentiment_score` | real | Normalized sentiment score (-1 to 1) |
+| `topics` | jsonb | Aspect-sentiment array |
+| `guest_segment` | text | Coarse segment inferred from trip type + persona |
+| `guest_persona` | jsonb | Occasion, stay length, spending level, repeat-guest and group-detail extraction |
+| `content_seeds` | jsonb | Marketing-ready quotes / emotional hooks |
+| `competitor_mentions` | jsonb | Competitor references and comparison direction |
+| `nlp_processed_at` | timestamptz | Extraction timestamp |
+| `embedding` | halfvec(512) | Semantic vector for similarity search |

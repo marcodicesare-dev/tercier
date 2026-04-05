@@ -1,13 +1,13 @@
 ---
 name: hotels-dataset
-description: "Provides the strategy and architecture for building the world's most comprehensive hotel intelligence dataset. An agent should load this skill when designing data pipelines, planning discovery phases, defining data schemas, computing derived intelligence scores, or making any decision about the global hotels dataset. Covers the full vision (1.5M+ hotels), dual-source strategy (TripAdvisor + Google Places), 4-phase execution plan, 100-field schema (validated on 10-hotel global sample), derived intelligence products, and how the dataset maps to Tercier's 5 monthly deliverables."
+description: "Provides the strategy and architecture for building the world's most comprehensive hotel intelligence dataset. An agent should load this skill when designing data pipelines, planning discovery phases, defining data schemas, computing derived intelligence scores, or making any decision about the global hotels dataset. Covers the full vision (1.5M+ hotels), multi-source strategy (TripAdvisor + Google Places + DataForSEO + supporting sources), 4-phase execution plan, 297-field schema, deep relational model, derived intelligence products, and how the dataset maps to Tercier's 5 monthly deliverables."
 ---
 
 # Global Hotels Dataset — Strategy & Architecture
 
 ## The Vision in One Paragraph
 
-Build a structured intelligence dataset covering every hotel across TripAdvisor AND Google Places — 1.5M+ properties globally. Each hotel gets ~100 validated fields from dual sources: identity, address, quality fingerprint (6 TA subratings + Google rating), guest segment distribution (real trip type counts), amenity inventory, competitive set (10 nearest hotels), multilingual review corpus with per-language ratings and reviewer source markets, brand affiliation, city ranking, owner response behavior, Google editorial summaries, nearby landmarks, family/pet/accessibility signals, and computed intelligence scores (HQI, CPS, TOS). Reviews stored separately as a multilingual corpus. This dataset IS Tercier's moat. It pre-populates the product from day one, arms the sales team with per-property intelligence before first contact, and creates a data asset no competitor can replicate. Validated on a live 10-hotel global sample on March 28, 2026.
+Build a structured intelligence dataset covering every hotel across TripAdvisor, Google Places, DataForSEO, and a small set of supporting sources — 1.5M+ properties globally. Each hotel gets a 297-field summary card plus deep relational data: quality fingerprint (6 TA subratings + Google rating), guest segment distribution, multilingual full-review corpus, pre-booking Q&A, GMB signals, amenity inventory, competitive set, pricing history, snapshots, and future AI-visibility / Booking.com / government-star enrichments. Reviews and intent signals are stored separately as corpora the AI layer can reason over. This dataset IS Tercier's moat. It pre-populates the product from day one, arms the sales team with per-property intelligence before first contact, and creates a data asset no competitor can replicate. Validated on live multi-source Kempinski pilots on April 4, 2026.
 
 ---
 
@@ -147,7 +147,7 @@ Every field must serve at least one of the 5 monthly deliverables. If it doesn't
 | "What Changed" | TA rating trends, SerpApi pricing, review velocity |
 | "Who Matters Now" | TA trip types, reviewer source markets, per-language ratings |
 | "Where You're Losing" | TA subratings vs. compset, amenity gaps, Google editorial |
-| "What to Do About It" | SpyFu SEO, Firecrawl website gaps, Moz DA |
+| "What to Do About It" | DataForSEO (DA, traffic, keywords), Firecrawl website gaps |
 | "Here It Is, Done" | Google editorial + landmarks, TA review quotes, multilingual corpus |
 
 Social media: 4 fields maximum (instagram_handle, exists, followers, has_active_social). Digital maturity signal for sales, not product intelligence.
@@ -189,88 +189,122 @@ Lead scoring for sales:
 
 ---
 
-## Pipeline Architecture
+## Pipeline Architecture (Built)
 
+### Universal Enrichment Pipeline (`scripts/enrich-hotel/`)
+Takes ANY hotel by name + city. Enriches from all 7 sources in parallel. Fills all 297 Supabase columns.
 ```
-scripts/tripadvisor-global/
-├── 00-geo-grid-generator.ts          Generate lat/long grid per city
-├── 01-discover-hotels.ts             Nearby + text search discovery
-├── 02-fetch-details.ts               Details for all discovered hotels
-├── 03-fetch-reviews.ts               Multilingual review harvesting
-├── 04-map-competitive-sets.ts        Nearby search from each hotel
-├── 05-fetch-photos.ts                Photo metadata
-├── 06-match-hotelleriesuisse.ts      Cross-reference Swiss dataset
-├── 07-compute-intelligence.ts        Derived scores and indices
-├── lib/
-│   ├── tripadvisor-client.ts         Rate-limited API client with caching
-│   ├── cache.ts                      JSONL cache with dedup and TTL
-│   ├── geo-grid.ts                   Grid generation + priority ordering
-│   └── scoring.ts                    Intelligence score computation
-└── config/
-    ├── city-grids.json               City coordinates + grid params
-    ├── brand-list.json               Hotel brand names for search
-    └── language-matrix.json          Languages per country
+scripts/enrich-hotel/
+├── enrich.ts                       CLI entry: takes hotel names, orchestrates everything
+├── sources/
+│   ├── tripadvisor.ts              Search + Details + Reviews + Nearby
+│   ├── google-places.ts            Autocomplete + Place Details
+│   ├── dataforseo.ts               DA + traffic + keywords + ads + tech + social
+│   ├── dataforseo-reviews.ts       Full TA + Google review corpora
+│   ├── dataforseo-qna.ts           Google Q&A (pre-booking intent)
+│   ├── dataforseo-gmb.ts           Google My Business profile signals
+│   ├── firecrawl.ts                Website CMS, booking engine, analytics
+│   ├── fiber.ts                    GM contact enrichment
+│   ├── serpapi.ts                  OTA pricing comparison
+│   └── osm.ts                     OpenStreetMap cross-reference
+├── compute.ts                      All derived fields, scores, flags
+└── cache/                          JSONL cache (gitignored)
+```
+
+### Review NLP Pipeline (`scripts/nlp-pipeline/`)
+Live in this workspace. As of April 4, 2026 it has processed 10,714 text-bearing reviews into sentiment, topics, guest persona, content seeds, competitor mentions, and embeddings. The remaining 4,006 unprocessed review rows are provider rows with blank/null text and are intentionally skipped.
+```
+scripts/nlp-pipeline/
+├── extract.ts                      OpenAI Batch API orchestrator
+└── lib/
+    ├── openai-client.ts            Batch upload/create/poll helpers
+    ├── embedding-client.ts         text-embedding-3-small helper
+    └── aggregator.ts               Persona/topic normalization + guest segment inference
+```
+
+### Phase 0 Bulk Pipeline (`scripts/phase0-enrichment/`)
+Reads Swiss CSV, enriches via TA + Google, writes to Supabase. 16 files, 3,012 lines, tested.
+```
+scripts/phase0-enrichment/
+├── 00-run-pipeline.ts through 06-export-intelligence.ts
+├── supabase-schema.sql             Base DDL (current schema extended via migrations to 297 columns)
+├── lib/                            retry, cache, supabase, matching, logger, API clients
+└── cache/                          JSONL cache (gitignored)
 ```
 
 ### Data Storage
-```
-output/tripadvisor-global/
-├── discovery/
-│   ├── discovery-cache.jsonl         Raw search/nearby responses
-│   └── location-ids.csv              Deduplicated hotel IDs
-├── details/
-│   ├── details-cache.jsonl           Raw detail responses
-│   └── hotels-master.csv             Flattened master dataset
-├── reviews/
-│   ├── reviews-cache/{country}/{city}/ Reviews by geography
-│   └── review-stats.csv              Aggregated per hotel
-├── competitive-sets/
-│   └── competitive-sets.csv          Hotel → 10 competitors
-├── photos/
-│   └── photos-cache.jsonl            Photo metadata
-└── intelligence/
-    ├── hotel-quality-index.csv       HQI scores
-    ├── competitive-position.csv      CPS scores
-    └── tercier-opportunity-scores.csv TOS lead scores
-```
+- **Primary:** Supabase PostgreSQL (project `rfxuxkbfpewultpuojpe`)
+  - `hotels` — 297 columns, core hotel data + all enrichment + derived scores
+  - `hotel_amenities` — normalized amenity inventory per hotel
+  - `hotel_reviews` — individual reviews from TA + Google, plus NLP + embeddings columns
+  - `hotel_qna` — Google guest questions and answers
+
+### Read Layer (`lumina-ui/`)
+Internal Next.js 15 intelligence UI for proving the moat and demoing the product:
+- portfolio grid at `/`
+- hotel card at `/hotel/[id]`
+- comparison view at `/compare`
+- reads only from dashboard materialized views + `get_hotel_card()` RPC
+- never hits raw `hotel_reviews` or `review_topic_index` during page render
+  - `hotel_competitors` — competitive sets (10 per hotel), with competitors linked as first-class hotels
+  - `hotel_lang_ratings` — per-language rating averages
+  - `enrichment_snapshots` — legacy point-in-time snapshots for temporal tracking
+  - `pipeline_runs` — audit trail
+  - Deep layer live: `hotel_metric_snapshots`, `hotel_price_snapshots`, `review_topic_index`
+- **Cache:** JSONL files per source, 7-day TTL
+- **Export:** CSV generated from Supabase on demand
 
 ### Technical Requirements
-- **Rate limiter:** Token bucket at 50 calls/sec
+- **Rate limiting:** Token bucket per source (40/sec TA, 2000/min DataForSEO, 1/sec OSM)
 - **Cache:** JSONL, 7-day TTL, never re-fetch within window
-- **Resume:** Pipeline resumes from any interruption point
-- **Dedup:** location_id primary key, earliest discovery wins
-- **Concurrency:** 10-20 parallel requests
-- **Error handling:** Exponential backoff on 429/500, skip+log on 404
+- **Resume:** Cache is the safety net — re-run skips cached calls
+- **Parallelism:** bootstrap sources run first, dependent sources run second; independent work inside a stage uses `Promise.allSettled()`
+- **Resilience:** Each source catches its own errors, returns `{}` on failure
+- **Error handling:** Exponential backoff on 429/5xx, skip+log on 404
+- **Depth rule:** `hotels` is the summary card; durable product value lives in child tables, snapshots, and future embeddings/topic indexes
 
 ---
 
-## Data Source Architecture (Verified March 28, 2026)
+## Data Source Architecture (Verified April 3, 2026)
 
-### Verified Stack — 12 Sources, $820/mo
+### Active Stack — 7 Sources, all keys live, all tested against Kempinski Budapest
 
-| # | Source | What It Uniquely Adds | Monthly Cost |
+| # | Source | What It Uniquely Adds | Cost/Hotel |
 |---|---|---|---|
-| 1 | TripAdvisor Content API | Subratings, trip types, reviews, ranking, amenities | $0 |
-| 2 | Google Places API (New) | Editorial summary, landmarks, family/pet flags, Gemini AI | $58 one-time |
-| 3 | Fiber AI | Hotel GM contacts (kitchen-sink partial search) | $300 |
-| 4 | Apollo.io | Backup contacts + intent data | $0 (free tier) |
-| 5 | Hunter.io | Domain email search + verification | $49 |
-| 6 | Dropcontact | GDPR-compliant email verification | ~$85 |
-| 7 | SpyFu | Traffic estimates + Google Ads detection | $89 |
-| 8 | Moz | Domain Authority | $20 |
-| 9 | Firecrawl | Website scraping + DIY tech detection | $83 |
-| 10 | SerpApi | Multi-OTA price comparison via Google Hotels | $150 |
-| 11 | OSM/Overpass | 445K hotel POIs globally (discovery seed) | $0 |
-| 12 | GSTC | 3,522 sustainability-certified hotels | $0 |
+| 1 | TripAdvisor Content API | Subratings, trip types, amenities, ranking, compsets (NOT reviews — see DataForSEO) | Free |
+| 2 | Google Places API (New) | Editorial summary, Gemini AI, landmarks, family/pet/accessibility | ~$0.03 |
+| 3 | DataForSEO | FULL TA review corpus (up to 4,490), FULL Google reviews, DA, traffic, keywords, ads, tech, social, Google Q&A, Google My Business signals | ~$0.04 (SEO) + ~$0.50 (reviews) + ~$0.01 (Q&A/GMB) |
+| 4 | Firecrawl | Website CMS, booking engine, analytics detection | 1 credit |
+| 5 | Fiber AI | Hotel GM contacts (name, email, phone, LinkedIn, headcount) | credits |
+| 6 | SerpApi | Multi-OTA price comparison (Booking.com, Expedia, Hotels.com, direct) | ~$0.01 |
+| 7 | OSM/Overpass | 445K hotel POIs globally, rooms, stars, cross-reference IDs | Free |
+
+### Review Corpus Reality
+- Current API-first architecture stores **all currently accessible reviews** from the live source stack
+- Pre-booking intent now has its own first-class table via `hotel_qna`
+- Persona intelligence is designed as a review-level NLP layer first, then a hotel-level aggregation layer second
+- TripAdvisor free-tier API exposes only a limited recent corpus per language, even when paginated
+- Google Places exposes up to 5 reviews per place
+- The schema is intentionally designed so a later scraper or paid-source backfill can deepen the corpus without changing downstream AI consumers
 
 ### Phase 2+ Targets (Gated Access)
 - **Booking.com Demand API** — per-segment review scores (couples: 9.2). Use JAKALA relationship.
 - **Expedia Rapid API** — 100 reviews/hotel, richer segmentation than TA. Apply as AI company.
 - **GIATA Multicodes** — cross-platform hotel ID deduplication at scale.
-- **Foursquare** — foot-traffic popularity score, social handles, chain IDs (first 10K free).
+- **Foursquare** — foot-traffic popularity score, chain IDs (first 10K free).
+- **GSTC** — sustainability certification directory (~3,500 hotels, scrape-based).
 
-### Killed Sources (Claims Debunked)
-- Amadeus (150K not 1.5M, skeletal data), Semrush (SpyFu is 5x cheaper), Wappalyzer (OSS dead, DIY is free), MySwitzerland.io (not a hotel DB), GeoNames (zero hotel data)
+### Killed Sources (Replaced or Debunked)
+- **Moz** — replaced by DataForSEO (backlinks/bulk_ranks gives DA equivalent at fraction of cost)
+- **SpyFu** — replaced by DataForSEO (domain_rank_overview gives traffic, keywords, ads, ad spend)
+- **Hunter.io** — replaced by Fiber AI (kitchen-sink person search + contact-details/single)
+- **Dropcontact** — replaced by Fiber AI (GDPR verification can be added as a future enrichment step)
+- **Apollo.io** — replaced by Fiber AI as primary contact source (Apollo free tier kept as optional fallback)
+- **Amadeus** — 150K not 1.5M, skeletal data
+- **Semrush** — DataForSEO is 50x cheaper
+- **Wappalyzer** — OSS dead, DataForSEO + Firecrawl cover tech detection
+- **MySwitzerland.io** — not a hotel DB
+- **GeoNames** — zero hotel data
 
 ---
 
@@ -286,3 +320,4 @@ Load `hotels-dataset` whenever:
 
 Always pair with `tripadvisor-api` for endpoint-level details.
 Pair with `tercier-knowledge` for product/business context.
+Deep-intelligence architecture is now implemented. `CODEX-DEEP-INTELLIGENCE-DB.md` remains the canonical build spec / reference for the Phase 2 shape.

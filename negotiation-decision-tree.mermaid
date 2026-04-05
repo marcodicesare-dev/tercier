@@ -1,0 +1,164 @@
+---
+title: "Tercier Equity Negotiation — Decision Tree for March 29, 2026"
+---
+flowchart TD
+    START["🎯 MEETING STARTS<br/>Let them speak first.<br/>Do NOT reveal Felfel resignation.<br/>Do NOT show eagerness."] --> WHOFIRST
+    WHOFIRST{"Who goes first?"}
+    WHOFIRST -->|"They make an offer"| PARSE
+    WHOFIRST -->|"They ask you to propose"| YOUGOFIRST
+    %% ============================================================
+    %% THEY GO FIRST — PARSE THE OFFER
+    %% ============================================================
+    PARSE{"What equity % do they offer you?"}
+    %% --- TIER 1: INSULT (5-12%) ---
+    PARSE -->|"5-12%"| INSULT
+    INSULT["⛔ HIRED CEO FRAMING<br/>They see you as an employee with stock options.<br/>This is what a Series A company offers<br/>a CEO joining an existing business with revenue."]
+    INSULT --> INSULT_SAY["SAY:<br/>'This is an employee offer, not a co-founder deal.<br/>I'd be taking a CHF 60K salary cut to build everything<br/>full-time while holding equity that dilutes to 4-6%<br/>after two rounds. The expected value doesn't justify<br/>leaving my position. I need co-founder territory —<br/>30% minimum — or this doesn't make sense for me.'"]
+    INSULT_SAY --> INSULT_REACT{"Do they move above 20%?"}
+    INSULT_REACT -->|"Yes"| NEGOTIATE_UP["Good. Now in Scenario 3-5 territory.<br/>Follow that branch."]
+    INSULT_REACT -->|"No, stuck below 20%"| WALK_SOFT["SAY:<br/>'I think we see the roles differently.<br/>Let me think about whether there is a structure<br/>that works for both of us. I do not want to force<br/>something that is not right for either side.'<br/><br/>📌 DO NOT BURN THE BRIDGE.<br/>Let them come back with a better offer.<br/>You have time — they don't."]
+    %% --- TIER 2: LOWBALL (13-19%) ---
+    PARSE -->|"13-19%"| LOWBALL
+    LOWBALL["⚠️ LOWBALL WITH UPSIDE THEATER<br/>They'll probably say 'potential to earn up to 25-30%'<br/>but with vague milestones or board discretion."]
+    LOWBALL --> CHECK_KICKER{"Is the kicker automatic<br/>(tied to metrics) or<br/>discretionary (board vote)?"}
+    CHECK_KICKER -->|"Discretionary"| KICKER_TRAP["⛔ TRAP: Discretionary kicker means<br/>THEY decide if you earned it.<br/>You'll never get the full amount."]
+    KICKER_TRAP --> LOWBALL_SAY["SAY:<br/>'The base needs to be 25% minimum.<br/>At 15% I am at 10% after Series A —<br/>that is VP-level equity for CEO-level risk.<br/>And the kicker must be automatic —<br/>tied to hotel count and ARR, no board vote.<br/>Otherwise it is a bonus, not equity.'"]
+    CHECK_KICKER -->|"Automatic milestones"| LOWBALL_AUTO["Better, but base still too low.<br/>Counter: 25% base + keep their kicker structure.<br/>Total path to 35%."]
+    LOWBALL_SAY --> LOWBALL_REACT{"Do they move to 20%+?"}
+    LOWBALL_REACT -->|"Yes, 20%+"| NEGOTIATE_20
+    LOWBALL_REACT -->|"No"| WALK_SOFT
+    LOWBALL_AUTO --> NEGOTIATE_20
+    %% --- TIER 3: CLOSE BUT NOT ENOUGH (20-24%) ---
+    PARSE -->|"20-24%"| NEGOTIATE_20
+    NEGOTIATE_20["⚠️ CLOSE BUT BELOW YOUR FLOOR<br/>This is their likely landing zone.<br/>They think this is generous.<br/>It is not — it is where you START negotiating."]
+    NEGOTIATE_20 --> CHECK_SALARY_20{"What salary did they propose?"}
+    CHECK_SALARY_20 -->|"Below CHF 60K"| SALARY_BLOCK_20["SAY:<br/>'CHF 48K does not work in Zurich.<br/>I have modeled this. CHF 60K is the minimum<br/>where I am functional as a human being.<br/>The difference is CHF 12K/year —<br/>that is one hotel subscription.<br/>A CEO who cannot pay rent is not a CEO.'"]
+    SALARY_BLOCK_20 --> COUNTER_20
+    CHECK_SALARY_20 -->|"CHF 60K+"| COUNTER_20
+    COUNTER_20["COUNTER AT 28%:<br/>'20% dilutes to 13% after two rounds.<br/>That is a senior hire, not a co-founder.<br/>I need 28% base with a performance path to 38%.<br/>Let me show you the dilution math.'<br/><br/>SHOW THE TABLE:<br/>20% → 15.6% post-A → 12.8% post-B<br/>28% → 21.8% post-A → 17.9% post-B<br/>28%+10% kicker = 38% → 29.6% post-A → 24.3% post-B<br/><br/>'At 28% base, I am still under 18% after two rounds.<br/>That is reasonable for the person building everything.'"]
+    COUNTER_20 --> REACT_20{"Where do they land?"}
+    REACT_20 -->|"23-25%"| CHECK_DETAILS_25["Check the details carefully.<br/>Go to Scenario 5 protections checklist."]
+    REACT_20 -->|"Stay at 20-22%"| SALARY_COMP["If stuck at 20-22%, trade equity for salary:<br/>'If equity stays at 22%, I need salary<br/>to reach market faster: CHF 120K at 5 hotels,<br/>CHF 180K at 20 hotels, CHF 220K at CHF 1M ARR.<br/>And I need a 10% kicker on milestones.<br/>The total package has to work.'"]
+    SALARY_COMP --> FINAL_20{"Does total package<br/>(equity + salary + kicker) work?"}
+    FINAL_20 -->|"22% + good salary + 10% kicker"| ACCEPT_WITH_PROTECTIONS["✅ Acceptable if protections are solid.<br/>Go to PROTECTIONS CHECKLIST."]
+    FINAL_20 -->|"20% + low salary + weak kicker"| WALK_SOFT
+    %% --- TIER 4: YOUR FRAMEWORK (25%) ---
+    PARSE -->|"25%"| SCENARIO_25
+    SCENARIO_25["✅ AT YOUR FRAMEWORK FLOOR<br/>Do not accept immediately.<br/>This is where you negotiate the kicker and protections."]
+    SCENARIO_25 --> SAY_25["SAY:<br/>'25% is a fair starting point. I want to discuss<br/>two things: a performance path and protections.<br/><br/>Performance path: +2.5% at 10 hotels,<br/>+2.5% at CHF 1M ARR, +2.5% at 50 hotels,<br/>+2.5% at exit above CHF 50M.<br/>Total path to 35%. Automatic, no vote.<br/><br/>This costs you nothing until I have created<br/>massive value. It aligns us completely.'"]
+    SAY_25 --> SALARY_25{"What salary ladder?"}
+    SALARY_25 -->|"CHF 60K → 120K → 180K → 200K+bonus<br/>with automatic triggers"| GREAT_SALARY["✅ Salary structure works."]
+    SALARY_25 -->|"CHF 60K, we'll adjust later"| FIX_SALARY["SAY:<br/>'I need salary triggers in the agreement.<br/>At month 30, if we have 50 hotels and CHF 1M ARR,<br/>the company can afford CHF 180K. If I have to ask<br/>for it, we are having an employee conversation,<br/>not a founder conversation.<br/><br/>Triggers: CHF 120K at 10 hotels,<br/>CHF 180K at 50 hotels,<br/>CHF 200K + bonus at CHF 2M ARR.<br/>Written in the shareholder agreement. Automatic.'"]
+    SALARY_25 -->|"Below CHF 60K"| SALARY_BLOCK_20
+    GREAT_SALARY --> CHECK_DETAILS_25
+    FIX_SALARY --> CHECK_DETAILS_25
+    CHECK_DETAILS_25["GO TO PROTECTIONS CHECKLIST ⬇️"]
+    CHECK_DETAILS_25 --> PROTECTIONS
+    %% --- TIER 5: ABOVE FRAMEWORK (26-30%) ---
+    PARSE -->|"26-30%"| ABOVE
+    ABOVE["🟢 ABOVE YOUR FRAMEWORK<br/>They want you badly. Do not negotiate just to negotiate."]
+    ABOVE --> SAY_ABOVE["SAY:<br/>'This is a strong offer. I want to add a performance<br/>path — an additional 10% earned on milestones,<br/>taking me to [their number + 10]% on exceptional<br/>outcomes. And I want to make sure the salary ladder<br/>and protections are right. Let me walk through what<br/>I have in mind.'<br/><br/>Then go to SALARY and PROTECTIONS."]
+    SAY_ABOVE --> SALARY_25
+    SAY_ABOVE --> PROTECTIONS
+    %% --- TIER 6: CONVERTIBLE NOTE ---
+    PARSE -->|"Convertible note /<br/>you own 100%"| CONVERTIBLE
+    CONVERTIBLE["🏆 BEST POSSIBLE STRUCTURE FOR YOU<br/>You own the company. Their CHF 150-190K converts<br/>at first priced round with a cap.<br/>They get 3-5% advisory shares each."]
+    CONVERTIBLE --> SAY_CONVERT["SAY:<br/>'This is elegant. Two things:<br/>1. Your advisory commitment must be contractual —<br/>X introductions per quarter, monthly board.<br/>2. If no priced round in 24 months, the note<br/>converts automatically at the cap.'<br/><br/>Then sign and start building."]
+    SAY_CONVERT --> CLOSE["✅ CLOSE THE DEAL<br/><br/>SAY:<br/>'I am ready. Let us get this to a lawyer<br/>and start the AG formation this week.<br/>I want to be building by June.'<br/><br/>📌 DO NOT mention Felfel timeline.<br/>📌 DO NOT show relief or excitement.<br/>📌 Shake hands. Set next meeting<br/>within 48 hours for legal drafting."]
+    %% ============================================================
+    %% YOU GO FIRST
+    %% ============================================================
+    YOUGOFIRST["They punted. You go first.<br/>ANCHOR AT 35%."]
+    YOUGOFIRST --> SAY_FIRST["SAY:<br/>'I have done the homework. Here is what I think works.<br/><br/>35% for me, 60% for you combined, 5% ESOP.<br/>4-year vest, 12-month cliff.<br/><br/>Performance path: +2.5% at 10 hotels, +2.5% at<br/>CHF 1M ARR, +2.5% at 50 hotels, +2.5% at<br/>exit above CHF 50M. Total possible: 45%.<br/><br/>Salary: CHF 60K start, CHF 120K at 10 hotels,<br/>CHF 180K at 50 hotels, CHF 200K + bonus at<br/>CHF 2M ARR. All automatic triggers.<br/><br/>CHF 150-190K seed. Board of 3, one seat each.<br/>Full operational authority on product and hiring.<br/>Single-trigger acceleration. Standard protections.<br/><br/>Here is my reasoning: if CHF 150K were a standard<br/>angel investment at our stage, it buys 10-15%<br/>at a CHF 1M pre-money valuation. Your network<br/>and pilot add real value — another 10-15%.<br/>I am the sole full-time builder, 5,200 commits<br/>of shipped products. 35% reflects that.'<br/><br/>THEN STOP TALKING. Let them react."]
+    SAY_FIRST --> THEIRCOUNTER{"Their counter?"}
+    THEIRCOUNTER -->|"They say 20-25%"| NEGOTIATE_20
+    THEIRCOUNTER -->|"They say 25-30%"| SCENARIO_25
+    THEIRCOUNTER -->|"They accept 30%+"| ABOVE
+    %% ============================================================
+    %% PROTECTIONS CHECKLIST
+    %% ============================================================
+    PROTECTIONS["🔒 PROTECTIONS CHECKLIST<br/>These matter MORE than the headline equity %.<br/>A bad contract at 30% is worse than<br/>a good contract at 25%."]
+    PROTECTIONS --> P1
+    P1{"1. BOARD: Do you have a seat?"}
+    P1 -->|"3 seats, 1 each"| P2
+    P1 -->|"2 them, 1 you"| P1_FIX["SAY:<br/>'I need equal board representation or<br/>a removal protection clause. If you can<br/>fire me by majority vote at month 36<br/>right before an exit, I lose 25% of my equity.<br/>Either 3 seats with 1 each, or my removal<br/>requires unanimous vote + 12mo severance.'"]
+    P1_FIX --> P2
+    P1 -->|"No board seat for you"| P1_BLOCK["⛔ NON-NEGOTIABLE.<br/>No board seat = no governance voice = employee.<br/>'I cannot accept a structure where I build<br/>the company but have no seat at the table<br/>where decisions about the company are made.'"]
+    P1_BLOCK --> P2
+    P2{"2. ACCELERATION: Single or double trigger?"}
+    P2 -->|"Single trigger on exit"| P3
+    P2 -->|"Double trigger"| P2_FIX["Acceptable but push:<br/>'Double trigger is fine if the qualifying<br/>termination window is 18 months post-exit,<br/>not 6 months. And constructive termination<br/>(pay cut >10%, role downgrade, forced relocation)<br/>counts as involuntary.'"]
+    P2_FIX --> P3
+    P2 -->|"No acceleration"| P2_BLOCK["⛔ SAY:<br/>'Without acceleration, you could sell the company<br/>at month 36 and I forfeit 25% of my shares<br/>because they have not vested yet. That is not<br/>a partnership. Single trigger is standard<br/>for co-founders.'"]
+    P2_BLOCK --> P3
+    P3{"3. BAD LEAVER: How is it defined?"}
+    P3 -->|"Fraud / crime only"| P4
+    P3 -->|"Includes voluntary departure"| P3_FIX["⛔ DANGEROUS. SAY:<br/>'If I leave voluntarily after the cliff because<br/>we disagree on strategy, I should keep my vested<br/>shares at fair market value. That is good leaver.<br/>Bad leaver must mean fraud, criminal conviction,<br/>or material breach of fiduciary duty. Nothing else.<br/>Otherwise you are creating a golden cage where<br/>I cannot leave even if the partnership is broken.'"]
+    P3_FIX --> P4
+    P3 -->|"Includes 'board dissatisfaction'"| P3_BLOCK["⛔⛔ ABSOLUTE DEALBREAKER.<br/>'Board dissatisfaction as bad leaver means you<br/>can fire me, declare me a bad leaver, and take<br/>my vested shares at nominal value. That is<br/>expropriation, not a leaver clause.<br/>I will not sign this under any terms.'"]
+    P3_BLOCK --> P4
+    P4{"4. NON-COMPETE: Duration and scope?"}
+    P4 -->|"12 months, hotel AI SaaS, Europe"| P5
+    P4 -->|"24+ months or global scope"| P4_FIX["SAY:<br/>'Swiss courts reduce non-competes to 12 months<br/>routinely. 24 months global is unenforceable and<br/>signals distrust. Let us start where we will end:<br/>12 months, hotel AI SaaS, Europe.<br/>And the non-compete only applies if I am<br/>a good leaver — if you fire me without cause,<br/>no non-compete.'"]
+    P4_FIX --> P5
+    P4 -->|"No non-compete"| P5
+    P5{"5. PRE-EMPTIVE RIGHTS:<br/>Can you participate in future rounds?"}
+    P5 -->|"Yes, pro-rata rights"| P6
+    P5 -->|"No or not mentioned"| P5_FIX["SAY:<br/>'I need pre-emptive rights to maintain my<br/>percentage in future rounds. Without this,<br/>you can dilute me from 25% to 10% by raising<br/>capital I cannot participate in. This is<br/>standard in Swiss AG shareholder agreements.'"]
+    P5_FIX --> P6
+    P6{"6. OPERATIONAL AUTONOMY:<br/>Who controls hiring, product, spending?"}
+    P6 -->|"Full CEO authority<br/>within approved budget"| P7
+    P6 -->|"They approve hires,<br/>spending, roadmap"| P6_FIX["SAY:<br/>'If every hire and product decision needs approval,<br/>I cannot move at the speed that wins. That speed<br/>is the entire reason you want me.<br/><br/>Counter: I have full authority within the approved<br/>annual budget. I report monthly on all spending<br/>and hiring. Quarterly strategy reviews at board.<br/>If you see something wrong, we discuss it.<br/>But I decide.'"]
+    P6_FIX --> P7
+    P6 -->|"They control everything"| P6_BLOCK["⛔ SAY:<br/>'This is a management contract, not a co-founder<br/>arrangement. I cannot build a company where<br/>I need permission to buy a CHF 500 software tool.<br/>Either I run operations or I do not take this role.'"]
+    P6_BLOCK --> P7
+    P7{"7. SALARY TRIGGERS:<br/>Written in agreement or 'we will discuss'?"}
+    P7 -->|"Written with automatic triggers"| FINAL_CHECK
+    P7 -->|"'We will discuss / adjust'"| P7_FIX["SAY:<br/>'At month 30, if we have 50 hotels and CHF 1M ARR,<br/>the company can afford CHF 180K. If I have to ask<br/>you for it, we are having an employee conversation.<br/>A CEO of a CHF 2M ARR company at month 48<br/>should earn CHF 200K+bonus minimum.<br/>That is still below Zurich market rate.<br/><br/>Triggers in the shareholder agreement:<br/>CHF 120K at 10 hotels<br/>CHF 180K at 50 hotels<br/>CHF 200K + bonus at CHF 2M ARR<br/>No vote. Automatic.'"]
+    P7_FIX --> FINAL_CHECK
+    %% ============================================================
+    %% FINAL CHECK
+    %% ============================================================
+    FINAL_CHECK["📋 FINAL CHECK BEFORE CLOSING"]
+    FINAL_CHECK --> FC1{"Equity ≥ 25% base?"}
+    FC1 -->|"Yes"| FC2
+    FC1 -->|"No"| FC1_NO["Only accept 20-24% if:<br/>✅ Automatic kicker to 35%+<br/>✅ Aggressive salary ladder<br/>✅ All 7 protections solid<br/>Otherwise → walk"]
+    FC1_NO --> FC2
+    FC2{"Performance kicker to 35%+?"}
+    FC2 -->|"Yes, automatic milestones"| FC3
+    FC2 -->|"Yes, but discretionary"| FC2_FIX["Convert to automatic.<br/>If they refuse → it is a bonus, not equity.<br/>Price it into your base instead:<br/>'If no kicker, I need 30% base.'"]
+    FC2_FIX --> FC3
+    FC2 -->|"No kicker at all"| FC2_NO["Acceptable ONLY if base ≥ 28%<br/>and salary ladder is strong."]
+    FC2_NO --> FC3
+    FC3{"Salary reaches CHF 200K+<br/>by year 3-4?"}
+    FC3 -->|"Yes"| FC4
+    FC3 -->|"Caps at CHF 150K or below"| FC3_FIX["SAY:<br/>'A CEO running a CHF 2M ARR company<br/>in Zurich at month 48 earning CHF 150K<br/>is below market for a senior product manager.<br/>I need CHF 200K + bonus at CHF 2M ARR.<br/>The company can afford 3x my salary at that point.'"]
+    FC3_FIX --> FC4
+    FC4{"All 7 protections pass?"}
+    FC4 -->|"Yes"| CLOSE
+    FC4 -->|"1-2 gaps"| FC4_FIX["Negotiate the gaps.<br/>Do not let imperfect protections<br/>block a good equity deal.<br/>Get it to 'good enough' and sign."]
+    FC4_FIX --> CLOSE
+    FC4 -->|"3+ gaps or dealbreaker clauses"| FC4_BLOCK["SAY:<br/>'The equity works but the agreement does not<br/>protect me. I want to close this deal.<br/>Can we agree on the commercial terms today<br/>and have lawyers draft protections this week?'"]
+    FC4_BLOCK --> CLOSE
+    CLOSE["✅ CLOSE THE DEAL<br/><br/>SAY:<br/>'I am ready. Let us get this to a lawyer<br/>and start the AG formation this week.<br/>I want to be building by June.'<br/><br/>📌 DO NOT mention Felfel timeline.<br/>📌 DO NOT show relief or excitement.<br/>📌 Shake hands. Set next meeting<br/>within 48 hours for legal drafting."]
+    %% ============================================================
+    %% WALK AWAY
+    %% ============================================================
+    WALK_SOFT --> WALK_AFTERMATH["AFTER WALKING AWAY:<br/><br/>Do NOT burn the bridge.<br/>Give them 1 week to come back.<br/>If they do not come back:<br/>→ You start building Tercier yourself June 1<br/>→ You raise CHF 150K from Swiss angels<br/>→ You own 80-90%<br/>→ You find your own pilot hotels<br/>→ Slower start but 4x the equity<br/><br/>They need you more than you need them.<br/>You have already quit.<br/>Your downside is building it yourself."]
+    %% ============================================================
+    %% STYLING
+    %% ============================================================
+    classDef red fill:#ff4444,color:#fff,stroke:#cc0000
+    classDef orange fill:#ff8800,color:#fff,stroke:#cc6600
+    classDef yellow fill:#ffcc00,color:#000,stroke:#cc9900
+    classDef green fill:#44bb44,color:#fff,stroke:#228822
+    classDef blue fill:#4488ff,color:#fff,stroke:#2266cc
+    classDef gold fill:#ffd700,color:#000,stroke:#ccac00
+    classDef grey fill:#666,color:#fff,stroke:#444
+    class INSULT,P1_BLOCK,P2_BLOCK,P3_BLOCK,P6_BLOCK red
+    class LOWBALL,KICKER_TRAP,NEGOTIATE_20 orange
+    class SCENARIO_25,SAY_25 yellow
+    class ABOVE,SAY_ABOVE green
+    class CONVERTIBLE,SAY_CONVERT gold
+    class CLOSE blue
+    class WALK_SOFT,WALK_AFTERMATH grey

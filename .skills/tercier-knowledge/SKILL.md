@@ -45,15 +45,28 @@ Co-Managing Director at JAKALA Digital & Media. Co-founded 77Agency with Amedeo 
 ### AI-Native Team Thesis
 The founding team explicitly chose AI-native development: the initial developer was hired for "highest propensity for AI usage" because they "don't believe in traditional development architectures." This is validated by industry data: small AI-augmented teams (2-3 people with Claude/GPT) now achieve output parity with teams of 10-40 traditional engineers. Claude specifically scores 77.2% on SWE-bench vs GPT-5's 74.9%, with 200K token context windows enabling full codebase uploads. Marco Di Cesare's own output (114 commits in 48hrs on Basquio, entire synthetic research pipeline built in 2 days) demonstrates this thesis in practice.
 
-### Communications Status (as of March 29, 2026)
+### Communications Status (as of April 4, 2026)
 
 - **March 10:** Founding call. Amedeo & Marco Corsaro pitch the opportunity, Marco Di Cesare confirms strong interest.
 - **March 11:** Email exchange. Marco confirms he's all in ("non ho dubbi"). Amedeo: "la domanda più importante è capire se te la senti addosso."
 - **March 12:** Marco proposes Milan meetup. No reply.
 - **March 16:** Follow-up with BP work. No reply.
 - **March 23:** Corsaro email request.
-- **March 29:** **FORMAL PROPOSAL RECEIVED.** 55-min video call with Amedeo (Corsaro absent — daughter's skiing accident, both aligned). 19-slide deck: company renamed LUMINA, Swiss GmbH Zug, €200K capital, CHF 106K salary, up to 15% equity with performance vesting. Team: Elise (dev), Luisa (PM), Barbara Biffi (ex-Kempinski VP). **Kempinski pilot starting in days (Budapest + Bali).** Counter-proposal in preparation.
+- **March 29:** **FORMAL PROPOSAL RECEIVED.** 55-min video call with Amedeo (Corsaro absent — daughter's skiing accident, both aligned). 19-slide deck: company renamed LUMINA, Swiss GmbH Zug, €200K capital, CHF 106K salary, up to 15% equity with performance vesting. Team: Elise (dev), Luisa (PM), Barbara Biffi (ex-Kempinski VP). **Kempinski pilot starting in days (Budapest + Bali).**
+- **March 30:** Marco sends counterproposal: AG structure, 80/20 cap table, 5% PSOP, kicker 25/30/35%, vesting 7/7/6 on hotel/ARR KPIs, salary step-ups, 15% anti-dilution floor, governance board of 3.
+- **April 4 (Easter Saturday, 18:00):** **COUNTERPROPOSAL RESPONSE RECEIVED.** Amedeo & Corsaro respond same week. **5 of 9 points approved as-is. 4 calibrated (zero rejections).** Key changes: kicker capped at 30% (was 35%), vesting rebalanced 5/7/8 (was 7/7/6), salary step-ups approved with 6-month runway clause, anti-dilution floor 10%/8% decrescente (was 15% flat). Cap table 80/20, PSOP 5%, AG structure, governance, non-compete all approved. **"Vogliamo chiudere e partire."** Meeting requested to finalize.
 - **Full proposal details:** `knowledge/lumina-proposal-2026-03-29/`
+- **Response document:** `knowledge/lumina-proposal-2026-03-29/counterproposal-response-2026-04-04.md`
+
+#### Current Agreed Terms (near-final, pending in-person meeting)
+- **Cap table:** 40% Amedeo / 40% Corsaro / 20% Marco + 5% PSOP off cap table
+- **Exit kicker:** 20% base → 23% at €30M → 25% at €50M → 30% cap at €100M+
+- **Vesting:** 5% at M12 (15+ paying hotels) → 7% at M24 (ARR ≥ €500K) → 8% at M36 (ARR ≥ €1.5M)
+- **Salary:** CHF 106K → 150K at €300K ARR → 185K at €1.5M → 220K at €3M/Series A (with 6-month runway clause)
+- **Anti-dilution:** Pro-rata in every round. Floor: 10% through Series A, 8% from Series B
+- **Governance:** Board of 3, decisions 2/3, drag-along, tag-along, non-compete 12mo hotel AI SaaS
+- **Capital:** €200K (€100K each), Swiss AG Zug
+- **Timeline:** Sign → repo access → May 50% → July 100% (M1)
 
 ---
 

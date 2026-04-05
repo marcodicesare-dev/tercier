@@ -3,6 +3,34 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "npx serve public"
+    "start": "npx serve public",
+    "ui:dev": "npm --prefix lumina-ui run dev",
+    "ui:build": "npm --prefix lumina-ui run build",
+    "ui:start": "npm --prefix lumina-ui run start",
+    "enrich": "tsx scripts/enrich-hotel/enrich.ts",
+    "nlp:extract": "tsx scripts/nlp-pipeline/extract.ts",
+    "enrich:hotel-contacts": "tsx scripts/hotel-contact-enrichment/01-enrich-decision-makers.ts",
+    "recover:hotel-contacts": "tsx scripts/hotel-contact-enrichment/02-recover-partials-and-unresolved.ts",
+    "phase0:setup-db": "tsx scripts/phase0-enrichment/setup-database.ts",
+    "phase0": "tsx scripts/phase0-enrichment/00-run-pipeline.ts",
+    "phase0:match-ta": "tsx scripts/phase0-enrichment/01-match-tripadvisor.ts",
+    "phase0:enrich-ta": "tsx scripts/phase0-enrichment/02-enrich-tripadvisor.ts",
+    "phase0:match-gp": "tsx scripts/phase0-enrichment/03-match-google-places.ts",
+    "phase0:enrich-gp": "tsx scripts/phase0-enrichment/04-enrich-google-places.ts",
+    "phase0:compute": "tsx scripts/phase0-enrichment/05-compute-derived-fields.ts",
+    "phase0:export": "tsx scripts/phase0-enrichment/06-export-intelligence.ts"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.101.1",
+    "csv-parse": "^6.2.1",
+    "csv-stringify": "^6.7.0",
+    "dotenv": "^17.3.1",
+    "openai": "^6.33.0",
+    "postgres": "^3.4.8"
+  },
+  "devDependencies": {
+    "@types/node": "^25.5.0",
+    "tsx": "^4.21.0",
+    "typescript": "^6.0.2"
   }
 }

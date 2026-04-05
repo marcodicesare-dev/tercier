@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tercier Equity Negotiation — Decision Tree</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: #0a0a0f;
+    color: #e0e0e0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+  }
+  #header {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    background: rgba(10, 10, 15, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 12px 24px;
+    z-index: 100;
+    border-bottom: 1px solid #222;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  #header h1 {
+    font-size: 16px;
+    font-weight: 600;
+    color: #fff;
+  }
+  #header .subtitle {
+    font-size: 12px;
+    color: #888;
+  }
+  #controls {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+  #controls button {
+    background: #222;
+    color: #ccc;
+    border: 1px solid #333;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 13px;
+    user-select: none;
+  }
+  #controls button:hover { background: #333; color: #fff; }
+  #zoom-level { color: #888; font-size: 12px; min-width: 40px; text-align: center; }
+  #canvas {
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: grab;
+    overflow: hidden;
+  }
+  #canvas.dragging { cursor: grabbing; }
+  #chart-wrapper {
+    position: absolute;
+    transform-origin: 0 0;
+    padding: 80px 40px 40px 40px;
+  }
+  .mermaid {
+    max-width: none !important;
+  }
+  .mermaid svg {
+    max-width: none !important;
+  }
+  .mermaid .node rect, .mermaid .node polygon { rx: 8; ry: 8; }
+  .mermaid .edgeLabel { background: #1a1a2e !important; }
+  .mermaid .label { color: #fff !important; }
+
+  #legend {
+    position: fixed;
+    bottom: 16px;
+    left: 16px;
+    background: rgba(15, 15, 25, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 12px 16px;
+    z-index: 100;
+    font-size: 12px;
+  }
+  #legend .item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 4px 0;
+  }
+  #legend .dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+  #hint {
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+    background: rgba(15, 15, 25, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 10px 14px;
+    z-index: 100;
+    font-size: 11px;
+    color: #666;
+    line-height: 1.5;
+  }
+</style>
+</head>
+<body>
+
+<div id="header">
+  <div>
+    <h1>Tercier Equity Negotiation — Decision Tree</h1>
+    <div class="subtitle">Sunday March 29, 2026 — Marco Di Cesare — CONFIDENTIAL</div>
+  </div>
+  <div id="controls">
+    <button onclick="zoomOut()">−</button>
+    <span id="zoom-level">100%</span>
+    <button onclick="zoomIn()">+</button>
+    <button onclick="resetView()">Reset</button>
+    <button onclick="fitToScreen()">Fit</button>
+  </div>
+</div>
+
+<div id="canvas">
+  <div id="chart-wrapper">
+    <pre class="mermaid">
+---
+title: ""
+---
+flowchart TD
+    START["MEETING STARTS\nLet them speak first.\nDo NOT reveal Felfel resignation.\nDo NOT show eagerness."] --> WHOFIRST
+    WHOFIRST{"Who goes first?"}
+    WHOFIRST -->|"They make an offer"| PARSE
+    WHOFIRST -->|"They ask you to propose"| YOUGOFIRST
+
+    PARSE{"What equity % do they offer you?"}
+
+    PARSE -->|"5-12%"| INSULT
+    INSULT["HIRED CEO FRAMING\nThey see you as an employee with stock options.\nThis is what a Series A company offers\na CEO joining an existing business with revenue."]
+    INSULT --> INSULT_SAY["SAY:\nThis is an employee offer, not a co-founder deal.\nI would be taking a CHF 60K salary cut to build everything\nfull-time while holding equity that dilutes to 4-6%\nafter two rounds. The expected value does not justify\nleaving my position. I need co-founder territory\n30% minimum or this does not make sense for me."]
+    INSULT_SAY --> INSULT_REACT{"Do they move above 20%?"}
+    INSULT_REACT -->|"Yes"| NEGOTIATE_UP["Good. Now in Scenario 3-5 territory.\nFollow that branch."]
+    INSULT_REACT -->|"No, stuck below 20%"| WALK_SOFT["SAY:\nI think we see the roles differently.\nLet me think about whether there is a structure\nthat works for both of us. I do not want to force\nsomething that is not right for either side.\n\nDO NOT BURN THE BRIDGE.\nLet them come back with a better offer.\nYou have time. They do not."]
+
+    PARSE -->|"13-19%"| LOWBALL
+    LOWBALL["LOWBALL WITH UPSIDE THEATER\nThey will probably say potential to earn up to 25-30%\nbut with vague milestones or board discretion."]
+    LOWBALL --> CHECK_KICKER{"Is the kicker automatic\ntied to metrics or\ndiscretionary board vote?"}
+    CHECK_KICKER -->|"Discretionary"| KICKER_TRAP["TRAP: Discretionary kicker means\nTHEY decide if you earned it.\nYou will never get the full amount."]
+    KICKER_TRAP --> LOWBALL_SAY["SAY:\nThe base needs to be 25% minimum.\nAt 15% I am at 10% after Series A\nthat is VP-level equity for CEO-level risk.\nAnd the kicker must be automatic\ntied to hotel count and ARR, no board vote.\nOtherwise it is a bonus, not equity."]
+    CHECK_KICKER -->|"Automatic milestones"| LOWBALL_AUTO["Better, but base still too low.\nCounter: 25% base + keep their kicker structure.\nTotal path to 35%."]
+    LOWBALL_SAY --> LOWBALL_REACT{"Do they move to 20%+?"}
+    LOWBALL_REACT -->|"Yes, 20%+"| NEGOTIATE_20
+    LOWBALL_REACT -->|"No"| WALK_SOFT
+    LOWBALL_AUTO --> NEGOTIATE_20
+
+    PARSE -->|"20-24%"| NEGOTIATE_20
+    NEGOTIATE_20["CLOSE BUT BELOW YOUR FLOOR\nThis is their likely landing zone.\nThey think this is generous.\nIt is not. It is where you START negotiating."]
+    NEGOTIATE_20 --> CHECK_SALARY_20{"What salary did they propose?"}
+    CHECK_SALARY_20 -->|"Below CHF 60K"| SALARY_BLOCK_20["SAY:\nCHF 48K does not work in Zurich.\nI have modeled this. CHF 60K is the minimum\nwhere I am functional as a human being.\nThe difference is CHF 12K per year\nthat is one hotel subscription.\nA CEO who cannot pay rent is not a CEO."]
+    SALARY_BLOCK_20 --> COUNTER_20
+    CHECK_SALARY_20 -->|"CHF 60K+"| COUNTER_20
+    COUNTER_20["COUNTER AT 28%:\n20% dilutes to 13% after two rounds.\nThat is a senior hire, not a co-founder.\nI need 28% base with a performance path to 38%.\nLet me show you the dilution math.\n\nSHOW THE TABLE:\n20% then 15.6% post-A then 12.8% post-B\n28% then 21.8% post-A then 17.9% post-B\n28%+10% kicker = 38% then 29.6% post-A then 24.3% post-B\n\nAt 28% base, I am still under 18% after two rounds.\nThat is reasonable for the person building everything."]
+    COUNTER_20 --> REACT_20{"Where do they land?"}
+    REACT_20 -->|"23-25%"| CHECK_DETAILS_25["Check the details carefully.\nGo to Protections checklist."]
+    REACT_20 -->|"Stay at 20-22%"| SALARY_COMP["If stuck at 20-22%, trade equity for salary:\nIf equity stays at 22%, I need salary\nto reach market faster: CHF 120K at 5 hotels,\nCHF 180K at 20 hotels, CHF 220K at CHF 1M ARR.\nAnd I need a 10% kicker on milestones.\nThe total package has to work."]
+    SALARY_COMP --> FINAL_20{"Does total package\nequity + salary + kicker work?"}
+    FINAL_20 -->|"22% + good salary + 10% kicker"| ACCEPT_WITH_PROTECTIONS["Acceptable if protections are solid.\nGo to PROTECTIONS CHECKLIST."]
+    FINAL_20 -->|"20% + low salary + weak kicker"| WALK_SOFT
+
+    PARSE -->|"25%"| SCENARIO_25
+    SCENARIO_25["AT YOUR FRAMEWORK FLOOR\nDo not accept immediately.\nThis is where you negotiate the kicker and protections."]
+    SCENARIO_25 --> SAY_25["SAY:\n25% is a fair starting point. I want to discuss\ntwo things: a performance path and protections.\n\nPerformance path: +2.5% at 10 hotels,\n+2.5% at CHF 1M ARR, +2.5% at 50 hotels,\n+2.5% at exit above CHF 50M.\nTotal path to 35%. Automatic, no vote.\n\nThis costs you nothing until I have created\nmassive value. It aligns us completely."]
+    SAY_25 --> SALARY_25{"What salary ladder?"}
+    SALARY_25 -->|"CHF 60K to 120K to 180K to 200K+bonus\nwith automatic triggers"| GREAT_SALARY["Salary structure works."]
+    SALARY_25 -->|"CHF 60K, we will adjust later"| FIX_SALARY["SAY:\nI need salary triggers in the agreement.\nAt month 30, if we have 50 hotels and CHF 1M ARR,\nthe company can afford CHF 180K. If I have to ask\nfor it, we are having an employee conversation,\nnot a founder conversation.\n\nTriggers: CHF 120K at 10 hotels,\nCHF 180K at 50 hotels,\nCHF 200K + bonus at CHF 2M ARR.\nWritten in the shareholder agreement. Automatic."]
+    SALARY_25 -->|"Below CHF 60K"| SALARY_BLOCK_20
+    GREAT_SALARY --> CHECK_DETAILS_25
+    FIX_SALARY --> CHECK_DETAILS_25
+    CHECK_DETAILS_25 --> PROTECTIONS
+
+    PARSE -->|"26-30%"| ABOVE
+    ABOVE["ABOVE YOUR FRAMEWORK\nThey want you badly.\nDo not negotiate just to negotiate."]
+    ABOVE --> SAY_ABOVE["SAY:\nThis is a strong offer. I want to add a performance\npath: an additional 10% earned on milestones,\ntaking me to total on exceptional outcomes.\nAnd I want to make sure the salary ladder\nand protections are right.\nLet me walk through what I have in mind."]
+    SAY_ABOVE --> SALARY_25
+    SAY_ABOVE --> PROTECTIONS
+
+    PARSE -->|"Convertible note /\nyou own 100%"| CONVERTIBLE
+    CONVERTIBLE["BEST POSSIBLE STRUCTURE FOR YOU\nYou own the company. Their CHF 150-190K converts\nat first priced round with a cap.\nThey get 3-5% advisory shares each."]
+    CONVERTIBLE --> SAY_CONVERT["SAY:\nThis is elegant. Two things:\n1. Your advisory commitment must be contractual:\nX introductions per quarter, monthly board.\n2. If no priced round in 24 months, the note\nconverts automatically at the cap.\n\nThen sign and start building."]
+    SAY_CONVERT --> CLOSE["CLOSE THE DEAL\n\nSAY:\nI am ready. Let us get this to a lawyer\nand start the AG formation this week.\nI want to be building by June.\n\nDO NOT mention Felfel timeline.\nDO NOT show relief or excitement.\nShake hands. Set next meeting\nwithin 48 hours for legal drafting."]
+
+    YOUGOFIRST["They punted. You go first.\nANCHOR AT 35%."]
+    YOUGOFIRST --> SAY_FIRST["SAY:\nI have done the homework. Here is what I think works.\n\n35% for me, 60% for you combined, 5% ESOP.\n4-year vest, 12-month cliff.\n\nPerformance path: +2.5% at 10 hotels, +2.5% at\nCHF 1M ARR, +2.5% at 50 hotels, +2.5% at\nexit above CHF 50M. Total possible: 45%.\n\nSalary: CHF 60K start, CHF 120K at 10 hotels,\nCHF 180K at 50 hotels, CHF 200K + bonus at\nCHF 2M ARR. All automatic triggers.\n\nCHF 150-190K seed. Board of 3, one seat each.\nFull operational authority on product and hiring.\nSingle-trigger acceleration. Standard protections."]
+    SAY_FIRST --> THEIRCOUNTER{"Their counter?"}
+    THEIRCOUNTER -->|"They say 20-25%"| NEGOTIATE_20
+    THEIRCOUNTER -->|"They say 25-30%"| SCENARIO_25
+    THEIRCOUNTER -->|"They accept 30%+"| ABOVE
+
+    PROTECTIONS["PROTECTIONS CHECKLIST\nThese matter MORE than the headline equity %.\nA bad contract at 30% is worse than\na good contract at 25%."]
+    PROTECTIONS --> P1
+    P1{"1. BOARD: Do you have a seat?"}
+    P1 -->|"3 seats, 1 each"| P2
+    P1 -->|"2 them, 1 you"| P1_FIX["SAY:\nI need equal board representation or\na removal protection clause. If you can\nfire me by majority vote at month 36\nright before an exit, I lose 25% of my equity.\nEither 3 seats with 1 each, or my removal\nrequires unanimous vote + 12mo severance."]
+    P1_FIX --> P2
+    P1 -->|"No board seat for you"| P1_BLOCK["NON-NEGOTIABLE.\nNo board seat = no governance voice = employee.\nI cannot accept a structure where I build\nthe company but have no seat at the table\nwhere decisions about the company are made."]
+    P1_BLOCK --> P2
+    P2{"2. ACCELERATION:\nSingle or double trigger?"}
+    P2 -->|"Single trigger on exit"| P3
+    P2 -->|"Double trigger"| P2_FIX["Acceptable but push:\nDouble trigger is fine if the qualifying\ntermination window is 18 months post-exit,\nnot 6 months. And constructive termination\n(pay cut over 10%, role downgrade, forced relocation)\ncounts as involuntary."]
+    P2_FIX --> P3
+    P2 -->|"No acceleration"| P2_BLOCK["SAY:\nWithout acceleration, you could sell the company\nat month 36 and I forfeit 25% of my shares\nbecause they have not vested yet. That is not\na partnership. Single trigger is standard\nfor co-founders."]
+    P2_BLOCK --> P3
+    P3{"3. BAD LEAVER:\nHow is it defined?"}
+    P3 -->|"Fraud / crime only"| P4
+    P3 -->|"Includes voluntary departure"| P3_FIX["DANGEROUS. SAY:\nIf I leave voluntarily after the cliff because\nwe disagree on strategy, I should keep my vested\nshares at fair market value. That is good leaver.\nBad leaver must mean fraud, criminal conviction,\nor material breach of fiduciary duty. Nothing else.\nOtherwise you are creating a golden cage where\nI cannot leave even if the partnership is broken."]
+    P3_FIX --> P4
+    P3 -->|"Includes board dissatisfaction"| P3_BLOCK["ABSOLUTE DEALBREAKER.\nBoard dissatisfaction as bad leaver means you\ncan fire me, declare me a bad leaver, and take\nmy vested shares at nominal value. That is\nexpropriation, not a leaver clause.\nI will not sign this under any terms."]
+    P3_BLOCK --> P4
+    P4{"4. NON-COMPETE:\nDuration and scope?"}
+    P4 -->|"12 months, hotel AI SaaS, Europe"| P5
+    P4 -->|"24+ months or global scope"| P4_FIX["SAY:\nSwiss courts reduce non-competes to 12 months\nroutinely. 24 months global is unenforceable and\nsignals distrust. 12 months, hotel AI SaaS, Europe.\nAnd the non-compete only applies if I am\na good leaver. If you fire me without cause,\nno non-compete."]
+    P4_FIX --> P5
+    P4 -->|"No non-compete"| P5
+    P5{"5. PRE-EMPTIVE RIGHTS:\nCan you participate in future rounds?"}
+    P5 -->|"Yes, pro-rata rights"| P6
+    P5 -->|"No or not mentioned"| P5_FIX["SAY:\nI need pre-emptive rights to maintain my\npercentage in future rounds. Without this,\nyou can dilute me from 25% to 10% by raising\ncapital I cannot participate in. This is\nstandard in Swiss AG shareholder agreements."]
+    P5_FIX --> P6
+    P6{"6. OPERATIONAL AUTONOMY:\nWho controls hiring, product, spending?"}
+    P6 -->|"Full CEO authority\nwithin approved budget"| P7
+    P6 -->|"They approve hires,\nspending, roadmap"| P6_FIX["SAY:\nIf every hire and product decision needs approval,\nI cannot move at the speed that wins. That speed\nis the entire reason you want me.\n\nCounter: I have full authority within the approved\nannual budget. I report monthly on all spending\nand hiring. Quarterly strategy reviews at board.\nIf you see something wrong, we discuss it.\nBut I decide."]
+    P6_FIX --> P7
+    P6 -->|"They control everything"| P6_BLOCK["SAY:\nThis is a management contract, not a co-founder\narrangement. I cannot build a company where\nI need permission to buy a CHF 500 software tool.\nEither I run operations or I do not take this role."]
+    P6_BLOCK --> P7
+    P7{"7. SALARY TRIGGERS:\nWritten in agreement\nor we will discuss?"}
+    P7 -->|"Written with automatic triggers"| FINAL_CHECK
+    P7 -->|"We will discuss / adjust"| P7_FIX["SAY:\nAt month 30, if we have 50 hotels and CHF 1M ARR,\nthe company can afford CHF 180K. If I have to ask\nyou for it, we are having an employee conversation.\nA CEO of a CHF 2M ARR company at month 48\nshould earn CHF 200K+bonus minimum.\nThat is still below Zurich market rate.\n\nTriggers in the shareholder agreement:\nCHF 120K at 10 hotels\nCHF 180K at 50 hotels\nCHF 200K + bonus at CHF 2M ARR\nNo vote. Automatic."]
+    P7_FIX --> FINAL_CHECK
+
+    FINAL_CHECK["FINAL CHECK BEFORE CLOSING"]
+    FINAL_CHECK --> FC1{"Equity at least 25% base?"}
+    FC1 -->|"Yes"| FC2
+    FC1 -->|"No"| FC1_NO["Only accept 20-24% if:\nAutomatic kicker to 35%+\nAggressive salary ladder\nAll 7 protections solid\nOtherwise WALK"]
+    FC1_NO --> FC2
+    FC2{"Performance kicker to 35%+?"}
+    FC2 -->|"Yes, automatic milestones"| FC3
+    FC2 -->|"Yes, but discretionary"| FC2_FIX["Convert to automatic.\nIf they refuse it is a bonus, not equity.\nPrice it into your base instead:\nIf no kicker, I need 30% base."]
+    FC2_FIX --> FC3
+    FC2 -->|"No kicker at all"| FC2_NO["Acceptable ONLY if base is at least 28%\nand salary ladder is strong."]
+    FC2_NO --> FC3
+    FC3{"Salary reaches CHF 200K+\nby year 3-4?"}
+    FC3 -->|"Yes"| FC4
+    FC3 -->|"Caps at CHF 150K or below"| FC3_FIX["SAY:\nA CEO running a CHF 2M ARR company\nin Zurich at month 48 earning CHF 150K\nis below market for a senior product manager.\nI need CHF 200K + bonus at CHF 2M ARR.\nThe company can afford 3x my salary at that point."]
+    FC3_FIX --> FC4
+    FC4{"All 7 protections pass?"}
+    FC4 -->|"Yes"| CLOSE
+    FC4 -->|"1-2 gaps"| FC4_FIX["Negotiate the gaps.\nDo not let imperfect protections\nblock a good equity deal.\nGet it to good enough and sign."]
+    FC4_FIX --> CLOSE
+    FC4 -->|"3+ gaps or dealbreaker clauses"| FC4_BLOCK["SAY:\nThe equity works but the agreement does not\nprotect me. I want to close this deal.\nCan we agree on the commercial terms today\nand have lawyers draft protections this week?"]
+    FC4_BLOCK --> CLOSE
+
+    WALK_SOFT --> WALK_AFTERMATH["AFTER WALKING AWAY:\n\nDo NOT burn the bridge.\nGive them 1 week to come back.\nIf they do not come back:\nYou start building Tercier yourself June 1\nYou raise CHF 150K from Swiss angels\nYou own 80-90%\nYou find your own pilot hotels\nSlower start but 4x the equity\n\nThey need you more than you need them.\nYou have already quit.\nYour downside is building it yourself."]
+
+    classDef red fill:#991111,color:#fff,stroke:#cc2222,stroke-width:2px
+    classDef orange fill:#994400,color:#fff,stroke:#cc6600,stroke-width:2px
+    classDef yellow fill:#887700,color:#fff,stroke:#aaaa00,stroke-width:2px
+    classDef green fill:#116611,color:#fff,stroke:#22aa22,stroke-width:2px
+    classDef blue fill:#113399,color:#fff,stroke:#2255cc,stroke-width:2px
+    classDef gold fill:#886600,color:#fff,stroke:#ccaa00,stroke-width:2px
+    classDef grey fill:#444,color:#ccc,stroke:#666,stroke-width:2px
+    classDef decision fill:#1a1a3e,color:#fff,stroke:#4466aa,stroke-width:2px
+
+    class INSULT,INSULT_SAY,P1_BLOCK,P2_BLOCK,P3_BLOCK,P6_BLOCK red
+    class LOWBALL,KICKER_TRAP,NEGOTIATE_20,LOWBALL_SAY orange
+    class SCENARIO_25,SAY_25 yellow
+    class ABOVE,SAY_ABOVE,GREAT_SALARY,ACCEPT_WITH_PROTECTIONS green
+    class CONVERTIBLE,SAY_CONVERT gold
+    class CLOSE blue
+    class WALK_SOFT,WALK_AFTERMATH grey
+    class WHOFIRST,PARSE,INSULT_REACT,CHECK_KICKER,LOWBALL_REACT,CHECK_SALARY_20,REACT_20,FINAL_20,SALARY_25,THEIRCOUNTER,P1,P2,P3,P4,P5,P6,P7,FC1,FC2,FC3,FC4 decision
+    </pre>
+  </div>
+</div>
+
+<div id="legend">
+  <div class="item"><div class="dot" style="background:#991111"></div> Dealbreaker / Insult zone</div>
+  <div class="item"><div class="dot" style="background:#994400"></div> Lowball / Needs negotiation</div>
+  <div class="item"><div class="dot" style="background:#887700"></div> Your framework floor (25%)</div>
+  <div class="item"><div class="dot" style="background:#116611"></div> Strong offer / Accept zone</div>
+  <div class="item"><div class="dot" style="background:#886600"></div> Best case (convertible)</div>
+  <div class="item"><div class="dot" style="background:#113399"></div> Close the deal</div>
+  <div class="item"><div class="dot" style="background:#444"></div> Walk away (soft)</div>
+</div>
+
+<div id="hint">
+  Scroll to zoom · Drag to pan · Double-click to reset
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'dark',
+    flowchart: {
+      useMaxWidth: false,
+      htmlLabels: true,
+      curve: 'basis',
+      nodeSpacing: 30,
+      rankSpacing: 60,
+      padding: 15
+    },
+    themeVariables: {
+      primaryColor: '#1a1a3e',
+      primaryTextColor: '#e0e0e0',
+      primaryBorderColor: '#4466aa',
+      lineColor: '#4466aa',
+      secondaryColor: '#0f3460',
+      tertiaryColor: '#16213e',
+      background: '#0a0a0f',
+      mainBkg: '#1a1a3e',
+      nodeBorder: '#4466aa',
+      clusterBkg: '#111',
+      titleColor: '#fff',
+      edgeLabelBackground: '#1a1a2e',
+      fontSize: '13px'
+    }
+  });
+
+  // Canvas state
+  let scale = 1;
+  let panX = 0;
+  let panY = 0;
+  let isDragging = false;
+  let startX = 0;
+  let startY = 0;
+  let startPanX = 0;
+  let startPanY = 0;
+
+  const canvas = document.getElementById('canvas');
+  const wrapper = document.getElementById('chart-wrapper');
+
+  function applyTransform() {
+    wrapper.style.transform = `translate(${panX}px, ${panY}px) scale(${scale})`;
+    document.getElementById('zoom-level').textContent = Math.round(scale * 100) + '%';
+  }
+
+  // --- Drag to pan ---
+  canvas.addEventListener('mousedown', (e) => {
+    if (e.button !== 0) return;
+    isDragging = true;
+    canvas.classList.add('dragging');
+    startX = e.clientX;
+    startY = e.clientY;
+    startPanX = panX;
+    startPanY = panY;
+    e.preventDefault();
+  });
+
+  window.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    panX = startPanX + (e.clientX - startX);
+    panY = startPanY + (e.clientY - startY);
+    applyTransform();
+  });
+
+  window.addEventListener('mouseup', () => {
+    isDragging = false;
+    canvas.classList.remove('dragging');
+  });
+
+  // --- Touch support ---
+  let lastTouchDist = 0;
+  let lastTouchMid = { x: 0, y: 0 };
+
+  canvas.addEventListener('touchstart', (e) => {
+    if (e.touches.length === 1) {
+      isDragging = true;
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      startPanX = panX;
+      startPanY = panY;
+    } else if (e.touches.length === 2) {
+      isDragging = false;
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      lastTouchDist = Math.sqrt(dx * dx + dy * dy);
+      lastTouchMid = {
+        x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
+        y: (e.touches[0].clientY + e.touches[1].clientY) / 2
+      };
+    }
+    e.preventDefault();
+  }, { passive: false });
+
+  canvas.addEventListener('touchmove', (e) => {
+    if (e.touches.length === 1 && isDragging) {
+      panX = startPanX + (e.touches[0].clientX - startX);
+      panY = startPanY + (e.touches[0].clientY - startY);
+      applyTransform();
+    } else if (e.touches.length === 2) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const mid = {
+        x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
+        y: (e.touches[0].clientY + e.touches[1].clientY) / 2
+      };
+
+      if (lastTouchDist > 0) {
+        const factor = dist / lastTouchDist;
+        const newScale = Math.max(0.1, Math.min(5, scale * factor));
+        // Zoom toward midpoint
+        panX = mid.x - (mid.x - panX) * (newScale / scale);
+        panY = mid.y - (mid.y - panY) * (newScale / scale);
+        scale = newScale;
+        applyTransform();
+      }
+
+      lastTouchDist = dist;
+      lastTouchMid = mid;
+    }
+    e.preventDefault();
+  }, { passive: false });
+
+  canvas.addEventListener('touchend', () => {
+    isDragging = false;
+    lastTouchDist = 0;
+  });
+
+  // --- Scroll wheel zoom (zoom toward cursor) ---
+  canvas.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const rect = canvas.getBoundingClientRect();
+    const mouseX = e.clientX - rect.left;
+    const mouseY = e.clientY - rect.top;
+
+    const zoomFactor = e.deltaY > 0 ? 0.9 : 1.1;
+    const newScale = Math.max(0.1, Math.min(5, scale * zoomFactor));
+
+    // Zoom toward cursor position
+    panX = mouseX - (mouseX - panX) * (newScale / scale);
+    panY = mouseY - (mouseY - panY) * (newScale / scale);
+    scale = newScale;
+
+    applyTransform();
+  }, { passive: false });
+
+  // --- Double click to reset ---
+  canvas.addEventListener('dblclick', () => {
+    resetView();
+  });
+
+  // --- Button controls ---
+  function zoomIn() {
+    const cx = window.innerWidth / 2;
+    const cy = window.innerHeight / 2;
+    const newScale = Math.min(5, scale * 1.2);
+    panX = cx - (cx - panX) * (newScale / scale);
+    panY = cy - (cy - panY) * (newScale / scale);
+    scale = newScale;
+    applyTransform();
+  }
+
+  function zoomOut() {
+    const cx = window.innerWidth / 2;
+    const cy = window.innerHeight / 2;
+    const newScale = Math.max(0.1, scale / 1.2);
+    panX = cx - (cx - panX) * (newScale / scale);
+    panY = cy - (cy - panY) * (newScale / scale);
+    scale = newScale;
+    applyTransform();
+  }
+
+  function resetView() {
+    scale = 1;
+    panX = 0;
+    panY = 0;
+    applyTransform();
+  }
+
+  function fitToScreen() {
+    // Wait for mermaid to render, then fit
+    const svg = wrapper.querySelector('svg');
+    if (!svg) { scale = 0.35; panX = 20; panY = 60; applyTransform(); return; }
+
+    const svgRect = svg.getBoundingClientRect();
+    const realW = svgRect.width / scale;
+    const realH = svgRect.height / scale;
+
+    const padX = 80;
+    const padY = 120; // account for header
+    const fitScaleX = (window.innerWidth - padX) / realW;
+    const fitScaleY = (window.innerHeight - padY) / realH;
+    scale = Math.min(fitScaleX, fitScaleY, 1);
+
+    // Center it
+    panX = (window.innerWidth - realW * scale) / 2;
+    panY = 60; // below header
+
+    applyTransform();
+  }
+
+  // Auto-fit on load
+  window.addEventListener('load', () => {
+    setTimeout(fitToScreen, 800);
+  });
+</script>
+</body>
+</html>

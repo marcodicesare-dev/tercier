@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tercier — Negotiation Simulator</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/regular/style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/bold/style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@phosphor-icons/web@2.1.2/src/fill/style.css">
+<style>
+  @font-face {
+    font-family: 'Geist Mono';
+    src: url('https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/fonts/geist-mono/GeistMono-Regular.woff2') format('woff2');
+    font-weight: 400;
+  }
+  @font-face {
+    font-family: 'Geist Mono';
+    src: url('https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/fonts/geist-mono/GeistMono-Medium.woff2') format('woff2');
+    font-weight: 500;
+  }
+  @font-face {
+    font-family: 'Geist Mono';
+    src: url('https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/fonts/geist-mono/GeistMono-SemiBold.woff2') format('woff2');
+    font-weight: 600;
+  }
+  @font-face {
+    font-family: 'Geist Mono';
+    src: url('https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/fonts/geist-mono/GeistMono-Bold.woff2') format('woff2');
+    font-weight: 700;
+  }
+  @font-face {
+    font-family: 'Geist';
+    src: url('https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/fonts/geist-sans/Geist-Regular.woff2') format('woff2');
+    font-weight: 400;
+  }
+  @font-face {
+    font-family: 'Geist';
+    src: url('https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/fonts/geist-sans/Geist-Medium.woff2') format('woff2');
+    font-weight: 500;
+  }
+  @font-face {
+    font-family: 'Geist';
+    src: url('https://cdn.jsdelivr.net/npm/geist@1.3.0/dist/fonts/geist-sans/Geist-SemiBold.woff2') format('woff2');
+    font-weight: 600;
+  }
+
+  :root {
+    --bg: #FAF6F1;
+    --bg-warm: #F5EDE4;
+    --bg-card: #FFFFFF;
+    --bg-card-alt: #FDF9F5;
+    --terracotta: #C45A3C;
+    --terracotta-light: #D4826A;
+    --terracotta-dark: #A04030;
+    --terracotta-bg: #FDF0EB;
+    --sand: #B8A088;
+    --sand-light: #D4C4AE;
+    --sand-dark: #8C7A66;
+    --text: #2C2418;
+    --text-secondary: #6B5D4F;
+    --text-muted: #9C8E7E;
+    --border: #E8DDD0;
+    --border-light: #F0E8DC;
+    --green: #3D7A4A;
+    --green-bg: #EDF5EF;
+    --green-border: #C4DEC9;
+    --red: #B5392A;
+    --red-bg: #FDEEEC;
+    --red-border: #E8C4BF;
+    --amber: #A07020;
+    --amber-bg: #FDF5E8;
+    --amber-border: #E8D8B4;
+    --blue: #2E5FAA;
+    --blue-bg: #EDF2FC;
+    --blue-border: #B8CCE8;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Geist Mono', 'SF Mono', 'Fira Code', monospace;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* Header */
+  #header {
+    background: var(--bg-card);
+    padding: 18px 28px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  #header h1 {
+    font-family: 'Geist', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  #header h1 i { color: var(--terracotta); font-size: 22px; }
+  #header .sub {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 3px;
+  }
+  #header-right { display: flex; gap: 12px; align-items: center; }
+  #progress-label {
+    font-size: 13px;
+    color: var(--text-muted);
+    background: var(--bg-warm);
+    padding: 6px 12px;
+    border-radius: 8px;
+  }
+  #restart-btn {
+    background: var(--bg-card);
+    color: var(--text-secondary);
+    border: 1px solid var(--border);
+    padding: 8px 16px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 13px;
+    font-family: 'Geist Mono', monospace;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  #restart-btn:hover { background: var(--bg-warm); border-color: var(--sand); color: var(--text); }
+
+  /* Chat */
+  #chat-area {
+    flex: 1;
+    overflow-y: auto;
+    padding: 28px 0;
+    scroll-behavior: smooth;
+  }
+  #chat-inner {
+    max-width: 740px;
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  .message {
+    margin-bottom: 20px;
+    animation: fadeSlideIn 0.4s ease-out;
+    opacity: 0;
+    animation-fill-mode: forwards;
+  }
+  @keyframes fadeSlideIn {
+    from { opacity: 0; transform: translateY(14px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Narrator */
+  .msg-narrator { text-align: center; margin: 24px 0; }
+  .msg-narrator .bubble {
+    display: inline-block;
+    background: var(--bg-warm);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 18px 24px;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--text-secondary);
+    max-width: 92%;
+  }
+
+  /* Them */
+  .msg-them {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+  }
+  .msg-them .avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--terracotta), var(--terracotta-light));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #fff;
+  }
+  .msg-them .avatar i { font-size: 20px; }
+  .msg-them .bubble {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 4px 16px 16px 16px;
+    padding: 16px 20px;
+    font-size: 16px;
+    line-height: 1.65;
+    max-width: 85%;
+    color: var(--text);
+  }
+  .msg-them .name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--terracotta);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+
+  /* You */
+  .msg-you {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    flex-direction: row-reverse;
+  }
+  .msg-you .avatar {
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--blue), #4A7ACC);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    color: #fff;
+  }
+  .msg-you .avatar i { font-size: 20px; }
+  .msg-you .bubble {
+    background: var(--blue-bg);
+    border: 1px solid var(--blue-border);
+    border-radius: 16px 4px 16px 16px;
+    padding: 16px 20px;
+    font-size: 16px;
+    line-height: 1.65;
+    max-width: 85%;
+    color: var(--text);
+  }
+  .msg-you .name {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--blue);
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    text-align: right;
+  }
+
+  /* Coach */
+  .msg-coach { margin: 14px 0 18px; padding-left: 56px; }
+  .msg-coach .bubble {
+    background: var(--green-bg);
+    border: 1px solid var(--green-border);
+    border-left: 4px solid var(--green);
+    border-radius: 4px 12px 12px 12px;
+    padding: 16px 20px;
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--green);
+    max-width: 90%;
+  }
+  .msg-coach .coach-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--green);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .msg-coach .coach-label i { font-size: 14px; }
+
+  /* Warning */
+  .msg-warning { margin: 14px 0 18px; padding-left: 56px; }
+  .msg-warning .bubble {
+    background: var(--red-bg);
+    border: 1px solid var(--red-border);
+    border-left: 4px solid var(--red);
+    border-radius: 4px 12px 12px 12px;
+    padding: 16px 20px;
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--red);
+    max-width: 90%;
+  }
+  .msg-warning .coach-label {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--red);
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .msg-warning .coach-label i { font-size: 14px; }
+
+  /* Outcomes */
+  .msg-outcome { text-align: center; margin: 28px 0; }
+  .msg-outcome .bubble {
+    display: inline-block;
+    padding: 24px 32px;
+    border-radius: 18px;
+    font-size: 16px;
+    line-height: 1.7;
+    max-width: 88%;
+  }
+  .msg-outcome.good .bubble {
+    background: var(--green-bg);
+    border: 2px solid var(--green);
+    color: var(--green);
+  }
+  .msg-outcome.neutral .bubble {
+    background: var(--amber-bg);
+    border: 2px solid var(--amber);
+    color: var(--amber);
+  }
+  .msg-outcome.bad .bubble {
+    background: var(--red-bg);
+    border: 2px solid var(--red);
+    color: var(--red);
+  }
+
+  /* Choices area */
+  #choices-area {
+    flex-shrink: 0;
+    background: var(--bg-card);
+    border-top: 1px solid var(--border);
+    padding: 20px 24px 28px;
+  }
+  #choices-inner {
+    max-width: 740px;
+    margin: 0 auto;
+  }
+  #choices-label {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.2px;
+    color: var(--text-muted);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  #choices-label i { font-size: 16px; color: var(--terracotta); }
+
+  #choices {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .choice-btn {
+    background: var(--bg-card-alt);
+    border: 1.5px solid var(--border);
+    border-radius: 14px;
+    padding: 16px 20px;
+    color: var(--text);
+    font-family: 'Geist Mono', monospace;
+    font-size: 15px;
+    line-height: 1.5;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .choice-btn:hover {
+    background: var(--bg-warm);
+    border-color: var(--sand);
+    transform: translateX(4px);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  }
+  .choice-btn:active {
+    transform: translateX(2px);
+  }
+  .choice-key {
+    background: var(--bg-warm);
+    color: var(--text-muted);
+    width: 32px;
+    height: 32px;
+    border-radius: 9px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+    border: 1px solid var(--border);
+  }
+  .choice-btn:hover .choice-key {
+    background: var(--sand-light);
+    color: var(--text);
+    border-color: var(--sand);
+  }
+
+  .choice-btn.danger {
+    border-color: var(--red-border);
+    background: var(--red-bg);
+  }
+  .choice-btn.danger:hover {
+    border-color: var(--red);
+    background: #FBEAE8;
+  }
+  .choice-btn.danger .choice-key {
+    background: var(--red-bg);
+    border-color: var(--red-border);
+    color: var(--red);
+  }
+
+  .choice-btn.success {
+    border-color: var(--green-border);
+    background: var(--green-bg);
+  }
+  .choice-btn.success:hover {
+    border-color: var(--green);
+    background: #E2F0E5;
+  }
+  .choice-btn.success .choice-key {
+    background: var(--green-bg);
+    border-color: var(--green-border);
+    color: var(--green);
+  }
+
+  .choice-btn.warning {
+    border-color: var(--amber-border);
+    background: var(--amber-bg);
+  }
+  .choice-btn.warning:hover {
+    border-color: var(--amber);
+    background: #F9EFDA;
+  }
+  .choice-btn.warning .choice-key {
+    background: var(--amber-bg);
+    border-color: var(--amber-border);
+    color: var(--amber);
+  }
+
+  /* Typing */
+  .typing-dots {
+    display: inline-flex;
+    gap: 5px;
+    padding: 4px 0;
+  }
+  .typing-dots span {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--sand);
+    animation: typingBounce 1.2s ease-in-out infinite;
+  }
+  .typing-dots span:nth-child(2) { animation-delay: 0.15s; }
+  .typing-dots span:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes typingBounce {
+    0%, 60%, 100% { transform: translateY(0); opacity: 0.35; }
+    30% { transform: translateY(-7px); opacity: 1; }
+  }
+
+  /* Hint */
+  #hint {
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    z-index: 100;
+    font-size: 12px;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  #hint i { font-size: 14px; color: var(--sand); }
+
+  /* Scrollbar */
+  #chat-area::-webkit-scrollbar { width: 6px; }
+  #chat-area::-webkit-scrollbar-track { background: transparent; }
+  #chat-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  #chat-area::-webkit-scrollbar-thumb:hover { background: var(--sand); }
+
+  /* Choice breadcrumb */
+  .msg-choice-echo { text-align: center; margin: 8px 0 16px; }
+  .msg-choice-echo .bubble {
+    display: inline-block;
+    font-size: 12px;
+    color: var(--text-muted);
+    background: var(--bg-warm);
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    padding: 8px 14px;
+    max-width: 80%;
+  }
+  .msg-choice-echo .bubble i { font-size: 12px; margin-right: 4px; }
+</style>
+</head>
+<body>
+
+<div id="header">
+  <div>
+    <h1><i class="ph ph-strategy"></i> Negotiation Simulator</h1>
+    <div class="sub">Tercier AG — Sunday March 29, 2026</div>
+  </div>
+  <div id="header-right">
+    <span id="progress-label"><i class="ph ph-steps"></i> Start</span>
+    <button id="restart-btn" onclick="restart()"><i class="ph ph-arrow-counter-clockwise"></i> Restart</button>
+  </div>
+</div>
+
+<div id="chat-area">
+  <div id="chat-inner"></div>
+</div>
+
+<div id="choices-area">
+  <div id="choices-inner">
+    <div id="choices-label"><i class="ph-fill ph-path"></i> What happens next?</div>
+    <div id="choices"></div>
+  </div>
+</div>
+
+<div id="hint"><i class="ph ph-keyboard"></i> Press A, B, C to choose</div>
+
+<script>
+// ============================================
+// NEGOTIATION GAME DATA
+// ============================================
+const GAME = {
+
+"start": {
+  messages: [
+    { type: "narrator", text: "Sunday afternoon. You sit down with Amedeo Guffanti and Marco Corsaro at a restaurant. Coffee is ordered. Small talk winds down. The conversation shifts to Tercier." },
+    { type: "narrator", text: "Remember: Let them speak first. Do NOT reveal you've resigned from Felfel. Do NOT show eagerness." },
+  ],
+  choices: [
+    { text: "They make you an equity offer", goto: "they_offer", style: "" },
+    { text: "They ask: \"Marco, what do you have in mind?\"", goto: "you_first", style: "" },
+    { text: "They propose a convertible note — you own 100%", goto: "convertible", style: "success" },
+  ]
+},
+
+"they_offer": {
+  messages: [
+    { type: "them", name: "Amedeo & Corsaro", text: "Marco, we've talked about it. We believe in this project and we want to back it. Here's what we're thinking for the equity split..." },
+    { type: "coach", text: "Listen carefully. Don't react emotionally. Take a breath before responding. Ask clarifying questions. What percentage do they say?" },
+  ],
+  choices: [
+    { text: "They offer 5–12%", goto: "insult", style: "danger" },
+    { text: "They offer 13–19%", goto: "lowball", style: "warning" },
+    { text: "They offer 20–24%", goto: "close_but_low", style: "warning" },
+    { text: "They offer 25%", goto: "framework_floor", style: "" },
+    { text: "They offer 26–30%", goto: "above_framework", style: "success" },
+  ]
+},
+
+"insult": {
+  messages: [
+    { type: "them", name: "Amedeo & Corsaro", text: "We're thinking somewhere around 8-10% for you, with a 4-year vesting schedule. You'd be CEO with a solid salary and stock options. There's potential to earn more based on performance." },
+    { type: "warning", text: "HIRED CEO FRAMING. They see you as an employee with stock options. This is what a Series A company offers a CEO joining an existing business with revenue. Tercier has zero revenue — you ARE the business." },
+    { type: "coach", text: "Stay calm. Don't show anger. This tells you how they see the deal — as their company with you as a hired operator. You need to reframe." },
+  ],
+  choices: [
+    { text: "\"This is an employee offer, not a co-founder deal. At 10%, I dilute to 5% after two rounds. I need co-founder territory — 30% minimum.\"", goto: "insult_react", style: "" },
+    { text: "Accept it — 10% is better than nothing", goto: "insult_accept_bad", style: "danger" },
+  ]
+},
+
+"insult_accept_bad": {
+  messages: [
+    { type: "warning", text: "STOP. Do NOT accept this. At 10%, after Series A (22% dilution) you're at 7.8%. After Series B, you're at 6.4%. You'll be building this company full-time for 4+ years with less equity than an early engineer at a funded startup. The expected value does not justify leaving your position." },
+  ],
+  choices: [
+    { text: "You're right. Push back hard.", goto: "insult_react", style: "" },
+  ]
+},
+
+"insult_react": {
+  messages: [
+    { type: "you", text: "Look, I appreciate the offer, but let me be direct. This is structured like a hired CEO deal — employee with stock options. But Tercier doesn't exist yet. There's no product, no revenue, no team. I'm not joining a company, I'm building one from zero.\n\nAt 10% I dilute to 5% after two rounds. That's VP-level equity for CEO-level risk. I need to be in co-founder territory — 30% minimum — or the math doesn't work for me." },
+    { type: "narrator", text: "They exchange a glance. A pause." },
+  ],
+  choices: [
+    { text: "They move above 20%", goto: "close_but_low", style: "success" },
+    { text: "They stay firm below 20%", goto: "walk_soft", style: "danger" },
+  ]
+},
+
+"lowball": {
+  messages: [
+    { type: "them", name: "Amedeo & Corsaro", text: "We're thinking 15% base equity for you, but with a path to 25-30% based on milestones. You could earn additional shares as the company hits key targets." },
+    { type: "coach", text: "Careful. This is a lowball with upside theater. The key question: is the extra equity AUTOMATIC (tied to metrics) or DISCRETIONARY (board vote)? This makes all the difference." },
+  ],
+  choices: [
+    { text: "Ask: \"Is the performance equity automatic, or does the board need to approve it?\"", goto: "lowball_check_kicker", style: "" },
+    { text: "\"15% base is too low even with a kicker. I need 25% base minimum.\"", goto: "lowball_direct", style: "" },
+  ]
+},
+
+"lowball_check_kicker": {
+  messages: [
+    { type: "you", text: "I like the milestone approach. Quick question though — when we hit those targets, does the equity transfer automatically, or does the board need to vote on it?" },
+  ],
+  choices: [
+    { text: "\"The board would review and approve each milestone...\"", goto: "lowball_discretionary", style: "danger" },
+    { text: "\"It's automatic — hit the number, get the shares.\"", goto: "lowball_automatic", style: "success" },
+  ]
+},
+
+"lowball_discretionary": {
+  messages: [
+    { type: "them", name: "Amedeo", text: "Well, naturally the board would evaluate whether the milestones have been properly met. It's standard governance." },
+    { type: "warning", text: "TRAP. Discretionary kicker means THEY decide if you earned it. You will never get the full amount. \"The board\" is them — they have 2 of 3 seats. They can always find a reason to say \"not quite\" or \"let's revisit next quarter.\"" },
+  ],
+  choices: [
+    { text: "\"The kicker must be automatic — hit the number, get the shares. Otherwise it's a bonus, not equity. And the base needs to be 25%.\"", goto: "lowball_direct", style: "" },
+  ]
+},
+
+"lowball_automatic": {
+  messages: [
+    { type: "them", name: "Corsaro", text: "Yes, it's written into the agreement. Hit the target, shares transfer. No vote needed." },
+    { type: "coach", text: "Better. Automatic milestones are real. But the base is still too low. At 15% you're at 10% after Series A — that's VP-level. Counter: 25% base + keep their kicker structure. Total path to 35%." },
+  ],
+  choices: [
+    { text: "\"The automatic structure works. But I need the base at 25%, keeping the performance path on top. Total to 35%.\"", goto: "lowball_counter_react", style: "" },
+  ]
+},
+
+"lowball_direct": {
+  messages: [
+    { type: "you", text: "I hear you on the milestone structure, but the base needs to be 25% minimum. At 15%, I'm at 10% after Series A — that's VP-level equity for someone building the entire company.\n\nThe kicker must be automatic, tied to hotel count and ARR. No board vote. Otherwise it's a bonus, not equity." },
+  ],
+  choices: [
+    { text: "They move to 20%+", goto: "close_but_low", style: "success" },
+    { text: "They stay below 20%", goto: "walk_soft", style: "danger" },
+  ]
+},
+
+"lowball_counter_react": {
+  messages: [
+    { type: "narrator", text: "They discuss quietly between themselves for a moment." },
+  ],
+  choices: [
+    { text: "They come back with 20-24%", goto: "close_but_low", style: "" },
+    { text: "They come back with 25%", goto: "framework_floor", style: "success" },
+    { text: "They won't budge past 19%", goto: "walk_soft", style: "danger" },
+  ]
+},
+
+"close_but_low": {
+  messages: [
+    { type: "them", name: "Amedeo & Corsaro", text: "OK Marco, we can go up to 22%. We think that's very fair given we're putting in the capital and our network is what makes this possible." },
+    { type: "coach", text: "This is their likely landing zone. They think this is generous. It's not — it's where you START negotiating. 22% dilutes to 14.4% after Series A, 11.8% after B. That's a senior hire, not a co-founder." },
+  ],
+  choices: [
+    { text: "Check what salary they're offering", goto: "check_salary_20", style: "" },
+    { text: "Counter directly at 28% with dilution math", goto: "counter_28", style: "" },
+  ]
+},
+
+"check_salary_20": {
+  messages: [
+    { type: "you", text: "OK, let's talk about the full package. What salary are you thinking?" },
+  ],
+  choices: [
+    { text: "\"We were thinking CHF 48K to start...\"", goto: "salary_too_low", style: "danger" },
+    { text: "\"CHF 60K to start, with increases as the company grows.\"", goto: "counter_28", style: "" },
+    { text: "\"CHF 80K+ — we want you focused, not stressed.\"", goto: "salary_good_but_equity_low", style: "success" },
+  ]
+},
+
+"salary_too_low": {
+  messages: [
+    { type: "them", name: "Corsaro", text: "Given the early stage, we were thinking CHF 48K annually to start. The equity upside is the real compensation here." },
+    { type: "warning", text: "CHF 48K in Zurich is survival mode. You cannot function as a CEO worrying about rent. The difference between 48K and 60K is CHF 12K per year — that's ONE hotel subscription." },
+  ],
+  choices: [
+    { text: "\"CHF 48K doesn't work in Zurich. CHF 60K is the minimum where I'm functional. The difference is 12K/year — one hotel subscription. A CEO who can't pay rent is not a CEO.\"", goto: "counter_28", style: "" },
+  ]
+},
+
+"salary_good_but_equity_low": {
+  messages: [
+    { type: "coach", text: "Good salary, but the equity is still low. If they're generous on salary, they might be firm on equity. You can trade: accept the salary but push hard on equity + kicker." },
+  ],
+  choices: [
+    { text: "\"The salary works. But at 22% equity, I need a performance kicker. Let me show you the dilution math.\"", goto: "counter_28", style: "" },
+  ]
+},
+
+"counter_28": {
+  messages: [
+    { type: "you", text: "Let me show you why the equity matters. Here's the dilution math:\n\n• 20% → 15.6% post-A → 12.8% post-B\n• 28% → 21.8% post-A → 17.9% post-B\n• 28% + 10% kicker = 38% → 29.6% post-A → 24.3% post-B\n\nAt 22%, after two rounds I'm under 15%. That's a senior hire, not a co-founder. I need 28% base with a performance path to 38%." },
+    { type: "narrator", text: "They study the numbers. Corsaro nods slightly." },
+  ],
+  choices: [
+    { text: "They come up to 23-25%", goto: "framework_floor", style: "success" },
+    { text: "They stay at 20-22%", goto: "trade_equity_for_salary", style: "warning" },
+  ]
+},
+
+"trade_equity_for_salary": {
+  messages: [
+    { type: "them", name: "Amedeo", text: "Marco, 22% is our ceiling on the base equity. We need to retain enough for future investors and the option pool." },
+    { type: "coach", text: "If they're stuck on equity, trade for salary + automatic kicker. 22% + strong salary + 10% automatic kicker can be acceptable." },
+  ],
+  choices: [
+    { text: "\"If equity stays at 22%, I need aggressive salary triggers: CHF 120K at 5 hotels, CHF 180K at 20 hotels, CHF 220K at CHF 1M ARR. Plus 10% automatic kicker.\"", goto: "trade_react", style: "" },
+  ]
+},
+
+"trade_react": {
+  messages: [
+    { type: "you", text: "OK, I hear you on the equity ceiling. Then let me propose: if equity stays at 22%, I need the salary to reach market faster.\n\n• CHF 120K at 5 hotels\n• CHF 180K at 20 hotels\n• CHF 220K at CHF 1M ARR\n\nAnd a 10% automatic performance kicker on milestones. The total package has to work." },
+    { type: "narrator", text: "They consider the proposal." },
+  ],
+  choices: [
+    { text: "\"OK, 22% + kicker + salary triggers. Let's talk protections.\"", goto: "protections_start", style: "success" },
+    { text: "\"We can't do both the kicker and the salary increases.\"", goto: "walk_soft", style: "danger" },
+  ]
+},
+
+"framework_floor": {
+  messages: [
+    { type: "them", name: "Amedeo & Corsaro", text: "We've landed at 25% for you. We think this is strong — it reflects that you're the one building this." },
+    { type: "coach", text: "This is your framework floor. Do NOT accept immediately. This is where you negotiate the kicker and protections. 25% is the starting point, not the finish line." },
+  ],
+  choices: [
+    { text: "\"25% is a fair starting point. I want to discuss a performance path and protections.\"", goto: "negotiate_kicker_25", style: "" },
+    { text: "Accept 25% and move to protections", goto: "protections_start", style: "" },
+  ]
+},
+
+"negotiate_kicker_25": {
+  messages: [
+    { type: "you", text: "25% is a fair starting point. I want to discuss two things: a performance path and protections.\n\nPerformance path:\n• +2.5% at 10 hotels\n• +2.5% at CHF 1M ARR\n• +2.5% at 50 hotels\n• +2.5% at exit above CHF 50M\n\nTotal path to 35%. Automatic, no vote needed.\n\nThis costs you nothing until I've created massive value. It aligns us completely." },
+    { type: "narrator", text: "Corsaro leans forward. This got his attention." },
+  ],
+  choices: [
+    { text: "They agree to the performance path", goto: "salary_ladder_25", style: "success" },
+    { text: "\"We like it but want board approval on each milestone\"", goto: "kicker_discretionary_25", style: "warning" },
+    { text: "\"No kicker — 25% is the full package\"", goto: "no_kicker_25", style: "danger" },
+  ]
+},
+
+"kicker_discretionary_25": {
+  messages: [
+    { type: "them", name: "Amedeo", text: "We like the milestone approach but we'd want the board to verify each milestone before shares transfer. It's good governance." },
+    { type: "warning", text: "Same trap as before. Board = them. Push for automatic or price it into the base." },
+  ],
+  choices: [
+    { text: "\"Automatic, or I need 30% base instead. Hotel count and ARR are numbers, not opinions.\"", goto: "salary_ladder_25", style: "" },
+  ]
+},
+
+"no_kicker_25": {
+  messages: [
+    { type: "them", name: "Corsaro", text: "Marco, 25% is already generous. Let's not overcomplicate this." },
+    { type: "coach", text: "Acceptable ONLY if salary ladder is strong. Without a kicker, salary and protections become even more important." },
+  ],
+  choices: [
+    { text: "\"OK, no kicker. Then the salary ladder needs to be aggressive. Let's talk about that.\"", goto: "salary_ladder_25", style: "" },
+  ]
+},
+
+"salary_ladder_25": {
+  messages: [
+    { type: "you", text: "Now let's talk salary structure. What did you have in mind?" },
+  ],
+  choices: [
+    { text: "\"CHF 60K start, 120K at 10 hotels, 180K at 50 hotels, 200K+bonus at CHF 2M ARR. All automatic.\"", goto: "salary_great", style: "success" },
+    { text: "\"CHF 60K to start. We'll adjust later as the company grows.\"", goto: "salary_vague", style: "warning" },
+    { text: "\"Below CHF 60K — you need to share the early sacrifice.\"", goto: "salary_too_low_25", style: "danger" },
+  ]
+},
+
+"salary_great": {
+  messages: [
+    { type: "them", name: "Corsaro", text: "CHF 60K to start, automatic increases tied to company milestones. CHF 120K at 10 hotels, CHF 180K at 50, CHF 200K plus bonus at CHF 2M ARR." },
+    { type: "coach", text: "Excellent. Salary structure works. Make sure it's written in the shareholder agreement. Now move to protections — this is where deals go bad." },
+  ],
+  choices: [
+    { text: "\"Perfect. Let's talk about the shareholder agreement structure.\"", goto: "protections_start", style: "" },
+  ]
+},
+
+"salary_vague": {
+  messages: [
+    { type: "them", name: "Amedeo", text: "Let's start you at CHF 60K and we'll revisit as things develop. We're flexible." },
+    { type: "warning", text: "\"We'll adjust later\" = you'll have to BEG later. If you have to ask for a raise at a company you built, you're having an employee conversation, not a founder conversation." },
+  ],
+  choices: [
+    { text: "\"I need triggers in the agreement. Written. Automatic. No vote.\"", goto: "salary_vague_react", style: "" },
+  ]
+},
+
+"salary_vague_react": {
+  messages: [
+    { type: "you", text: "I need salary triggers written into the shareholder agreement. Automatic:\n\n• CHF 120K at 10 hotels\n• CHF 180K at 50 hotels\n• CHF 200K + bonus at CHF 2M ARR\n\nAt CHF 2M ARR the company can afford 3x my salary easily. If I have to ask for it at that point, something is wrong with our partnership." },
+    { type: "narrator", text: "They agree to formalize the triggers." },
+  ],
+  choices: [
+    { text: "Move to protections", goto: "protections_start", style: "" },
+  ]
+},
+
+"salary_too_low_25": {
+  messages: [
+    { type: "them", name: "Amedeo", text: "We were thinking CHF 48K to start. You need to have skin in the game too — the equity is your upside." },
+    { type: "warning", text: "CHF 48K in Zurich = survival mode. You cannot build a company while stressed about rent. Push back firmly." },
+  ],
+  choices: [
+    { text: "\"CHF 48K doesn't work in Zurich. CHF 60K is my floor — that's already a CHF 60K cut from market. The diff is 1K/month.\"", goto: "salary_vague_react", style: "" },
+  ]
+},
+
+"above_framework": {
+  messages: [
+    { type: "them", name: "Amedeo & Corsaro", text: "We're prepared to offer you 28-30%. We want you fully committed and we recognize you're the one building this." },
+    { type: "coach", text: "They want you badly. Don't negotiate just to negotiate. Add a performance path and make sure salary + protections are right. Don't be greedy — secure the deal." },
+  ],
+  choices: [
+    { text: "\"This is strong. Let me add a performance path — 10% more on milestones. And let's lock salary and protections.\"", goto: "salary_ladder_25", style: "" },
+  ]
+},
+
+"you_first": {
+  messages: [
+    { type: "them", name: "Amedeo", text: "Marco, you've done all the analysis. What do you think is the right structure?" },
+    { type: "coach", text: "They punted. This is your chance to anchor high. Go to 35%. They'll counter down, but you set the frame. Always anchor above where you want to land." },
+  ],
+  choices: [
+    { text: "Anchor at 35% with full package proposal", goto: "anchor_35", style: "" },
+    { text: "Start lower at 25% to seem reasonable", goto: "anchor_low_mistake", style: "danger" },
+  ]
+},
+
+"anchor_low_mistake": {
+  messages: [
+    { type: "warning", text: "MISTAKE. If you anchor at 25%, they'll counter at 15-18% and you'll land at 20%. Always anchor ABOVE where you want to land. Your target is 25-30%. Anchor at 35%." },
+  ],
+  choices: [
+    { text: "You're right. Anchor at 35%.", goto: "anchor_35", style: "" },
+  ]
+},
+
+"anchor_35": {
+  messages: [
+    { type: "you", text: "I've done the homework. Here's what I think works.\n\n35% for me, 60% for you combined, 5% ESOP.\n4-year vest, 12-month cliff.\n\nPerformance path: +2.5% at 10 hotels, +2.5% at CHF 1M ARR, +2.5% at 50 hotels, +2.5% at exit above CHF 50M. Total possible: 45%.\n\nSalary: CHF 60K start → 120K at 10 hotels → 180K at 50 → 200K + bonus at CHF 2M ARR. All automatic triggers.\n\nCHF 150-190K seed. Board of 3, one seat each. Full operational authority. Single-trigger acceleration." },
+    { type: "narrator", text: "They take it in. A long pause." },
+  ],
+  choices: [
+    { text: "\"That's too high. We're thinking 20-25%.\"", goto: "close_but_low", style: "warning" },
+    { text: "\"We can do 25-28%.\"", goto: "framework_floor", style: "" },
+    { text: "\"30% works. Let's discuss the details.\"", goto: "above_framework", style: "success" },
+  ]
+},
+
+"convertible": {
+  messages: [
+    { type: "them", name: "Corsaro", text: "Marco, here's an idea. You own the company — 100%. We put in CHF 150-190K as a convertible note that converts at the first priced round, with a cap. We each get 3-5% advisory shares for our network and guidance." },
+    { type: "coach", text: "This is the BEST possible structure for you. You own the company. Their money converts later at a discount. You have full control. Don't overthink it — secure this." },
+  ],
+  choices: [
+    { text: "\"This is elegant. Two conditions: contractual advisory commitment, and auto-convert at 24 months if no priced round.\"", goto: "convertible_close", style: "success" },
+  ]
+},
+
+"convertible_close": {
+  messages: [
+    { type: "you", text: "This is elegant. I want to make sure two things are clear:\n\n1. Your advisory commitment is contractual — quarterly introductions, monthly board meetings. The value of this deal for me is your network.\n\n2. If there's no priced round in 24 months, the note converts automatically at the cap. No limbo.\n\nWith those two points, I'm ready to move forward." },
+    { type: "them", name: "Amedeo", text: "That's completely reasonable. We want this to work." },
+  ],
+  choices: [
+    { text: "Close the deal", goto: "close_deal_good", style: "success" },
+  ]
+},
+
+"protections_start": {
+  messages: [
+    { type: "narrator", text: "The equity and salary are agreed. Now comes the part that matters MORE than the headline number." },
+    { type: "coach", text: "A bad contract at 30% is worse than a good contract at 25%. Seven protections to check. Stay focused." },
+  ],
+  choices: [
+    { text: "Start the protections checklist", goto: "p1_board", style: "" },
+  ]
+},
+
+"p1_board": {
+  messages: [
+    { type: "you", text: "Let's talk board structure. How do you see governance?" },
+  ],
+  choices: [
+    { text: "\"3 seats — one each.\"", goto: "p1_good", style: "success" },
+    { text: "\"2 seats for us, 1 for you.\"", goto: "p1_bad", style: "danger" },
+    { text: "\"No formal board seat for you.\"", goto: "p1_worst", style: "danger" },
+  ]
+},
+
+"p1_good": {
+  messages: [
+    { type: "them", name: "Corsaro", text: "3-person board. One seat each. Decisions by majority." },
+    { type: "coach", text: "Good. Equal representation. Move on." },
+  ],
+  choices: [
+    { text: "Next: Acceleration clauses", goto: "p2_acceleration", style: "" },
+  ]
+},
+
+"p1_bad": {
+  messages: [
+    { type: "them", name: "Amedeo", text: "We think 2 seats for us and 1 for you makes sense — we're the investors." },
+    { type: "warning", text: "With 2-1 board control, they can fire you by majority vote at month 36 — right before an exit — and you lose unvested equity." },
+  ],
+  choices: [
+    { text: "\"I need equal representation, or removal requires unanimous vote + 12 months severance.\"", goto: "p1_fixed", style: "" },
+  ]
+},
+
+"p1_worst": {
+  messages: [
+    { type: "them", name: "Amedeo", text: "We think you should focus on building. We'll handle governance." },
+    { type: "warning", text: "NON-NEGOTIABLE. No board seat = no voice = employee. You cannot build the company without a seat at the table." },
+  ],
+  choices: [
+    { text: "\"Board seat is non-negotiable. I can't build a company I have no voice in.\"", goto: "p1_fixed", style: "" },
+  ]
+},
+
+"p1_fixed": {
+  messages: [
+    { type: "narrator", text: "After discussion, they agree to a 3-person board with removal protections." },
+  ],
+  choices: [
+    { text: "Next: Acceleration clauses", goto: "p2_acceleration", style: "" },
+  ]
+},
+
+"p2_acceleration": {
+  messages: [
+    { type: "you", text: "If there's an exit — acquisition, merger — what happens to my unvested shares?" },
+  ],
+  choices: [
+    { text: "\"Single trigger — all vest on exit.\"", goto: "p2_good", style: "success" },
+    { text: "\"Double trigger — exit + termination.\"", goto: "p2_double", style: "warning" },
+    { text: "\"No acceleration.\"", goto: "p2_none", style: "danger" },
+  ]
+},
+
+"p2_good": {
+  messages: [
+    { type: "coach", text: "Single trigger on exit. Standard for co-founders. Good." },
+  ],
+  choices: [
+    { text: "Next: Bad leaver definition", goto: "p3_bad_leaver", style: "" },
+  ]
+},
+
+"p2_double": {
+  messages: [
+    { type: "them", name: "Corsaro", text: "Double trigger — shares accelerate if there's an exit AND you're terminated within 6 months." },
+    { type: "coach", text: "Acceptable, but: window should be 18 months not 6, and constructive termination (pay cut >10%, role downgrade) counts as involuntary." },
+  ],
+  choices: [
+    { text: "\"Double trigger fine if window is 18 months and constructive termination counts.\"", goto: "p2_fixed", style: "" },
+  ]
+},
+
+"p2_none": {
+  messages: [
+    { type: "them", name: "Amedeo", text: "Vesting continues on schedule, even after acquisition." },
+    { type: "warning", text: "They could sell at month 36 and you forfeit 25% of your shares. That's not a partnership." },
+  ],
+  choices: [
+    { text: "\"Without acceleration, you could sell at month 36 and I lose a quarter of my shares. Single trigger is standard. Non-negotiable.\"", goto: "p2_fixed", style: "" },
+  ]
+},
+
+"p2_fixed": {
+  messages: [
+    { type: "narrator", text: "They agree to adjust the acceleration terms." },
+  ],
+  choices: [
+    { text: "Next: Bad leaver definition", goto: "p3_bad_leaver", style: "" },
+  ]
+},
+
+"p3_bad_leaver": {
+  messages: [
+    { type: "you", text: "How do we define bad leaver vs good leaver?" },
+  ],
+  choices: [
+    { text: "\"Bad leaver = fraud, crime, material breach only.\"", goto: "p3_good", style: "success" },
+    { text: "\"Voluntary departure = bad leaver.\"", goto: "p3_voluntary", style: "danger" },
+    { text: "\"Board dissatisfaction = bad leaver.\"", goto: "p3_worst", style: "danger" },
+  ]
+},
+
+"p3_good": {
+  messages: [
+    { type: "coach", text: "Clean definition. Fraud and crime only. Correct. Move on." },
+  ],
+  choices: [
+    { text: "Next: Operational autonomy", goto: "p6_autonomy", style: "" },
+  ]
+},
+
+"p3_voluntary": {
+  messages: [
+    { type: "them", name: "Amedeo", text: "If you choose to leave, that's bad leaver — you forfeit unvested at nominal value." },
+    { type: "warning", text: "DANGEROUS. This creates a golden cage. If you disagree on strategy at month 30, you lose everything. You should keep vested shares at FMV as good leaver." },
+  ],
+  choices: [
+    { text: "\"Voluntary departure after cliff = good leaver with vested shares at FMV. Bad leaver = fraud only. Otherwise it's a golden cage.\"", goto: "p3_fixed", style: "" },
+  ]
+},
+
+"p3_worst": {
+  messages: [
+    { type: "them", name: "Corsaro", text: "If the board isn't satisfied with performance, that triggers bad leaver." },
+    { type: "warning", text: "ABSOLUTE DEALBREAKER. Board dissatisfaction = bad leaver means they can fire you, call you bad leaver, take your vested shares at nominal. That is expropriation." },
+  ],
+  choices: [
+    { text: "\"I will not sign that under any terms. Board dissatisfaction as bad leaver = expropriation. Fraud or criminal conviction only.\"", goto: "p3_fixed", style: "" },
+  ]
+},
+
+"p3_fixed": {
+  messages: [
+    { type: "narrator", text: "After firm pushback, they narrow the bad leaver definition." },
+  ],
+  choices: [
+    { text: "Next: Operational autonomy", goto: "p6_autonomy", style: "" },
+  ]
+},
+
+"p6_autonomy": {
+  messages: [
+    { type: "you", text: "Day-to-day authority. Hiring, product, spending — who decides?" },
+  ],
+  choices: [
+    { text: "\"Full CEO authority within approved annual budget.\"", goto: "p6_good", style: "success" },
+    { text: "\"We approve hires, product direction, spending over CHF 5K.\"", goto: "p6_micro", style: "warning" },
+    { text: "\"We control strategy, hiring, and budget. You execute.\"", goto: "p6_worst", style: "danger" },
+  ]
+},
+
+"p6_good": {
+  messages: [
+    { type: "them", name: "Corsaro", text: "You run the show. We approve annual budget and do quarterly reviews. Within that, you decide." },
+    { type: "coach", text: "This is what you need. Full operational authority with accountability. Move to final check." },
+  ],
+  choices: [
+    { text: "Final check before closing", goto: "final_check", style: "" },
+  ]
+},
+
+"p6_micro": {
+  messages: [
+    { type: "them", name: "Amedeo", text: "We'd want visibility and approval on key hires, product direction, and spending above CHF 5K." },
+    { type: "coach", text: "Micromanagement. If every decision needs approval, you can't move at startup speed." },
+  ],
+  choices: [
+    { text: "\"If every decision needs approval, I can't move at the speed that wins. Full authority within budget. Monthly reports. Quarterly reviews. But I decide.\"", goto: "p6_fixed", style: "" },
+  ]
+},
+
+"p6_worst": {
+  messages: [
+    { type: "them", name: "Amedeo", text: "We'll set the strategy and approve all major decisions. Your role is execution." },
+    { type: "warning", text: "Management contract, not co-founder deal. You can't build a startup needing permission for a CHF 500 tool." },
+  ],
+  choices: [
+    { text: "\"This is a management contract, not a co-founder deal. Either I run operations or I don't take the role.\"", goto: "p6_fixed", style: "" },
+  ]
+},
+
+"p6_fixed": {
+  messages: [
+    { type: "narrator", text: "They agree to operational autonomy within an approved budget framework." },
+  ],
+  choices: [
+    { text: "Final check before closing", goto: "final_check", style: "" },
+  ]
+},
+
+"final_check": {
+  messages: [
+    { type: "narrator", text: "You've negotiated equity, salary, and key protections. Time for the final gut check." },
+    { type: "coach", text: "Review the full package. Don't let perfect kill good — but don't sign something that screws you either." },
+  ],
+  choices: [
+    { text: "The package is strong. Close the deal.", goto: "close_deal_good", style: "success" },
+    { text: "1-2 gaps but equity is good", goto: "close_with_gaps", style: "warning" },
+    { text: "Major gaps — this doesn't protect me", goto: "close_conditional", style: "danger" },
+  ]
+},
+
+"close_with_gaps": {
+  messages: [
+    { type: "coach", text: "Don't let imperfect protections block a good equity deal. Get it to good enough and sign. You can refine in legal drafting." },
+  ],
+  choices: [
+    { text: "\"Let's agree on terms today and have lawyers finalize this week.\"", goto: "close_deal_good", style: "success" },
+  ]
+},
+
+"close_conditional": {
+  messages: [
+    { type: "you", text: "The equity works, but the agreement doesn't protect me yet. I want to close this deal. Can we agree on terms today and have lawyers draft protections this week?" },
+    { type: "them", name: "Corsaro", text: "That's fair. Let's shake on the terms and get the lawyers moving." },
+  ],
+  choices: [
+    { text: "Close the deal", goto: "close_deal_good", style: "success" },
+  ]
+},
+
+"close_deal_good": {
+  messages: [
+    { type: "you", text: "I'm ready. Let's get this to a lawyer and start the AG formation this week. I want to be building by June." },
+    { type: "narrator", text: "You shake hands. The deal is agreed in principle." },
+    { type: "outcome_good", text: "DEAL CLOSED\n\nNext steps:\n• Lawyer meeting within 48 hours\n• Shareholder agreement draft by end of week\n• AG formation in Zug\n• Start building Tercier\n\nDo NOT mention Felfel resignation timeline.\nDo NOT show relief or excitement.\nSet the next meeting before you leave the table." },
+  ],
+  choices: [
+    { text: "Play again from the start", goto: "start", style: "" },
+  ]
+},
+
+"walk_soft": {
+  messages: [
+    { type: "you", text: "I think we see this differently. Let me take some time to think about whether there's a structure that works for both of us. I don't want to force something that isn't right for either side." },
+    { type: "coach", text: "Good. Don't burn the bridge. You planted the seed. Give them a week." },
+    { type: "outcome_neutral", text: "WALKED AWAY (SOFT)\n\nDo NOT burn the bridge. Give them 1 week.\n\nIf they don't come back:\n• Start building Tercier yourself June 1\n• Raise CHF 150K from Swiss angels\n• You own 80-90%\n• Find your own pilot hotels\n• Slower start but 4x the equity\n\nThey need you more than you need them.\nYou've already resigned.\nYour downside is building it yourself." },
+  ],
+  choices: [
+    { text: "Play again from the start", goto: "start", style: "" },
+  ]
+},
+
+};
+
+// ============================================
+// GAME ENGINE
+// ============================================
+const chatInner = document.getElementById('chat-inner');
+const choicesDiv = document.getElementById('choices');
+const choicesLabel = document.getElementById('choices-label');
+const progressLabel = document.getElementById('progress-label');
+let history = [];
+let stepCount = 0;
+
+function restart() {
+  chatInner.innerHTML = '';
+  history = [];
+  stepCount = 0;
+  goTo('start');
+}
+
+async function goTo(nodeId) {
+  const node = GAME[nodeId];
+  if (!node) return;
+
+  history.push(nodeId);
+  stepCount++;
+  progressLabel.innerHTML = '<i class="ph ph-steps"></i> Step ' + stepCount;
+
+  choicesDiv.innerHTML = '';
+  choicesLabel.style.opacity = '0.3';
+
+  for (let i = 0; i < node.messages.length; i++) {
+    const msg = node.messages[i];
+    await showTypingIndicator(msg.type, 350 + Math.min(msg.text.length * 1.5, 700));
+    addMessage(msg);
+    scrollToBottom();
+  }
+
+  await delay(250);
+  showChoices(node.choices);
+  choicesLabel.style.opacity = '1';
+  scrollToBottom();
+}
+
+function addMessage(msg) {
+  const div = document.createElement('div');
+  div.className = 'message';
+
+  if (msg.type === 'narrator') {
+    div.classList.add('msg-narrator');
+    div.innerHTML = '<div class="bubble">' + esc(msg.text) + '</div>';
+  } else if (msg.type === 'them') {
+    div.classList.add('msg-them');
+    div.innerHTML =
+      '<div class="avatar"><i class="ph ph-users-three"></i></div>' +
+      '<div>' +
+        '<div class="name">' + esc(msg.name) + '</div>' +
+        '<div class="bubble">' + esc(msg.text) + '</div>' +
+      '</div>';
+  } else if (msg.type === 'you') {
+    div.classList.add('msg-you');
+    div.innerHTML =
+      '<div class="avatar"><i class="ph ph-user"></i></div>' +
+      '<div>' +
+        '<div class="name">You (Marco)</div>' +
+        '<div class="bubble">' + esc(msg.text) + '</div>' +
+      '</div>';
+  } else if (msg.type === 'coach') {
+    div.classList.add('msg-coach');
+    div.innerHTML =
+      '<div class="bubble">' +
+        '<div class="coach-label"><i class="ph-bold ph-lightbulb"></i> Your Inner Coach</div>' +
+        esc(msg.text) +
+      '</div>';
+  } else if (msg.type === 'warning') {
+    div.classList.add('msg-warning');
+    div.innerHTML =
+      '<div class="bubble">' +
+        '<div class="coach-label"><i class="ph-fill ph-warning"></i> Warning</div>' +
+        esc(msg.text) +
+      '</div>';
+  } else if (msg.type === 'outcome_good') {
+    div.classList.add('msg-outcome', 'good');
+    div.innerHTML = '<div class="bubble"><i class="ph-fill ph-check-circle" style="font-size:24px;display:block;margin-bottom:10px;"></i>' + esc(msg.text) + '</div>';
+  } else if (msg.type === 'outcome_neutral') {
+    div.classList.add('msg-outcome', 'neutral');
+    div.innerHTML = '<div class="bubble"><i class="ph-fill ph-hourglass" style="font-size:24px;display:block;margin-bottom:10px;"></i>' + esc(msg.text) + '</div>';
+  } else if (msg.type === 'outcome_bad') {
+    div.classList.add('msg-outcome', 'bad');
+    div.innerHTML = '<div class="bubble"><i class="ph-fill ph-x-circle" style="font-size:24px;display:block;margin-bottom:10px;"></i>' + esc(msg.text) + '</div>';
+  }
+
+  div.style.animationDelay = '0.05s';
+  chatInner.appendChild(div);
+}
+
+function showChoices(choices) {
+  choicesDiv.innerHTML = '';
+  const isRestart = choices.length === 1 && choices[0].goto === 'start';
+  choicesLabel.innerHTML = isRestart
+    ? '<i class="ph-fill ph-flag-checkered"></i> Game over'
+    : '<i class="ph-fill ph-path"></i> What happens next?';
+
+  choices.forEach((c, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'choice-btn';
+    if (c.style) btn.classList.add(c.style);
+    const key = String.fromCharCode(65 + i);
+    btn.innerHTML = '<span class="choice-key">' + key + '</span> ' + esc(c.text);
+    btn.onclick = () => pickChoice(c, btn);
+    choicesDiv.appendChild(btn);
+  });
+}
+
+function pickChoice(choice, btn) {
+  document.querySelectorAll('.choice-btn').forEach(b => {
+    b.style.pointerEvents = 'none';
+    b.style.opacity = '0.3';
+  });
+  btn.style.opacity = '1';
+  btn.style.borderColor = 'var(--terracotta)';
+  btn.style.background = 'var(--terracotta-bg)';
+
+  const div = document.createElement('div');
+  div.className = 'message msg-choice-echo';
+  const short = choice.text.length > 80 ? choice.text.substring(0, 80) + '...' : choice.text;
+  div.innerHTML = '<div class="bubble"><i class="ph ph-arrow-bend-down-right"></i>' + esc(short) + '</div>';
+  chatInner.appendChild(div);
+
+  setTimeout(() => goTo(choice.goto), 450);
+}
+
+function showTypingIndicator(type, duration) {
+  return new Promise(resolve => {
+    const div = document.createElement('div');
+    div.className = 'message';
+    div.id = 'typing-temp';
+
+    if (type === 'them') {
+      div.classList.add('msg-them');
+      div.innerHTML = '<div class="avatar"><i class="ph ph-users-three"></i></div><div><div class="bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div></div>';
+    } else if (type === 'you') {
+      div.classList.add('msg-you');
+      div.innerHTML = '<div class="avatar"><i class="ph ph-user"></i></div><div><div class="bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div></div>';
+    } else if (type === 'coach' || type === 'warning') {
+      div.classList.add('msg-coach');
+      div.style.paddingLeft = '56px';
+      div.innerHTML = '<div class="bubble" style="padding:12px 16px;"><div class="typing-dots"><span></span><span></span><span></span></div></div>';
+    } else {
+      resolve();
+      return;
+    }
+
+    div.style.animation = 'none';
+    div.style.opacity = '1';
+    chatInner.appendChild(div);
+    scrollToBottom();
+
+    setTimeout(() => { div.remove(); resolve(); }, duration);
+  });
+}
+
+function scrollToBottom() {
+  const chatArea = document.getElementById('chat-area');
+  requestAnimationFrame(() => { chatArea.scrollTop = chatArea.scrollHeight; });
+}
+
+function delay(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+function esc(text) {
+  return text
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/\n/g, '<br>')
+    .replace(/•/g, '&#8226;');
+}
+
+document.addEventListener('keydown', (e) => {
+  const btns = document.querySelectorAll('.choice-btn');
+  const idx = e.key.toUpperCase().charCodeAt(0) - 65;
+  if (idx >= 0 && idx < btns.length && btns[idx].style.pointerEvents !== 'none') {
+    btns[idx].click();
+  }
+});
+
+goTo('start');
+</script>
+</body>
+</html>
