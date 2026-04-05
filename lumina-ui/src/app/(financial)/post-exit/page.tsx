@@ -91,7 +91,7 @@ export default function PostExitPage() {
               <Tooltip contentStyle={{ background: '#2A2018', border: '1px solid #3A3028', borderRadius: 8 }} formatter={(v: any) => fmtChf(Number(v))} />
               <Bar dataKey="income" name="Passive income">
                 {SCENARIOS.map((_, i) => (
-                  <Cell key={i} fill={i === active ? '#C17F59' : '#3A3028'} />
+                  <Cell key={i} fill={i === active ? '#C17F59' : '#5A4A3A'} />
                 ))}
               </Bar>
             </BarChart>

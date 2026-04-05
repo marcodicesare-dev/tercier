@@ -144,42 +144,44 @@ export interface LifestyleBudget {
 }
 
 export function getLifestyle(exitChf: number): LifestyleBudget {
+  // Calibration: Marco already spends ~CHF 30-40K/yr on travel + dining at CHF 250K gross.
+  // With CHF 5M+ in the bank, these numbers must START above current spending.
   if (exitChf <= 5_000_000) {
     return {
-      travel: 25000,
-      dining: 12000,
-      car: 'Keep current car. Maybe a Tesla Model 3 Long Range AWD (CHF 49K) as a treat.',
-      carCost: 49000,
-      realEstate: 'Stay in Wiedikon. Do not upgrade. Your low housing costs are your superpower. A 120m2 in Wiedikon is CHF 2.1-3M now — you already own it.',
+      travel: 60000,
+      dining: 25000,
+      car: 'Porsche Taycan base (CHF 100K) or BMW 530i M Sport (CHF 90K). You can swing it — it\'s 2% of your net worth.',
+      carCost: 95000,
+      realEstate: 'Stay in Wiedikon. Do not upgrade. Your CHF 34K/yr housing cost is a cheat code. A 120m2 in Wiedikon is CHF 2.1-3M now — you already own it. That\'s CHF 2M+ of equity not even counting the exit.',
       realEstateBudget: 0,
-      spontaneity: 'You can do "let\'s go to Lisbon this weekend" — but you notice it in the budget. Maybe 2-3 spontaneous trips a year.',
-      giving: 'You pick up dinner for friends without thinking. You fly your parents in economy for visits. Philanthropy is small donations, not a strategy.',
-      feel: 'You\'re comfortable but not "rich rich." You still budget big purchases. The CHF 5M is freedom FROM worry, not freedom TO do whatever. A CHF 500 jacket — you buy it but you register the spend. You\'re aware of the burn rate if you\'re not earning.',
+      spontaneity: '"Let\'s go to Lisbon this weekend" — yes, every time (easyJet CHF 130 RT + hotel CHF 400). You were already doing this. Now you just don\'t check the bank account after. 4-5 spontaneous trips a year, easy.',
+      giving: 'You pick up dinner for 8 (CHF 2K at Kronenhalle) without thinking. You fly your parents business class to visit (CHF 3K RT from Rome). Philanthropy: CHF 5-10K/yr targeted donations.',
+      feel: 'You\'re rich by any normal standard — but not "Zurich rich." CHF 5M generates CHF 265K/yr passive at 5%. Add wife\'s CHF 105K and you have CHF 370K/yr without working. That\'s more than most Swiss households earn. A CHF 500 jacket — zero thought. A CHF 5K weekend trip — sure. A CHF 50K splurge — you pause and think. You\'re free from financial anxiety, but you\'re not lavish.',
       angelBudget: 500000,
-      recommendation: 'BUILD AGAIN or JOIN SOMETHING. At CHF 5M in Zurich with no income, you\'re burning ~CHF 80-100K/yr just existing. The passive income at 5% (CHF 265K) covers living but doesn\'t feel abundant. You need to generate income within 12-18 months. Best play: take 3-6 months off, then either build company #2 (self-fund seed with CHF 200-300K) or take a VP/CPO role at CHF 300K+.',
+      recommendation: 'BUILD AGAIN or THE BARBELL. CHF 370K/yr passive + wife is comfortable but not set-for-generations. You have 2-3 years of runway to figure out what\'s next without panic. Best play: take 6 months off (travel, decompress), then build company #2 with CHF 200-300K self-funded seed. Your credibility is 10x higher now. Or: 2-3 advisory boards (CHF 50-80K each) + angel investing + keep one day/week for a side project.',
     };
   }
   if (exitChf <= 10_000_000) {
     return {
-      travel: 50000,
-      dining: 20000,
-      car: 'BMW 530i M Sport (CHF 90K) or Porsche Taycan GTS (CHF 160K). You can afford it without blinking.',
-      carCost: 130000,
-      realEstate: 'Stay in Wiedikon for now. Could upgrade to Enge (CHF 2.2-3.1M for 120m2) or Seefeld (CHF 2.3-3.2M). No rush — your current setup is already solid.',
+      travel: 80000,
+      dining: 35000,
+      car: 'Porsche Taycan GTS (CHF 160K) or 911 Carrera (CHF 153K). Both are "nice but not flashy" — which is the Zurich sweet spot.',
+      carCost: 155000,
+      realEstate: 'Stay in Wiedikon for now — your housing costs are absurdly efficient. But you could upgrade to Enge (CHF 2.2-3.1M for 120m2) or Seefeld (CHF 2.3-3.2M) and still have CHF 7M+ invested. No rush — but you can afford it whenever you want.',
       realEstateBudget: 2700000,
-      spontaneity: '"Let\'s fly to Lisbon" is a yes without hesitation. You book business class for any flight over 4 hours. You stop checking restaurant prices.',
-      giving: 'You casually pick up dinner for 8 at CHF 2K without thinking. You fly parents business class to Zurich. You give CHF 5-10K/yr to causes you care about.',
-      feel: 'You\'re wealthy. Not "fuck you" money, but "I don\'t need to work" money. A CHF 500 jacket — zero thought. A CHF 5K watch — sure, why not. A CHF 50K car upgrade — a decision but not a stressful one. You fly business class without a second thought.',
+      spontaneity: 'Completely unrestricted for anything under CHF 5K. Business class on every flight over 3 hours. "Let\'s do 10 days in Japan" — yes, booked by tomorrow. You stop looking at restaurant prices entirely.',
+      giving: 'Dinner for 10 at a nice restaurant (CHF 3K)? Just sign the check. Parents in business class? Obviously. You start giving CHF 10-20K/yr to causes, and it doesn\'t register as a sacrifice.',
+      feel: 'This is "I don\'t need to work, ever" money. CHF 530K/yr passive + wife\'s CHF 105K = CHF 635K/yr. In Zurich, that puts you in the top 5% of household income WITHOUT working. A CHF 500 jacket is irrelevant. A CHF 5K watch — sure. A CHF 50K car upgrade — yes. CHF 100K on a renovation — a project, not a stress. You fly business everywhere without a thought. The psychology shifts: money is a resource, not a constraint.',
       angelBudget: 1000000,
-      recommendation: 'THE BARBELL. This is the sweet spot. You have ~CHF 530K/yr passive at 5% + wife\'s CHF 105K = CHF 635K/yr. That\'s abundant living in Zurich. Spend 80% of time on low-burn activities (2-3 advisory boards at CHF 50K each, angel investing CHF 50-100K per deal). Keep 20% for a high-conviction project that could become company #2. No pressure to raise — you can self-fund to product-market fit.',
+      recommendation: 'THE BARBELL. This is the sweet spot where you have fuck-you money AND enough to take risks. CHF 635K/yr passive means zero pressure. Best play: take a real year off, then 80% of time on low-burn activities (2-3 advisory boards at CHF 50-80K each, 10 angel bets at CHF 100K). Keep 20% for a high-conviction project. When the right idea hits, you can self-fund to PMF without raising a cent.',
     };
   }
   if (exitChf <= 20_000_000) {
     return {
-      travel: 100000,
-      dining: 35000,
-      car: 'Porsche 911 Carrera S (CHF 176K) or Taycan Turbo GT (CHF 250K). Or both.',
-      carCost: 210000,
+      travel: 150000,
+      dining: 60000,
+      car: 'Porsche 911 Carrera S (CHF 176K) AND a Taycan for daily (CHF 100K). Two cars, why not — it\'s 1.4% of your net worth.',
+      carCost: 280000,
       realEstate: 'Upgrade to Seefeld (CHF 2.5-3.2M for 120m2) or Zürichberg 150m2 (CHF 3-5M). Buy a vacation place in Engadin — Pontresina (CHF 1.7-2.4M) or St. Moritz (CHF 2.4-3.2M). Or Ascona (CHF 1.1-1.6M).',
       realEstateBudget: 6000000,
       spontaneity: 'Completely unrestricted. "Let\'s do two weeks in Japan, Aman Tokyo and ryokans, business class" — yes, that\'s CHF 25K and you don\'t feel it. You rent villas, not hotel rooms.',
@@ -227,18 +229,61 @@ export interface TravelExample {
 }
 
 export function getTravelExamples(exitChf: number): TravelExample[] {
+  // Baseline: Marco already travels 3-4x/year at CHF 250K gross. These must exceed that.
   const base: TravelExample[] = [
-    { trip: '3 weeks Japan', details: `Business class ZRH-TYO (CHF 7K×2), ryokans in Kyoto CHF 800/night (Tawaraya), Aman Tokyo CHF 4,500/night × 3`, cost: exitChf >= 20_000_000 ? 35000 : 20000 },
-    { trip: '2 weeks Sardinia (summer)', details: exitChf >= 20_000_000 ? 'Villa rental (CHF 5-8K/week), boat charter 2 days (CHF 3K)' : 'Nice villa (CHF 3.5-5K/week), day boat rental (CHF 1.5K)', cost: exitChf >= 20_000_000 ? 22000 : 12000 },
-    { trip: 'Ski week Verbier', details: 'Chalet 4-bed (CHF 10-12K/week), 4 Vallées lift passes (CHF 1,300/2 adults), ski rental, dining', cost: exitChf >= 20_000_000 ? 18000 : 16000 },
-    { trip: 'Long weekends (×4)', details: 'Paris, Lisbon (easyJet CHF 130 RT), Barcelona, London — flights + 2 nights nice hotel', cost: exitChf >= 10_000_000 ? 12000 : 6000 },
+    {
+      trip: '3 weeks Japan (spring)',
+      details: exitChf >= 10_000_000
+        ? 'Business class ZRH-TYO (CHF 7K×2), Aman Tokyo 3 nights (CHF 4,500/n), 5 nights ryokans in Kyoto (CHF 800/n Tawaraya), Naoshima + Hakone'
+        : 'Business class ZRH-TYO (CHF 7K×2), boutique hotels (CHF 300-500/n), 2-3 ryokans (CHF 500-800/n)',
+      cost: exitChf >= 10_000_000 ? 35000 : 22000,
+    },
+    {
+      trip: '2 weeks Sardinia / Puglia (summer)',
+      details: exitChf >= 20_000_000
+        ? 'Private villa with pool (CHF 8-12K/week), boat charter 3 days (CHF 5K), restaurants nightly'
+        : 'Nice villa (CHF 4-6K/week), day boat rental, eating out every night (CHF 150/couple)',
+      cost: exitChf >= 20_000_000 ? 28000 : 15000,
+    },
+    {
+      trip: 'Ski week Verbier / Zermatt',
+      details: 'Chalet 4-bed (CHF 10-12K/week), lift passes (CHF 1,300/2 adults), ski rental, dining out nightly, spa day at W Verbier',
+      cost: 18000,
+    },
+    {
+      trip: 'Long weekends (×6)',
+      details: 'Paris, Lisbon, Barcelona, London, Rome, Copenhagen — easyJet/SWISS + 2-3 nights boutique hotel (CHF 300-500/n)',
+      cost: exitChf >= 10_000_000 ? 15000 : 10000,
+    },
+    {
+      trip: 'Christmas / NYE trip',
+      details: exitChf >= 10_000_000
+        ? '10 days Maldives or Thailand — business class, 5-star resort (CHF 600-1,500/n)'
+        : '1 week Canaries or Morocco — nice resort (CHF 300-500/n)',
+      cost: exitChf >= 10_000_000 ? 20000 : 8000,
+    },
   ];
 
+  if (exitChf >= 10_000_000) {
+    base.push({
+      trip: 'Parents visit / family trips (×2)',
+      details: 'Fly parents business class from Italy (CHF 3K RT), week together in Ticino or at your place',
+      cost: 8000,
+    });
+  }
   if (exitChf >= 20_000_000) {
-    base.push({ trip: 'St. Barths (1 week)', details: 'Cheval Blanc St-Barths (CHF 7,500/night × 7) + business class flights', cost: 60000 });
+    base.push({
+      trip: 'St. Barths or Maldives (1 week)',
+      details: 'Cheval Blanc St-Barths (CHF 7,500/night × 7) or Soneva Fushi (CHF 3,000/n × 7) + business class',
+      cost: 55000,
+    });
   }
   if (exitChf >= 30_000_000) {
-    base.push({ trip: 'Patagonia / New Zealand', details: '3 weeks, luxury lodges, private guides, business class ZRH-SCL (CHF 6K×2)', cost: 45000 });
+    base.push({
+      trip: 'Patagonia / New Zealand (3 weeks)',
+      details: 'Luxury lodges (Explora, Blanket Bay), private guides, internal flights, business class ZRH-SCL (CHF 6K×2)',
+      cost: 45000,
+    });
   }
 
   return base;
