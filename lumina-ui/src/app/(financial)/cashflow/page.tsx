@@ -81,8 +81,73 @@ export default function CashFlowPage() {
                   </tr>
 
                   <tr className="bg-[var(--color-ink-light)]">
-                    <td colSpan={data.length + 1} className="sticky left-0 bg-[var(--color-ink-light)] z-10 px-3 py-1.5 text-[var(--color-gold)] text-[10px] uppercase tracking-wider">Outflows</td>
+                    <td colSpan={data.length + 1} className="sticky left-0 bg-[var(--color-ink-light)] z-10 px-3 py-1.5 text-[var(--color-gold)] text-[10px] uppercase tracking-wider">Outflows — People</td>
                   </tr>
+                  <tr className="border-b border-[var(--border)]">
+                    <td className="sticky left-0 bg-[var(--card)] z-10 px-3 py-1.5 text-[var(--color-muted-foreground)]">CEO gross salary</td>
+                    {data.map(d => (<td key={d.month} className="px-2 py-1.5 text-right tabular-nums text-[var(--color-cream)]">{fmtCHF(d.ceoGross)}</td>))}
+                  </tr>
+                  <tr className="border-b border-[var(--border)]">
+                    <td className="sticky left-0 bg-[var(--card)] z-10 px-3 py-1.5 text-[var(--color-muted-foreground)]">CEO social contributions</td>
+                    {data.map(d => (<td key={d.month} className="px-2 py-1.5 text-right tabular-nums text-[var(--color-cream)]">{fmtCHF(d.ceoSocial)}</td>))}
+                  </tr>
+                  {assumptions.team.map(t => (
+                    <tr key={t.key} className="border-b border-[var(--border)]">
+                      <td className="sticky left-0 bg-[var(--card)] z-10 px-3 py-1.5 text-[var(--color-muted-foreground)]">{t.label.split('(')[0].trim()}</td>
+                      {data.map(d => (<td key={d.month} className="px-2 py-1.5 text-right tabular-nums text-[var(--color-cream)]">{fmtCHF(d.teamCosts[`team_${t.key}`] || 0)}</td>))}
+                    </tr>
+                  ))}
+
+                  <tr className="bg-[var(--color-ink-light)]">
+                    <td colSpan={data.length + 1} className="sticky left-0 bg-[var(--color-ink-light)] z-10 px-3 py-1.5 text-[var(--color-gold)] text-[10px] uppercase tracking-wider">Outflows — AI & Technology</td>
+                  </tr>
+                  <tr className="border-b border-[var(--border)]">
+                    <td className="sticky left-0 bg-[var(--card)] z-10 px-3 py-1.5 text-[var(--color-muted-foreground)]">AI COGS (€50/hotel/mo)</td>
+                    {data.map(d => (<td key={d.month} className="px-2 py-1.5 text-right tabular-nums text-[var(--color-cream)]">{fmtCHF(d.aiCogs)}</td>))}
+                  </tr>
+                  {assumptions.devTooling.map(t => (
+                    <tr key={t.key} className="border-b border-[var(--border)]">
+                      <td className="sticky left-0 bg-[var(--card)] z-10 px-3 py-1.5 text-[var(--color-muted-foreground)]">{t.label}</td>
+                      {data.map(d => (<td key={d.month} className="px-2 py-1.5 text-right tabular-nums text-[var(--color-cream)]">{fmtCHF(d.devToolingCosts[t.key] || 0)}</td>))}
+                    </tr>
+                  ))}
+
+                  <tr className="bg-[var(--color-ink-light)]">
+                    <td colSpan={data.length + 1} className="sticky left-0 bg-[var(--color-ink-light)] z-10 px-3 py-1.5 text-[var(--color-gold)] text-[10px] uppercase tracking-wider">Outflows — Infrastructure</td>
+                  </tr>
+                  {assumptions.infrastructure.map(infra => (
+                    <tr key={infra.key} className="border-b border-[var(--border)]">
+                      <td className="sticky left-0 bg-[var(--card)] z-10 px-3 py-1.5 text-[var(--color-muted-foreground)]">{infra.label}</td>
+                      {data.map(d => (<td key={d.month} className="px-2 py-1.5 text-right tabular-nums text-[var(--color-cream)]">{fmtCHF(d.infraCosts[`infra_${infra.key}`] || 0)}</td>))}
+                    </tr>
+                  ))}
+
+                  <tr className="bg-[var(--color-ink-light)]">
+                    <td colSpan={data.length + 1} className="sticky left-0 bg-[var(--color-ink-light)] z-10 px-3 py-1.5 text-[var(--color-gold)] text-[10px] uppercase tracking-wider">Outflows — Admin & Other</td>
+                  </tr>
+                  {assumptions.admin.map(adm => (
+                    <tr key={adm.key} className="border-b border-[var(--border)]">
+                      <td className="sticky left-0 bg-[var(--card)] z-10 px-3 py-1.5 text-[var(--color-muted-foreground)]">{adm.label}</td>
+                      {data.map(d => (<td key={d.month} className="px-2 py-1.5 text-right tabular-nums text-[var(--color-cream)]">{fmtCHF(d.adminCosts[`admin_${adm.key}`] || 0)}</td>))}
+                    </tr>
+                  ))}
+                  <tr className="border-b border-[var(--border)]">
+                    <td className="sticky left-0 bg-[var(--card)] z-10 px-3 py-1.5 text-[var(--color-muted-foreground)]">Workspace (internet + coworking)</td>
+                    {data.map(d => (<td key={d.month} className="px-2 py-1.5 text-right tabular-nums text-[var(--color-cream)]">{fmtCHF(d.wsInternet + d.wsCoworking)}</td>))}
+                  </tr>
+                  <tr className="border-b border-[var(--border)]">
+                    <td className="sticky left-0 bg-[var(--card)] z-10 px-3 py-1.5 text-[var(--color-muted-foreground)]">Travel + Marketing</td>
+                    {data.map(d => (<td key={d.month} className="px-2 py-1.5 text-right tabular-nums text-[var(--color-cream)]">{fmtCHF(d.smTravel + d.smMarketing)}</td>))}
+                  </tr>
+                  <tr className="border-b border-[var(--border)]">
+                    <td className="sticky left-0 bg-[var(--card)] z-10 px-3 py-1.5 text-[var(--color-muted-foreground)]">Processing (Stripe 3%)</td>
+                    {data.map(d => (<td key={d.month} className="px-2 py-1.5 text-right tabular-nums text-[var(--color-cream)]">{fmtCHF(d.processing)}</td>))}
+                  </tr>
+                  <tr className="border-b border-[var(--border)]">
+                    <td className="sticky left-0 bg-[var(--card)] z-10 px-3 py-1.5 text-[var(--color-muted-foreground)]">Contingency</td>
+                    {data.map(d => (<td key={d.month} className="px-2 py-1.5 text-right tabular-nums text-[var(--color-cream)]">{fmtCHF(d.contingency)}</td>))}
+                  </tr>
+
                   <tr className="border-b border-[var(--border)] bg-[var(--color-ink-light)]">
                     <td className="sticky left-0 bg-[var(--color-ink-light)] z-10 px-3 py-1.5 font-bold text-[var(--color-cream)]">Total Outflows</td>
                     {data.map(d => (
