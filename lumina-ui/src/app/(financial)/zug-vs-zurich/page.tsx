@@ -74,7 +74,7 @@ export default function ZugVsZurichPage() {
               <CartesianGrid strokeDasharray="3 3" stroke="#3A3028" />
               <XAxis dataKey="year" tick={{ fill: '#A89A8C', fontSize: 12 }} />
               <YAxis tick={{ fill: '#A89A8C', fontSize: 11 }} tickFormatter={v => fmtChf(v)} />
-              <Tooltip contentStyle={{ background: '#2A2018', border: '1px solid #3A3028', borderRadius: 8 }} formatter={(v: any) => fmtChf(Number(v))} />
+              <Tooltip contentStyle={{ background: '#2A2018', border: '1px solid #4A3A30', borderRadius: 8, color: '#F5EFE6' }} formatter={(v: any) => fmtChf(Number(v))} />
               <Legend />
               <Bar dataKey="Zug/Baar" fill="#6B8E5A" />
               <Bar dataKey="Zurich" fill="#DC2626" />

@@ -35,7 +35,7 @@ export function ArrChart({ data }: ArrChartProps) {
           tickFormatter={v => `€${(v / 1_000_000).toFixed(1)}M`}
         />
         <Tooltip
-          contentStyle={{ background: '#2A2018', border: '1px solid #3A3028', borderRadius: 8 }}
+          contentStyle={{ background: '#2A2018', border: '1px solid #4A3A30', borderRadius: 8, color: '#F5EFE6' }}
           labelStyle={{ color: '#F5EFE6' }}
           formatter={(v: any) => [`€${Number(v).toLocaleString()}`, 'ARR']}
         />

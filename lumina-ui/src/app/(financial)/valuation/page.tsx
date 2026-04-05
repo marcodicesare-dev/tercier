@@ -160,7 +160,7 @@ export default function ValuationPage() {
               <XAxis dataKey="month" tick={{ fill: '#A89A8C', fontSize: 12 }} />
               <YAxis tick={{ fill: '#A89A8C', fontSize: 11 }} tickFormatter={v => fmtChf(v)} />
               <Tooltip
-                contentStyle={{ background: '#2A2018', border: '1px solid #3A3028', borderRadius: 8 }}
+                contentStyle={{ background: '#2A2018', border: '1px solid #4A3A30', borderRadius: 8, color: '#F5EFE6' }}
                 formatter={(v: any) => fmtChf(Number(v))}
               />
               <Bar dataKey="equityValue" name="Equity Value">
