@@ -28,7 +28,7 @@ export function AssumptionSlider({
   return (
     <div className="space-y-1">
       <div className="flex justify-between items-center">
-        <span className="text-[11px] text-[var(--color-muted-foreground)] leading-tight">{label}</span>
+        <span className="text-[11px] text-[#BEB0A2] leading-tight">{label}</span>
         {editing ? (
           <Input
             type="number"
@@ -42,13 +42,13 @@ export function AssumptionSlider({
             onKeyDown={e => {
               if (e.key === 'Enter') (e.target as HTMLInputElement).blur();
             }}
-            className="w-20 h-5 text-[11px] bg-[var(--color-ink)] border-[var(--color-terracotta)] text-right px-1"
+            className="w-20 h-5 border-[#C17F59] bg-[#1A120B] text-right text-[11px]"
             autoFocus
           />
         ) : (
           <button
             onClick={() => { setInputVal(String(value)); setEditing(true); }}
-            className="text-[11px] font-mono text-[var(--color-terracotta)] hover:text-[var(--color-gold)] cursor-pointer tabular-nums"
+            className="cursor-pointer font-mono text-[11px] text-[#C17F59] hover:text-[#C9A96E] tabular-nums"
           >
             {displayValue}
           </button>
