@@ -248,7 +248,7 @@ export default function PostExitPage() {
                 <CartesianGrid strokeDasharray="3 3" stroke="#3A3028" />
                 <XAxis type="number" tick={{ fill: '#A89A8C', fontSize: 11 }} tickFormatter={v => fmtChf(v)} />
                 <YAxis type="category" dataKey="name" tick={{ fill: '#F5EFE6', fontSize: 11 }} width={70} />
-                <Tooltip contentStyle={{ background: '#2A2018', border: '1px solid #4A3A30', borderRadius: 8, color: '#F5EFE6' }} formatter={(v: any) => fmtChf(Number(v))} />
+                <Tooltip contentStyle={{ background: '#2A2018', border: '1px solid #4A3A30', borderRadius: 8, color: '#F5EFE6' }} labelStyle={{ color: '#F5EFE6' }} itemStyle={{ color: '#F5EFE6' }} formatter={(v: any) => fmtChf(Number(v))} />
                 <Bar dataKey="value">
                   {[yr0.housing, yr0.living, yr0.car, yr0.travel, yr0.property, yr0.angel, yr0.wealthTax].map((_, i) => (
                     <Cell key={i} fill={['#C17F59', '#C9A96E', '#8B4A2B', '#6B8E5A', '#5B7FB5', '#A89A8C', '#DC2626'][i]} />
@@ -276,7 +276,7 @@ export default function PostExitPage() {
                 <CartesianGrid strokeDasharray="3 3" stroke="#3A3028" />
                 <XAxis dataKey="year" tick={{ fill: '#A89A8C', fontSize: 11 }} />
                 <YAxis tick={{ fill: '#A89A8C', fontSize: 11 }} tickFormatter={v => fmtChf(v)} />
-                <Tooltip contentStyle={{ background: '#2A2018', border: '1px solid #4A3A30', borderRadius: 8, color: '#F5EFE6' }} formatter={(v: any) => fmtChf(Number(v))} />
+                <Tooltip contentStyle={{ background: '#2A2018', border: '1px solid #4A3A30', borderRadius: 8, color: '#F5EFE6' }} labelStyle={{ color: '#F5EFE6' }} itemStyle={{ color: '#F5EFE6' }} formatter={(v: any) => fmtChf(Number(v))} />
                 <ReferenceLine y={0} stroke="#DC2626" strokeDasharray="5 5" />
                 <Area type="monotone" dataKey="netWorth" stroke="#C9A96E" strokeWidth={2} fill="url(#nwGrad)" name="Total Net Worth" />
               </AreaChart>
@@ -307,7 +307,7 @@ export default function PostExitPage() {
                 <CartesianGrid strokeDasharray="3 3" stroke="#3A3028" />
                 <XAxis dataKey="year" tick={{ fill: '#A89A8C', fontSize: 11 }} />
                 <YAxis tick={{ fill: '#A89A8C', fontSize: 11 }} tickFormatter={v => fmtChf(v)} />
-                <Tooltip contentStyle={{ background: '#2A2018', border: '1px solid #4A3A30', borderRadius: 8, color: '#F5EFE6' }} formatter={(v: any) => fmtChf(Number(v))} />
+                <Tooltip contentStyle={{ background: '#2A2018', border: '1px solid #4A3A30', borderRadius: 8, color: '#F5EFE6' }} labelStyle={{ color: '#F5EFE6' }} itemStyle={{ color: '#F5EFE6' }} formatter={(v: any) => fmtChf(Number(v))} />
                 <Legend />
                 {allScenarios.map((s, i) => (
                   <Line key={i} type="monotone" dataKey={s.label} stroke={COLORS[i]} strokeWidth={i === activeExit ? 3 : 1.5} dot={false} opacity={i === activeExit ? 1 : 0.5} />
@@ -328,7 +328,7 @@ export default function PostExitPage() {
                 <CartesianGrid strokeDasharray="3 3" stroke="#3A3028" />
                 <XAxis dataKey="year" tick={{ fill: '#A89A8C', fontSize: 11 }} />
                 <YAxis tick={{ fill: '#A89A8C', fontSize: 11 }} tickFormatter={v => fmtChf(v)} />
-                <Tooltip contentStyle={{ background: '#2A2018', border: '1px solid #4A3A30', borderRadius: 8, color: '#F5EFE6' }} formatter={(v: any) => fmtChf(Number(v))} />
+                <Tooltip contentStyle={{ background: '#2A2018', border: '1px solid #4A3A30', borderRadius: 8, color: '#F5EFE6' }} labelStyle={{ color: '#F5EFE6' }} itemStyle={{ color: '#F5EFE6' }} formatter={(v: any) => fmtChf(Number(v))} />
                 <Legend />
                 <Line type="monotone" dataKey="income" stroke="#6B8E5A" strokeWidth={2} dot={false} name="Income" />
                 <Line type="monotone" dataKey="expenses" stroke="#DC2626" strokeWidth={2} dot={false} name="Expenses" />

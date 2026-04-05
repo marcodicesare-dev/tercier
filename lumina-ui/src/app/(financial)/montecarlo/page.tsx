@@ -35,7 +35,7 @@ function FanChart({ scenarioId, metric, label, formatter }: { scenarioId: string
         <XAxis dataKey="month" tick={{ fill: '#A89A8C', fontSize: 11 }} />
         <YAxis tick={{ fill: '#A89A8C', fontSize: 11 }} tickFormatter={v => formatter(v)} />
         <Tooltip
-          contentStyle={{ background: '#2A2018', border: '1px solid #4A3A30', borderRadius: 8, color: '#F5EFE6' }}
+          contentStyle={{ background: '#2A2018', border: '1px solid #4A3A30', borderRadius: 8, color: '#F5EFE6' }} labelStyle={{ color: '#F5EFE6' }} itemStyle={{ color: '#F5EFE6' }}
           formatter={(v: any, name: any) => [formatter(Number(v)), String(name)]}
         />
         <Area type="monotone" dataKey="p90" stroke="none" fill="#C17F59" fillOpacity={0.1} name="P90" />

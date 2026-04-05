@@ -210,7 +210,7 @@ export default function ScenariosPage() {
                 <CartesianGrid strokeDasharray="3 3" stroke="#3A3028" />
                 <XAxis dataKey="month" tick={{ fill: '#A89A8C', fontSize: 11 }} interval={11} />
                 <YAxis tick={{ fill: '#A89A8C', fontSize: 11 }} tickFormatter={v => `€${(v / 1e6).toFixed(0)}M`} />
-                <Tooltip contentStyle={{ background: '#2A2018', border: '1px solid #4A3A30', borderRadius: 8, color: '#F5EFE6' }} />
+                <Tooltip contentStyle={{ background: '#2A2018', border: '1px solid #4A3A30', borderRadius: 8, color: '#F5EFE6' }} labelStyle={{ color: '#F5EFE6' }} itemStyle={{ color: '#F5EFE6' }} />
                 <Legend />
                 {models.filter(m => selectedScenarios.includes(m.id)).map((m, i) => (
                   <Line key={m.id} type="monotone" dataKey={m.id} name={m.name} stroke={COLORS[SCENARIOS.findIndex(s => s.id === m.id)]} strokeWidth={2} dot={false} />
@@ -230,7 +230,7 @@ export default function ScenariosPage() {
                 <CartesianGrid strokeDasharray="3 3" stroke="#3A3028" />
                 <XAxis dataKey="month" tick={{ fill: '#A89A8C', fontSize: 11 }} interval={11} />
                 <YAxis tick={{ fill: '#A89A8C', fontSize: 11 }} tickFormatter={v => `CHF ${(v / 1e6).toFixed(0)}M`} />
-                <Tooltip contentStyle={{ background: '#2A2018', border: '1px solid #4A3A30', borderRadius: 8, color: '#F5EFE6' }} />
+                <Tooltip contentStyle={{ background: '#2A2018', border: '1px solid #4A3A30', borderRadius: 8, color: '#F5EFE6' }} labelStyle={{ color: '#F5EFE6' }} itemStyle={{ color: '#F5EFE6' }} />
                 <Legend />
                 {models.filter(m => selectedScenarios.includes(m.id)).map((m, i) => (
                   <Line key={m.id} type="monotone" dataKey={m.id} name={m.name} stroke={COLORS[SCENARIOS.findIndex(s => s.id === m.id)]} strokeWidth={2} dot={false} />
@@ -252,7 +252,7 @@ export default function ScenariosPage() {
               <CartesianGrid strokeDasharray="3 3" stroke="#3A3028" />
               <XAxis dataKey="name" tick={{ fill: '#A89A8C', fontSize: 11 }} />
               <YAxis tick={{ fill: '#A89A8C', fontSize: 11 }} tickFormatter={v => `${v}%`} />
-              <Tooltip contentStyle={{ background: '#2A2018', border: '1px solid #4A3A30', borderRadius: 8, color: '#F5EFE6' }} formatter={(v: any) => `${Number(v).toFixed(1)}%`} />
+              <Tooltip contentStyle={{ background: '#2A2018', border: '1px solid #4A3A30', borderRadius: 8, color: '#F5EFE6' }} labelStyle={{ color: '#F5EFE6' }} itemStyle={{ color: '#F5EFE6' }} formatter={(v: any) => `${Number(v).toFixed(1)}%`} />
               <Bar dataKey="ownership" name="Ownership %">
                 {dilutionData.map((_, i) => (
                   <Cell key={i} fill={COLORS[i]} />

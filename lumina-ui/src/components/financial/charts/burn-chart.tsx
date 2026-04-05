@@ -33,8 +33,7 @@ export function BurnChart({ data }: BurnChartProps) {
           tickFormatter={v => `CHF ${(v / 1000).toFixed(0)}K`}
         />
         <Tooltip
-          contentStyle={{ background: '#2A2018', border: '1px solid #4A3A30', borderRadius: 8, color: '#F5EFE6' }}
-          labelStyle={{ color: '#F5EFE6' }}
+          contentStyle={{ background: '#2A2018', border: '1px solid #4A3A30', borderRadius: 8, color: '#F5EFE6' }} labelStyle={{ color: '#F5EFE6' }} itemStyle={{ color: '#F5EFE6' }}
           formatter={(v: any) => [`CHF ${Number(v).toLocaleString()}`, 'EBITDA']}
         />
         <Bar dataKey="ebitda">
