@@ -22,7 +22,7 @@ export function CashChart({ data }: CashChartProps) {
             <stop offset="95%" stopColor="#C9A96E" stopOpacity={0} />
           </linearGradient>
         </defs>
-        <CartesianGrid strokeDasharray="3 3" stroke="#3A3028" />
+        <CartesianGrid strokeDasharray="3 3" stroke="#504038" />
         <XAxis
           dataKey="month"
           tick={{ fill: '#A89A8C', fontSize: 11 }}
@@ -35,7 +35,7 @@ export function CashChart({ data }: CashChartProps) {
           tickFormatter={v => `CHF ${(v / 1_000_000).toFixed(1)}M`}
         />
         <Tooltip
-          contentStyle={{ background: '#2A2018', border: '1px solid #4A3A30', borderRadius: 8, color: '#F5EFE6' }} labelStyle={{ color: '#F5EFE6' }} itemStyle={{ color: '#F5EFE6' }}
+          contentStyle={{ background: '#302520', border: '1px solid #4A3A30', borderRadius: 8, color: '#F5EFE6' }} labelStyle={{ color: '#F5EFE6' }} itemStyle={{ color: '#F5EFE6' }}
           formatter={(v: any) => [`CHF ${Number(v).toLocaleString()}`, 'Cash']}
         />
         <ReferenceLine y={0} stroke="#DC2626" strokeDasharray="5 5" />

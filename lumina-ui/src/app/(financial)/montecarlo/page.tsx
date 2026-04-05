@@ -31,11 +31,11 @@ function FanChart({ scenarioId, metric, label, formatter }: { scenarioId: string
   return (
     <ResponsiveContainer width="100%" height={250}>
       <AreaChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#3A3028" />
+        <CartesianGrid strokeDasharray="3 3" stroke="#504038" />
         <XAxis dataKey="month" tick={{ fill: '#A89A8C', fontSize: 11 }} />
         <YAxis tick={{ fill: '#A89A8C', fontSize: 11 }} tickFormatter={v => formatter(v)} />
         <Tooltip
-          contentStyle={{ background: '#2A2018', border: '1px solid #4A3A30', borderRadius: 8, color: '#F5EFE6' }} labelStyle={{ color: '#F5EFE6' }} itemStyle={{ color: '#F5EFE6' }}
+          contentStyle={{ background: '#302520', border: '1px solid #4A3A30', borderRadius: 8, color: '#F5EFE6' }} labelStyle={{ color: '#F5EFE6' }} itemStyle={{ color: '#F5EFE6' }}
           formatter={(v: any, name: any) => [formatter(Number(v)), String(name)]}
         />
         <Area type="monotone" dataKey="p90" stroke="none" fill="#C17F59" fillOpacity={0.1} name="P90" />

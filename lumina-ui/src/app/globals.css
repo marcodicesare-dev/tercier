@@ -34,21 +34,21 @@ a {
 .financial-theme {
   --background: #1A120B;
   --foreground: #F5EFE6;
-  --card: #2A2018;
+  --card: #302520;
   --card-foreground: #F5EFE6;
-  --popover: #2A2018;
+  --popover: #302520;
   --popover-foreground: #F5EFE6;
   --primary: #C17F59;
   --primary-foreground: #1A120B;
   --secondary: #8B4A2B;
   --secondary-foreground: #F5EFE6;
-  --muted: #4A3A30;
-  --muted-foreground: #A89A8C;
+  --muted: #504038;
+  --muted-foreground: #BEB0A2;
   --accent: #C9A96E;
   --accent-foreground: #1A120B;
   --destructive: #DC2626;
-  --border: #4A3A30;
-  --input: #4A3A30;
+  --border: #5A4A40;
+  --input: #504038;
   --ring: #C17F59;
   --chart-1: #C17F59;
   --chart-2: #C9A96E;
@@ -60,18 +60,18 @@ a {
   --sidebar-foreground: #F5EFE6;
   --sidebar-primary: #C17F59;
   --sidebar-primary-foreground: #1A120B;
-  --sidebar-accent: #2A2018;
+  --sidebar-accent: #302520;
   --sidebar-accent-foreground: #F5EFE6;
-  --sidebar-border: #4A3A30;
+  --sidebar-border: #5A4A40;
   --sidebar-ring: #C17F59;
   --color-terracotta: #C17F59;
   --color-deep-terracotta: #8B4A2B;
   --color-gold: #C9A96E;
   --color-ink: #1A120B;
   --color-cream: #F5EFE6;
-  --color-ink-light: #2A2018;
-  --color-ink-lighter: #3A3028;
-  --color-muted-foreground: #A89A8C;
+  --color-ink-light: #302520;
+  --color-ink-lighter: #504038;
+  --color-muted-foreground: #BEB0A2;
 }
 
 .financial-theme ::-webkit-scrollbar {

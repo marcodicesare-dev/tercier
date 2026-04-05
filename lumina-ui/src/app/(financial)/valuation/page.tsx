@@ -156,11 +156,11 @@ export default function ValuationPage() {
         <CardContent>
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={equityData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#3A3028" />
+              <CartesianGrid strokeDasharray="3 3" stroke="#504038" />
               <XAxis dataKey="month" tick={{ fill: '#A89A8C', fontSize: 12 }} />
               <YAxis tick={{ fill: '#A89A8C', fontSize: 11 }} tickFormatter={v => fmtChf(v)} />
               <Tooltip
-                contentStyle={{ background: '#2A2018', border: '1px solid #4A3A30', borderRadius: 8, color: '#F5EFE6' }} labelStyle={{ color: '#F5EFE6' }} itemStyle={{ color: '#F5EFE6' }}
+                contentStyle={{ background: '#302520', border: '1px solid #4A3A30', borderRadius: 8, color: '#F5EFE6' }} labelStyle={{ color: '#F5EFE6' }} itemStyle={{ color: '#F5EFE6' }}
                 formatter={(v: any) => fmtChf(Number(v))}
               />
               <Bar dataKey="equityValue" name="Equity Value">
