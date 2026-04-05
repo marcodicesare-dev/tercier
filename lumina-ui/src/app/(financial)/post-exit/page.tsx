@@ -1,348 +1,414 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/financial/ui/card';
-import { Tabs, TabsList, TabsTrigger } from '@/components/financial/ui/tabs';
 import { Badge } from '@/components/financial/ui/badge';
 import { Separator } from '@/components/financial/ui/separator';
-import { MetricCard } from '@/components/financial/metric-card';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
-import { calcScenarios, calcPreExitSavings, getLifestyle, getTravelExamples } from '@/lib/post-exit';
+import { Switch } from '@/components/financial/ui/switch';
+import { AssumptionSlider } from '@/components/financial/assumption-slider';
+import {
+  AreaChart, Area, LineChart, Line, BarChart, Bar, XAxis, YAxis,
+  CartesianGrid, Tooltip, ResponsiveContainer, Cell, Legend, ReferenceLine,
+} from 'recharts';
+import { runLifeSimulation, getDefaultInputs, type LifeInputs, type TripPlan } from '@/lib/post-exit-sim';
 import { fmtChf } from '@/lib/format';
+import { Trash2, Plus } from 'lucide-react';
 
-const SCENARIOS = calcScenarios();
-const SAVINGS = calcPreExitSavings();
+const EXIT_LEVELS = [5_000_000, 10_000_000, 20_000_000, 30_000_000, 40_000_000];
+const EXIT_LABELS = ['CHF 5M', 'CHF 10M', 'CHF 20M', 'CHF 30M', 'CHF 40M'];
 const COLORS = ['#8B4A2B', '#C17F59', '#C9A96E', '#6B8E5A', '#5B7FB5'];
-const LABELS = ['CHF 5M', 'CHF 10M', 'CHF 20M', 'CHF 30M', 'CHF 40M'];
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  const [open, setOpen] = useState(true);
+  return (
+    <div>
+      <button onClick={() => setOpen(!open)} className="w-full flex items-center justify-between py-2 text-[11px] uppercase tracking-widest text-[var(--color-gold)] font-medium">
+        {title}
+        <span className="text-[var(--color-muted-foreground)]">{open ? '−' : '+'}</span>
+      </button>
+      {open && <div className="space-y-3 pb-4">{children}</div>}
+    </div>
+  );
+}
+
+function Toggle({ label, value, onChange }: { label: string; value: boolean; onChange: (v: boolean) => void }) {
+  return (
+    <div className="flex items-center justify-between">
+      <span className="text-[11px] text-[var(--color-muted-foreground)]">{label}</span>
+      <Switch checked={value} onCheckedChange={onChange} />
+    </div>
+  );
+}
 
 export default function PostExitPage() {
-  const [active, setActive] = useState(2); // default to Scenario C (20M)
-  const s = SCENARIOS[active];
-  const lifestyle = getLifestyle(s.exitProceeds);
-  const travel = getTravelExamples(s.exitProceeds);
+  const [activeExit, setActiveExit] = useState(2); // default CHF 20M
+  const [inputs, setInputs] = useState<LifeInputs>(() => getDefaultInputs(EXIT_LEVELS[2]));
+
+  const update = useCallback(<K extends keyof LifeInputs>(key: K, value: LifeInputs[K]) => {
+    setInputs(prev => ({ ...prev, [key]: value }));
+  }, []);
+
+  const switchExit = useCallback((idx: number) => {
+    setActiveExit(idx);
+    setInputs(prev => ({
+      ...prev,
+      exitProceeds: EXIT_LEVELS[idx],
+      angelBudgetYearly: Math.round(EXIT_LEVELS[idx] * 0.02),
+      philanthropyYearly: Math.round(EXIT_LEVELS[idx] * 0.005),
+    }));
+  }, []);
+
+  const projection = useMemo(() => runLifeSimulation(inputs), [inputs]);
+
+  const addTrip = useCallback(() => {
+    const newTrip: TripPlan = { id: String(Date.now()), name: 'New trip', weeks: 1, costPerTrip: 5000, perYear: 1 };
+    update('trips', [...inputs.trips, newTrip]);
+  }, [inputs.trips, update]);
+
+  const removeTrip = useCallback((id: string) => {
+    update('trips', inputs.trips.filter(t => t.id !== id));
+  }, [inputs.trips, update]);
+
+  const updateTrip = useCallback((id: string, field: keyof TripPlan, value: any) => {
+    update('trips', inputs.trips.map(t => t.id === id ? { ...t, [field]: value } : t));
+  }, [inputs.trips, update]);
+
+  // Derived
+  const travelFromTrips = inputs.trips.reduce((s, t) => s + t.costPerTrip * t.perYear, 0);
+  const totalWeeks = inputs.trips.reduce((s, t) => s + t.weeks * t.perYear, 0);
+  const yr0 = projection[0];
+  const yr5 = projection[4];
+  const yr10 = projection[9];
+  const yr20 = projection[19];
+  const monthlyLiving = inputs.groceries + inputs.healthInsurance + inputs.transport +
+    inputs.utilities + inputs.clothing + inputs.personal + inputs.diningOut +
+    inputs.subscriptions + inputs.miscMonthly;
+
+  // All-scenario comparison
+  const allScenarios = useMemo(() => {
+    return EXIT_LEVELS.map((exit, i) => {
+      const inp = { ...inputs, exitProceeds: exit, angelBudgetYearly: Math.round(exit * 0.02), philanthropyYearly: Math.round(exit * 0.005) };
+      const proj = runLifeSimulation(inp);
+      return { exit, label: EXIT_LABELS[i], projection: proj };
+    });
+  }, [inputs]);
 
   return (
-    <div className="space-y-6 max-w-5xl">
-      <div>
-        <h1 className="text-2xl font-bold text-[var(--color-cream)]">Post-Exit Reality Check</h1>
-        <p className="text-sm text-[var(--color-muted-foreground)] mt-1">
-          Marco Di Cesare, 38, Zurich Wiedikon. Just exited Tercier AG. What does life actually look like?
-        </p>
-      </div>
+    <div className="flex gap-6">
+      {/* Left: Controls */}
+      <div className="w-80 shrink-0 space-y-2 overflow-auto max-h-[calc(100vh-3rem)] pb-20 pr-2">
+        <h2 className="text-lg font-bold text-[var(--color-cream)]">Life Simulator</h2>
+        <p className="text-[10px] text-[var(--color-muted-foreground)] mb-3">Your actual numbers. Every slider recalculates instantly.</p>
 
-      {/* Scenario selector */}
-      <div className="flex gap-2">
-        {SCENARIOS.map((sc, i) => (
-          <button
-            key={i}
-            onClick={() => setActive(i)}
-            className={`flex-1 py-3 px-2 rounded-lg text-center transition-all duration-200 border ${
-              active === i
-                ? 'border-[var(--color-terracotta)] bg-[var(--card)] shadow-lg shadow-[var(--color-terracotta)]/10'
-                : 'border-[var(--border)] bg-[var(--color-ink)] hover:border-[var(--color-deep-terracotta)]'
-            }`}
-          >
-            <div className="text-xs text-[var(--color-muted-foreground)]">Scenario {sc.label}</div>
-            <div className={`text-lg font-bold ${active === i ? 'text-[var(--color-terracotta)]' : 'text-[var(--color-cream)]'}`}>
-              {LABELS[i]}
-            </div>
-          </button>
-        ))}
-      </div>
+        {/* Exit selector */}
+        <div className="grid grid-cols-5 gap-1">
+          {EXIT_LEVELS.map((exit, i) => (
+            <button key={i} onClick={() => switchExit(i)} className={`py-1.5 rounded text-[10px] font-bold transition-all ${activeExit === i ? 'bg-[var(--color-terracotta)] text-[var(--color-ink)]' : 'bg-[var(--color-ink-light)] text-[var(--color-muted-foreground)] hover:text-[var(--color-cream)]'}`}>
+              {EXIT_LABELS[i]}
+            </button>
+          ))}
+        </div>
 
-      {/* Numbers Dashboard */}
-      <Card className="bg-[var(--card)] border-[var(--border)]">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm text-[var(--color-gold)]">The Numbers</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="grid grid-cols-2 gap-x-8 gap-y-3">
-            {[
-              ['Exit proceeds', fmtChf(s.exitProceeds), 'text-[var(--color-terracotta)]'],
-              ['+ Pre-exit savings', fmtChf(SAVINGS.total), ''],
-              ['= Total liquid net worth', fmtChf(s.totalLiquid), 'text-[var(--color-gold)] text-lg font-bold'],
-              ['Annual wealth tax (Zurich)', fmtChf(s.wealthTaxAnnual), 'text-red-400'],
-              ['Passive income @ 3% (bonds)', `${fmtChf(s.passive3pct)}/yr`, ''],
-              ['Passive income @ 5% (ETF)', `${fmtChf(s.passive5pct)}/yr`, 'text-green-400'],
-              ['Passive income @ 7% (growth)', `${fmtChf(s.passive7pct)}/yr`, 'text-green-400'],
-              ['Wife\'s net salary', `${fmtChf(s.wifeNetSalary)}/yr`, ''],
-              ['Total annual (5% + wife)', `${fmtChf(s.totalAnnual5pct)}/yr`, 'text-[var(--color-gold)] text-lg font-bold'],
-            ].map(([label, value, cls], i) => (
-              <div key={i} className={`flex justify-between py-1 ${i === 2 || i === 8 ? 'border-t border-[var(--border)] pt-2' : ''}`}>
-                <span className="text-sm text-[var(--color-muted-foreground)]">{label}</span>
-                <span className={`text-sm font-mono tabular-nums ${cls || 'text-[var(--color-cream)]'}`}>{value}</span>
+        <Separator className="bg-[var(--border)]" />
+
+        <Section title="Housing">
+          <AssumptionSlider label="Mortgage + Nebenkosten (CHF/mo)" value={inputs.mortgageMonthly} onChange={v => update('mortgageMonthly', v)} min={0} max={5000} step={100} prefix="CHF " />
+          <AssumptionSlider label="Amortization (CHF/yr)" value={inputs.amortizationYearly} onChange={v => update('amortizationYearly', v)} min={0} max={50000} step={1000} prefix="CHF " />
+          <Toggle label="Pay off mortgage at exit" value={inputs.payOffMortgage} onChange={v => update('payOffMortgage', v)} />
+          {inputs.payOffMortgage && (
+            <AssumptionSlider label="Outstanding balance" value={inputs.mortgageBalance} onChange={v => update('mortgageBalance', v)} min={100000} max={1000000} step={25000} prefix="CHF " />
+          )}
+        </Section>
+
+        <Section title="Monthly Living (excl. housing & travel)">
+          <AssumptionSlider label="Groceries & household" value={inputs.groceries} onChange={v => update('groceries', v)} min={500} max={3000} step={50} prefix="CHF " />
+          <AssumptionSlider label="Health insurance (both)" value={inputs.healthInsurance} onChange={v => update('healthInsurance', v)} min={400} max={1500} step={50} prefix="CHF " />
+          <AssumptionSlider label="Transport (GA, fuel, parking)" value={inputs.transport} onChange={v => update('transport', v)} min={0} max={800} step={50} prefix="CHF " />
+          <AssumptionSlider label="Utilities (phone, internet, streaming)" value={inputs.utilities} onChange={v => update('utilities', v)} min={100} max={500} step={25} prefix="CHF " />
+          <AssumptionSlider label="Clothing & shopping" value={inputs.clothing} onChange={v => update('clothing', v)} min={100} max={2000} step={50} prefix="CHF " />
+          <AssumptionSlider label="Personal (gym, wellness, haircut)" value={inputs.personal} onChange={v => update('personal', v)} min={100} max={2000} step={50} prefix="CHF " />
+          <AssumptionSlider label="Dining out & bars" value={inputs.diningOut} onChange={v => update('diningOut', v)} min={500} max={5000} step={100} prefix="CHF " />
+          <AssumptionSlider label="Subscriptions & misc" value={inputs.subscriptions} onChange={v => update('subscriptions', v)} min={50} max={500} step={25} prefix="CHF " />
+          <AssumptionSlider label="Buffer / unexpected" value={inputs.miscMonthly} onChange={v => update('miscMonthly', v)} min={0} max={2000} step={100} prefix="CHF " />
+          <div className="text-[11px] text-[var(--color-terracotta)] font-mono pt-1">Total: CHF {monthlyLiving.toLocaleString()}/mo = CHF {(monthlyLiving * 12).toLocaleString()}/yr</div>
+        </Section>
+
+        <Section title="Car">
+          <div className="text-[10px] text-[var(--color-muted-foreground)] mb-1">Current: Audi RSQ3 leasing CHF {inputs.currentCarPayment}/mo</div>
+          <AssumptionSlider label="Current car payment (CHF/mo)" value={inputs.currentCarPayment} onChange={v => update('currentCarPayment', v)} min={0} max={3000} step={50} prefix="CHF " />
+          <Toggle label="Upgrade car at exit" value={inputs.upgradeCar} onChange={v => update('upgradeCar', v)} />
+          {inputs.upgradeCar && (
+            <>
+              <AssumptionSlider label="New car purchase price" value={inputs.upgradeCarCost} onChange={v => update('upgradeCarCost', v)} min={40000} max={400000} step={5000} prefix="CHF " />
+              <AssumptionSlider label="Insurance + maintenance (CHF/mo)" value={inputs.newCarMonthly} onChange={v => update('newCarMonthly', v)} min={200} max={1500} step={50} prefix="CHF " />
+            </>
+          )}
+        </Section>
+
+        <Section title="Travel">
+          <div className="text-[10px] text-[var(--color-muted-foreground)] mb-2">{totalWeeks.toFixed(1)} weeks/yr across {inputs.trips.length} trip types</div>
+          {inputs.trips.map(trip => (
+            <div key={trip.id} className="bg-[var(--color-ink-light)] rounded p-2 space-y-1.5">
+              <div className="flex items-center justify-between">
+                <input value={trip.name} onChange={e => updateTrip(trip.id, 'name', e.target.value)} className="text-[11px] font-medium bg-transparent text-[var(--color-cream)] border-none outline-none flex-1" />
+                <button onClick={() => removeTrip(trip.id)} className="text-[var(--color-muted-foreground)] hover:text-red-400"><Trash2 className="h-3 w-3" /></button>
               </div>
-            ))}
+              <div className="grid grid-cols-3 gap-1">
+                <div>
+                  <span className="text-[8px] text-[var(--color-muted-foreground)] block">Weeks</span>
+                  <input type="number" value={trip.weeks} onChange={e => updateTrip(trip.id, 'weeks', Number(e.target.value))} step={0.5} className="w-full h-5 text-[10px] text-center bg-[var(--color-ink)] border border-[var(--border)] rounded text-[var(--color-cream)]" />
+                </div>
+                <div>
+                  <span className="text-[8px] text-[var(--color-muted-foreground)] block">CHF/trip</span>
+                  <input type="number" value={trip.costPerTrip} onChange={e => updateTrip(trip.id, 'costPerTrip', Number(e.target.value))} step={500} className="w-full h-5 text-[10px] text-center bg-[var(--color-ink)] border border-[var(--border)] rounded text-[var(--color-cream)]" />
+                </div>
+                <div>
+                  <span className="text-[8px] text-[var(--color-muted-foreground)] block">×/yr</span>
+                  <input type="number" value={trip.perYear} onChange={e => updateTrip(trip.id, 'perYear', Number(e.target.value))} className="w-full h-5 text-[10px] text-center bg-[var(--color-ink)] border border-[var(--border)] rounded text-[var(--color-cream)]" />
+                </div>
+              </div>
+            </div>
+          ))}
+          <button onClick={addTrip} className="w-full py-1.5 text-[10px] text-[var(--color-terracotta)] border border-dashed border-[var(--color-deep-terracotta)] rounded hover:bg-[var(--color-ink-light)] flex items-center justify-center gap-1">
+            <Plus className="h-3 w-3" /> Add trip
+          </button>
+          <div className="text-[11px] text-[var(--color-terracotta)] font-mono pt-1">Total from trips: CHF {travelFromTrips.toLocaleString()}/yr</div>
+          <AssumptionSlider label="Override annual travel budget" value={inputs.travelBudget} onChange={v => update('travelBudget', v)} min={20000} max={300000} step={5000} prefix="CHF " />
+        </Section>
+
+        <Section title="Sardinia Property">
+          <Toggle label="Buy vacation property" value={inputs.buyVacationProperty} onChange={v => update('buyVacationProperty', v)} />
+          {inputs.buyVacationProperty && (
+            <>
+              <AssumptionSlider label="Purchase price (CHF)" value={inputs.propertyPrice} onChange={v => update('propertyPrice', v)} min={300000} max={3000000} step={50000} prefix="CHF " />
+              <AssumptionSlider label="Mortgage %" value={inputs.propertyMortgagePct} onChange={v => update('propertyMortgagePct', v)} min={0} max={80} step={5} suffix="%" />
+              <AssumptionSlider label="Monthly costs (maintenance, tax)" value={inputs.propertyMonthlyCosts} onChange={v => update('propertyMonthlyCosts', v)} min={500} max={5000} step={100} prefix="CHF " />
+            </>
+          )}
+        </Section>
+
+        <Section title="Wife & Income">
+          <Toggle label="Wife keeps working" value={inputs.wifeKeepsWorking} onChange={v => update('wifeKeepsWorking', v)} />
+          <AssumptionSlider label="Wife gross salary (2030)" value={inputs.wifeGross2030} onChange={v => update('wifeGross2030', v)} min={100000} max={250000} step={5000} prefix="CHF " />
+          <AssumptionSlider label="Annual raise" value={inputs.wifeGrowthRate} onChange={v => update('wifeGrowthRate', v)} min={0} max={0.05} step={0.005} format={v => `${(v * 100).toFixed(1)}%`} />
+        </Section>
+
+        <Section title="Investment & Wealth">
+          <AssumptionSlider label="Annual return" value={inputs.investmentReturn} onChange={v => update('investmentReturn', v)} min={0.01} max={0.10} step={0.005} format={v => `${(v * 100).toFixed(1)}%`} />
+          <AssumptionSlider label="Inflation" value={inputs.inflation} onChange={v => update('inflation', v)} min={0} max={0.05} step={0.005} format={v => `${(v * 100).toFixed(1)}%`} />
+          <AssumptionSlider label="Angel investing (CHF/yr)" value={inputs.angelBudgetYearly} onChange={v => update('angelBudgetYearly', v)} min={0} max={500000} step={10000} prefix="CHF " />
+          <AssumptionSlider label="Angel investing years" value={inputs.angelYears} onChange={v => update('angelYears', v)} min={0} max={10} suffix=" yrs" />
+          <AssumptionSlider label="Philanthropy (CHF/yr)" value={inputs.philanthropyYearly} onChange={v => update('philanthropyYearly', v)} min={0} max={200000} step={5000} prefix="CHF " />
+        </Section>
+      </div>
+
+      {/* Right: Results */}
+      <div className="flex-1 space-y-5 overflow-auto max-h-[calc(100vh-3rem)] pb-20">
+        <h1 className="text-2xl font-bold text-[var(--color-cream)]">Post-Exit Life — {EXIT_LABELS[activeExit]}</h1>
+
+        {/* Year 1 snapshot */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+          <div className="bg-[var(--card)] border border-[var(--border)] rounded-lg p-3">
+            <p className="text-[10px] text-[var(--color-muted-foreground)] uppercase">Total Net Worth</p>
+            <p className="text-xl font-bold text-[var(--color-gold)]">{fmtChf(yr0.totalNetWorth)}</p>
           </div>
-        </CardContent>
-      </Card>
-
-      {/* Passive income comparison */}
-      <Card className="bg-[var(--card)] border-[var(--border)]">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm text-[var(--color-muted-foreground)]">Annual Passive Income by Scenario (5% return)</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <ResponsiveContainer width="100%" height={200}>
-            <BarChart data={SCENARIOS.map((sc, i) => ({ name: LABELS[i], income: sc.passive5pct, active: i === active }))}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#3A3028" />
-              <XAxis dataKey="name" tick={{ fill: '#A89A8C', fontSize: 12 }} />
-              <YAxis tick={{ fill: '#A89A8C', fontSize: 11 }} tickFormatter={v => fmtChf(v)} />
-              <Tooltip contentStyle={{ background: '#2A2018', border: '1px solid #3A3028', borderRadius: 8 }} formatter={(v: any) => fmtChf(Number(v))} />
-              <Bar dataKey="income" name="Passive income">
-                {SCENARIOS.map((_, i) => (
-                  <Cell key={i} fill={i === active ? '#C17F59' : '#5A4A3A'} />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </CardContent>
-      </Card>
-
-      {/* What Life ACTUALLY Looks Like */}
-      <Card className="bg-[var(--card)] border-[var(--border)]">
-        <CardHeader>
-          <CardTitle className="text-[var(--color-gold)]">What Does Life Actually Look Like?</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-6">
-          {/* The Feel */}
-          <div className="bg-[var(--color-ink)] rounded-lg p-4 border border-[var(--color-deep-terracotta)]">
-            <p className="text-sm leading-relaxed text-[var(--color-cream)]">{lifestyle.feel}</p>
+          <div className="bg-[var(--card)] border border-[var(--border)] rounded-lg p-3">
+            <p className="text-[10px] text-[var(--color-muted-foreground)] uppercase">Annual Income</p>
+            <p className="text-xl font-bold text-green-400">{fmtChf(yr0.totalIncome)}/yr</p>
+            <p className="text-[9px] text-[var(--color-muted-foreground)]">Passive {fmtChf(yr0.passiveIncome)} + Wife {fmtChf(yr0.wifeIncome)}</p>
           </div>
+          <div className="bg-[var(--card)] border border-[var(--border)] rounded-lg p-3">
+            <p className="text-[10px] text-[var(--color-muted-foreground)] uppercase">Annual Expenses</p>
+            <p className="text-xl font-bold text-red-400">{fmtChf(yr0.totalExpenses)}/yr</p>
+            <p className="text-[9px] text-[var(--color-muted-foreground)]">{fmtChf(Math.round(yr0.totalExpenses / 12))}/mo</p>
+          </div>
+          <div className="bg-[var(--card)] border border-[var(--border)] rounded-lg p-3">
+            <p className="text-[10px] text-[var(--color-muted-foreground)] uppercase">Net Cashflow</p>
+            <p className={`text-xl font-bold ${yr0.netCashflow >= 0 ? 'text-green-400' : 'text-red-400'}`}>{fmtChf(yr0.netCashflow)}/yr</p>
+            <p className="text-[9px] text-[var(--color-muted-foreground)]">{yr0.passiveIncomeCoversExpenses ? 'Passive income covers everything' : 'Needs wife income or drawdown'}</p>
+          </div>
+        </div>
 
-          {/* Travel */}
-          <div>
-            <h3 className="text-sm font-bold text-[var(--color-terracotta)] mb-3">Travel — {fmtChf(lifestyle.travel)}/year</h3>
-            <div className="space-y-2">
-              {travel.map((t, i) => (
-                <div key={i} className="flex justify-between items-start py-2 border-b border-[var(--border)]">
-                  <div>
-                    <span className="text-sm font-medium text-[var(--color-cream)]">{t.trip}</span>
-                    <p className="text-xs text-[var(--color-muted-foreground)] mt-0.5">{t.details}</p>
-                  </div>
-                  <span className="text-sm font-mono text-[var(--color-gold)] whitespace-nowrap ml-4">{fmtChf(t.cost)}</span>
+        {/* Expense breakdown */}
+        <Card className="bg-[var(--card)] border-[var(--border)]">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm text-[var(--color-muted-foreground)]">Year 1 Expense Breakdown</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={200}>
+              <BarChart data={[
+                { name: 'Housing', value: yr0.housing, fill: '#C17F59' },
+                { name: 'Living', value: yr0.living, fill: '#C9A96E' },
+                { name: 'Car', value: yr0.car, fill: '#8B4A2B' },
+                { name: 'Travel', value: yr0.travel, fill: '#6B8E5A' },
+                ...(yr0.property > 0 ? [{ name: 'Sardinia', value: yr0.property, fill: '#5B7FB5' }] : []),
+                ...(yr0.angel > 0 ? [{ name: 'Angel', value: yr0.angel, fill: '#A89A8C' }] : []),
+                { name: 'Tax', value: yr0.wealthTax, fill: '#DC2626' },
+              ]} layout="vertical">
+                <CartesianGrid strokeDasharray="3 3" stroke="#3A3028" />
+                <XAxis type="number" tick={{ fill: '#A89A8C', fontSize: 11 }} tickFormatter={v => fmtChf(v)} />
+                <YAxis type="category" dataKey="name" tick={{ fill: '#F5EFE6', fontSize: 11 }} width={70} />
+                <Tooltip contentStyle={{ background: '#2A2018', border: '1px solid #3A3028', borderRadius: 8 }} formatter={(v: any) => fmtChf(Number(v))} />
+                <Bar dataKey="value">
+                  {[yr0.housing, yr0.living, yr0.car, yr0.travel, yr0.property, yr0.angel, yr0.wealthTax].map((_, i) => (
+                    <Cell key={i} fill={['#C17F59', '#C9A96E', '#8B4A2B', '#6B8E5A', '#5B7FB5', '#A89A8C', '#DC2626'][i]} />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
+        {/* Net worth projection */}
+        <Card className="bg-[var(--card)] border-[var(--border)]">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm text-[var(--color-muted-foreground)]">Net Worth Over 20 Years</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <AreaChart data={projection.map(p => ({ year: p.year, age: p.age, netWorth: p.totalNetWorth, invested: p.investedAssets, realEstate: p.realEstateEquity }))}>
+                <defs>
+                  <linearGradient id="nwGrad" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="5%" stopColor="#C9A96E" stopOpacity={0.3} />
+                    <stop offset="95%" stopColor="#C9A96E" stopOpacity={0} />
+                  </linearGradient>
+                </defs>
+                <CartesianGrid strokeDasharray="3 3" stroke="#3A3028" />
+                <XAxis dataKey="year" tick={{ fill: '#A89A8C', fontSize: 11 }} />
+                <YAxis tick={{ fill: '#A89A8C', fontSize: 11 }} tickFormatter={v => fmtChf(v)} />
+                <Tooltip contentStyle={{ background: '#2A2018', border: '1px solid #3A3028', borderRadius: 8 }} formatter={(v: any) => fmtChf(Number(v))} />
+                <ReferenceLine y={0} stroke="#DC2626" strokeDasharray="5 5" />
+                <Area type="monotone" dataKey="netWorth" stroke="#C9A96E" strokeWidth={2} fill="url(#nwGrad)" name="Total Net Worth" />
+              </AreaChart>
+            </ResponsiveContainer>
+            <div className="grid grid-cols-4 gap-3 mt-3 text-center">
+              {[{ label: 'Year 1', d: yr0 }, { label: 'Year 5', d: yr5 }, { label: 'Year 10', d: yr10 }, { label: 'Year 20', d: yr20 }].map(({ label, d }) => (
+                <div key={label}>
+                  <p className="text-[9px] text-[var(--color-muted-foreground)]">{label} (age {d?.age})</p>
+                  <p className="text-sm font-bold text-[var(--color-gold)]">{fmtChf(d?.totalNetWorth ?? 0)}</p>
                 </div>
               ))}
-              <div className="flex justify-between pt-2 font-bold">
-                <span className="text-sm text-[var(--color-cream)]">Total travel budget</span>
-                <span className="text-sm font-mono text-[var(--color-terracotta)]">{fmtChf(travel.reduce((s, t) => s + t.cost, 0))}</span>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* All scenarios comparison */}
+        <Card className="bg-[var(--card)] border-[var(--border)]">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm text-[var(--color-muted-foreground)]">All 5 Scenarios — Net Worth Over 20 Years</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={300}>
+              <LineChart data={Array.from({ length: 20 }, (_, i) => {
+                const point: any = { year: 2030 + i };
+                allScenarios.forEach((s, si) => { point[s.label] = s.projection[i]?.totalNetWorth ?? 0; });
+                return point;
+              })}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#3A3028" />
+                <XAxis dataKey="year" tick={{ fill: '#A89A8C', fontSize: 11 }} />
+                <YAxis tick={{ fill: '#A89A8C', fontSize: 11 }} tickFormatter={v => fmtChf(v)} />
+                <Tooltip contentStyle={{ background: '#2A2018', border: '1px solid #3A3028', borderRadius: 8 }} formatter={(v: any) => fmtChf(Number(v))} />
+                <Legend />
+                {allScenarios.map((s, i) => (
+                  <Line key={i} type="monotone" dataKey={s.label} stroke={COLORS[i]} strokeWidth={i === activeExit ? 3 : 1.5} dot={false} opacity={i === activeExit ? 1 : 0.5} />
+                ))}
+              </LineChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
+        {/* Income vs Expenses over time */}
+        <Card className="bg-[var(--card)] border-[var(--border)]">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm text-[var(--color-muted-foreground)]">Income vs Expenses Over Time</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ResponsiveContainer width="100%" height={250}>
+              <LineChart data={projection.map(p => ({ year: p.year, income: p.totalIncome, expenses: p.totalExpenses }))}>
+                <CartesianGrid strokeDasharray="3 3" stroke="#3A3028" />
+                <XAxis dataKey="year" tick={{ fill: '#A89A8C', fontSize: 11 }} />
+                <YAxis tick={{ fill: '#A89A8C', fontSize: 11 }} tickFormatter={v => fmtChf(v)} />
+                <Tooltip contentStyle={{ background: '#2A2018', border: '1px solid #3A3028', borderRadius: 8 }} formatter={(v: any) => fmtChf(Number(v))} />
+                <Legend />
+                <Line type="monotone" dataKey="income" stroke="#6B8E5A" strokeWidth={2} dot={false} name="Income" />
+                <Line type="monotone" dataKey="expenses" stroke="#DC2626" strokeWidth={2} dot={false} name="Expenses" />
+              </LineChart>
+            </ResponsiveContainer>
+          </CardContent>
+        </Card>
+
+        {/* Detailed year-by-year table */}
+        <Card className="bg-[var(--card)] border-[var(--border)]">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm text-[var(--color-muted-foreground)]">Year-by-Year Projection</CardTitle>
+          </CardHeader>
+          <CardContent className="overflow-x-auto">
+            <table className="w-full text-[10px]">
+              <thead>
+                <tr className="border-b border-[var(--border)]">
+                  {['Year', 'Age', 'Income', 'Expenses', 'Net', 'Net Worth', 'Passive covers?'].map(h => (
+                    <th key={h} className="py-1.5 px-2 text-right text-[var(--color-muted-foreground)] first:text-left">{h}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {projection.map(p => (
+                  <tr key={p.year} className="border-b border-[var(--border)] hover:bg-[var(--color-ink-light)]">
+                    <td className="py-1 px-2 text-[var(--color-cream)]">{p.year}</td>
+                    <td className="py-1 px-2 text-right">{p.age}</td>
+                    <td className="py-1 px-2 text-right text-green-400 tabular-nums">{fmtChf(p.totalIncome)}</td>
+                    <td className="py-1 px-2 text-right text-red-400 tabular-nums">{fmtChf(p.totalExpenses)}</td>
+                    <td className={`py-1 px-2 text-right font-medium tabular-nums ${p.netCashflow >= 0 ? 'text-green-400' : 'text-red-400'}`}>{fmtChf(p.netCashflow)}</td>
+                    <td className="py-1 px-2 text-right text-[var(--color-gold)] font-medium tabular-nums">{fmtChf(p.totalNetWorth)}</td>
+                    <td className="py-1 px-2 text-right">
+                      <Badge className={`text-[8px] ${p.passiveIncomeCoversExpenses ? 'bg-green-600/20 text-green-400' : 'bg-red-600/20 text-red-400'}`}>
+                        {p.passiveIncomeCoversExpenses ? 'YES' : 'NO'}
+                      </Badge>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </CardContent>
+        </Card>
+
+        {/* Monthly cost summary */}
+        <Card className="bg-[var(--card)] border-[var(--border)]">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm text-[var(--color-muted-foreground)]">Monthly Cost of Living (Year 1)</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 gap-x-6 gap-y-1.5">
+              {[
+                ['Housing (mortgage + amort.)', Math.round(yr0.housing / 12)],
+                ['Groceries', inputs.groceries],
+                ['Health insurance', inputs.healthInsurance],
+                ['Transport', inputs.transport],
+                ['Utilities', inputs.utilities],
+                ['Clothing', inputs.clothing],
+                ['Personal & wellness', inputs.personal],
+                ['Dining out', inputs.diningOut],
+                ['Subscriptions', inputs.subscriptions],
+                ['Car', Math.round(yr0.car / 12)],
+                ['Travel (amortized)', Math.round(yr0.travel / 12)],
+                ['Misc buffer', inputs.miscMonthly],
+                ...(yr0.property > 0 ? [['Sardinia property', Math.round(yr0.property / 12)]] : []),
+                ...(yr0.angel > 0 ? [['Angel investing', Math.round(yr0.angel / 12)]] : []),
+                ['Wealth tax', Math.round(yr0.wealthTax / 12)],
+              ].map(([label, val], i) => (
+                <div key={i} className="flex justify-between text-[11px] py-0.5">
+                  <span className="text-[var(--color-muted-foreground)]">{label}</span>
+                  <span className="text-[var(--color-cream)] font-mono tabular-nums">CHF {Number(val).toLocaleString()}</span>
+                </div>
+              ))}
+              <div className="col-span-2 flex justify-between text-sm font-bold pt-2 border-t border-[var(--color-terracotta)]">
+                <span className="text-[var(--color-cream)]">TOTAL MONTHLY</span>
+                <span className="text-[var(--color-terracotta)] font-mono">{fmtChf(Math.round(yr0.totalExpenses / 12))}</span>
               </div>
             </div>
-          </div>
-
-          {/* Daily Life */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <h3 className="text-sm font-bold text-[var(--color-terracotta)] mb-2">Dining — {fmtChf(lifestyle.dining)}/year</h3>
-              <div className="text-xs text-[var(--color-muted-foreground)] space-y-1">
-                <p>Casual lunch: CHF 30-40pp (Hiltl buffet CHF 28-38, bistro lunch CHF 25-35)</p>
-                <p>Nice dinner out: CHF 200-300/couple (Kronenhalle mains CHF 45-65 + wine ~CHF 150pp, Brasserie Lipp ~CHF 130pp)</p>
-                <p>Fine dining: CHF 600-900/couple (The Restaurant tasting CHF 320 + wine pairing CHF 180, Widder tasting CHF 280 + pairing CHF 160)</p>
-                <p>Frequency: {s.exitProceeds >= 20_000_000 ? '2-3 nice dinners/week, fine dining monthly' : s.exitProceeds >= 10_000_000 ? '1-2 nice dinners/week, fine dining every few months' : 'Nice dinner weekly, fine dining for occasions'}</p>
-              </div>
-            </div>
-            <div>
-              <h3 className="text-sm font-bold text-[var(--color-terracotta)] mb-2">Car</h3>
-              <p className="text-xs text-[var(--color-muted-foreground)]">{lifestyle.car}</p>
-            </div>
-            <div>
-              <h3 className="text-sm font-bold text-[var(--color-terracotta)] mb-2">Spontaneity</h3>
-              <p className="text-xs text-[var(--color-muted-foreground)]">{lifestyle.spontaneity}</p>
-            </div>
-            <div>
-              <h3 className="text-sm font-bold text-[var(--color-terracotta)] mb-2">Giving & Generosity</h3>
-              <p className="text-xs text-[var(--color-muted-foreground)]">{lifestyle.giving}</p>
-            </div>
-          </div>
-
-          {/* Wellness */}
-          <div>
-            <h3 className="text-sm font-bold text-[var(--color-terracotta)] mb-2">Wellness & Fitness</h3>
-            <div className="text-xs text-[var(--color-muted-foreground)] space-y-0.5">
-              <p>Personal trainer: CHF 120-180/session. 2x/week = ~CHF 15,600/yr</p>
-              <p>Premium gym (David Lloyd/Aspria tier): CHF 250-350/mo = ~CHF 3,300/yr</p>
-              <p>Dolder Grand Spa day: CHF 290 (weekday) / CHF 460 (weekend)</p>
-              <p>{s.exitProceeds >= 20_000_000 ? 'At your level: PT 2x/week, premium gym, quarterly spa days. Total ~CHF 21K/yr. Feels like nothing.' : s.exitProceeds >= 10_000_000 ? 'PT 2x/week and premium gym. Total ~CHF 19K/yr. Comfortable spend.' : 'PT 1-2x/week, regular gym. Total ~CHF 10-15K/yr. Budget consciously.'}</p>
-            </div>
-          </div>
-
-          {/* Real Estate */}
-          <div>
-            <h3 className="text-sm font-bold text-[var(--color-terracotta)] mb-2">The Apartment Question</h3>
-            <p className="text-sm text-[var(--color-cream)]">{lifestyle.realEstate}</p>
-            {lifestyle.realEstateBudget > 0 && (
-              <div className="mt-2 text-xs text-[var(--color-muted-foreground)]">
-                <p>Zurich property reference prices (2026):</p>
-                <ul className="list-disc list-inside mt-1 space-y-0.5">
-                  <li>Wiedikon 120m2: CHF 2.1-3.0M (avg CHF 21,300/m2)</li>
-                  <li>Enge 120m2: CHF 2.2-3.1M (avg CHF 21,400/m2)</li>
-                  <li>Seefeld 120m2: CHF 2.3-3.2M (avg CHF 22,500/m2)</li>
-                  <li>Zürichberg 150m2: CHF 3.1-5M (avg CHF 20,600-23,500/m2)</li>
-                  <li>St. Moritz: CHF 2.4-3.2M (CHF 20-27K/m2)</li>
-                  <li>Pontresina: CHF 1.7-2.4M (CHF 14-20K/m2)</li>
-                  <li>Ascona (Ticino): CHF 1.1-1.6M (avg CHF 10,900/m2)</li>
-                  <li>Lake Como waterfront: EUR 600K-1.2M (EUR 10-15K/m2)</li>
-                  <li>Liguria: EUR 420-720K (EUR 3.5-6K/m2, Portofino 8-15K)</li>
-                </ul>
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* What the Fuck Do I Do Next */}
-      <Card className="bg-[var(--card)] border-[var(--border)]">
-        <CardHeader>
-          <CardTitle className="text-[var(--color-gold)]">What the Fuck Do I Do Next?</CardTitle>
-          <p className="text-xs text-[var(--color-muted-foreground)] mt-1">Marco is 38. Technical, analytical, wired to build. Not going to sit on a beach.</p>
-        </CardHeader>
-        <CardContent className="space-y-5">
-          {/* Clear recommendation */}
-          <div className="bg-[var(--color-deep-terracotta)]/30 border border-[var(--color-terracotta)] rounded-lg p-4">
-            <h3 className="text-sm font-bold text-[var(--color-terracotta)] mb-2">Recommendation at {LABELS[active]}</h3>
-            <p className="text-sm text-[var(--color-cream)] leading-relaxed">{lifestyle.recommendation}</p>
-          </div>
-
-          {/* Paths */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {/* Take a Year Off */}
-            <div className="bg-[var(--color-ink-light)] rounded-lg p-4">
-              <h4 className="text-sm font-bold text-[var(--color-cream)] mb-2">Take a Year Off</h4>
-              <p className="text-xs text-[var(--color-muted-foreground)] mb-2">
-                Sabbatical budget: {fmtChf(lifestyle.travel + lifestyle.dining + 30000)} (travel + dining + hobbies/courses)
-              </p>
-              <p className="text-xs text-[var(--color-muted-foreground)]">
-                Reality: most founders go crazy after 3 months. Plan for "structured freedom" — travel for 2-3 months, then have a project (writing, advising, learning something new). {s.exitProceeds >= 20_000_000 ? 'At your level, the year off is a genuine luxury — take it.' : 'Financially fine for a year, but you\'ll want income by month 12-18.'}
-              </p>
-            </div>
-
-            {/* Angel Investor */}
-            <div className="bg-[var(--color-ink-light)] rounded-lg p-4">
-              <h4 className="text-sm font-bold text-[var(--color-cream)] mb-2">Angel Investor / Advisor</h4>
-              <p className="text-xs text-[var(--color-muted-foreground)] mb-2">
-                Angel budget (10% of NW): {fmtChf(lifestyle.angelBudget)} → {Math.round(lifestyle.angelBudget / 100000)} deals at CHF 100K each
-              </p>
-              <p className="text-xs text-[var(--color-muted-foreground)]">
-                Advisory boards: CHF 30-80K/yr each, 2-4 days/month. Expected angel returns: most lose money. 1 in 10 returns 10x. Net ~2x over 7 years IF you're good. {lifestyle.angelBudget >= 2_000_000 ? 'You\'re a serious angel at this level — enough deals for portfolio theory to work.' : 'Small portfolio — high variance. Don\'t rely on this for returns.'}
-              </p>
-            </div>
-
-            {/* Build Again */}
-            <div className="bg-[var(--color-ink-light)] rounded-lg p-4">
-              <h4 className="text-sm font-bold text-[var(--color-cream)] mb-2">Build Again</h4>
-              <p className="text-xs text-[var(--color-muted-foreground)] mb-2">
-                Self-fund seed: {fmtChf(Math.min(s.exitProceeds * 0.05, 2_000_000))} (5% of NW, capped at CHF 2M)
-              </p>
-              <p className="text-xs text-[var(--color-muted-foreground)]">
-                Post-exit credibility is 10x higher. Fundraising is trivial. Another 4-5 years all-in = exit at 42-43. {s.exitProceeds >= 20_000_000 ? 'Building again is a CHOICE, not a necessity. That changes the psychology completely — you can take bigger swings, be more patient, and walk away if it\'s not working.' : 'You should build again — this is where the real wealth comes from. Use the Tercier exit as proof you can execute.'}
-              </p>
-            </div>
-
-            {/* Join Something */}
-            <div className="bg-[var(--color-ink-light)] rounded-lg p-4">
-              <h4 className="text-sm font-bold text-[var(--color-cream)] mb-2">Join Something</h4>
-              <p className="text-xs text-[var(--color-muted-foreground)] mb-2">
-                VP/C-level: CHF 250-400K + equity. Best fits: CPO, CTO, "Head of AI" at Series B/C.
-              </p>
-              <p className="text-xs text-[var(--color-muted-foreground)]">
-                The ego question: can you work FOR someone after being CEO? {s.exitProceeds >= 10_000_000 ? 'At your wealth level, this only makes sense if the mission excites you or the equity upside is massive. Don\'t do it for the salary.' : 'This preserves optionality while keeping you sharp. Best option if you want steady income + structure.'}
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Wealth Preservation */}
-      <Card className="bg-[var(--card)] border-[var(--border)]">
-        <CardHeader>
-          <CardTitle className="text-[var(--color-gold)]">Wealth Preservation</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4 text-sm">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
-              <h4 className="font-bold text-[var(--color-terracotta)] mb-1">How to invest</h4>
-              <p className="text-xs text-[var(--color-muted-foreground)]">
-                {s.exitProceeds >= 20_000_000
-                  ? 'At CHF 20M+, a private bank (Lombard Odier, Julius Baer, Pictet) makes sense — you get access to PE/VC co-investments, tax-loss harvesting, and structured products. Fee: 0.5-0.8%/yr on AUM. Below that, a simple ETF portfolio (60% MSCI World, 25% bonds, 15% Swiss equities) at a digital bank (Swissquote, Interactive Brokers) at 0.1-0.2% cost.'
-                  : 'Keep it simple. 80% in a global ETF portfolio (VT or MSCI ACWI), 20% in Swiss government bonds. Total cost: 0.1-0.2%/yr. Rebalance annually. Don\'t pay 1%+ to a wealth manager for CHF 5-10M — the math doesn\'t work.'}
-              </p>
-            </div>
-            <div>
-              <h4 className="font-bold text-[var(--color-terracotta)] mb-1">Wealth tax drag</h4>
-              <p className="text-xs text-[var(--color-muted-foreground)]">
-                Annual wealth tax: {fmtChf(s.wealthTaxAnnual)} ({((s.wealthTaxAnnual / s.totalLiquid) * 100).toFixed(2)}% effective rate). {s.wealthTaxAnnual > 50000 ? 'Worth optimizing with a Treuhand — pension buy-ins, real estate structuring, and charitable vehicles can reduce this.' : 'Not worth aggressive optimization at this level. Just pay it.'}
-              </p>
-            </div>
-            <div>
-              <h4 className="font-bold text-[var(--color-terracotta)] mb-1">Pay off the mortgage?</h4>
-              <p className="text-xs text-[var(--color-muted-foreground)]">
-                Math says no — mortgage rate ~1.5-2% is less than investment returns (5-7%). Tax deductibility of mortgage interest makes it even better to keep it. But: {s.exitProceeds >= 10_000_000 ? '"zero debt" has psychological value post-exit. At your level, pay it off. The CHF 300-400K is noise. Sleep better.' : 'Keep the mortgage. The interest deduction reduces your income tax, and the freed-up capital earns more invested.'}
-              </p>
-            </div>
-            <div>
-              <h4 className="font-bold text-[var(--color-terracotta)] mb-1">Capital gains — TAX FREE</h4>
-              <p className="text-xs text-[var(--color-muted-foreground)]">
-                Confirmed: Swiss private capital gains exemption. The exit proceeds are not taxed as income. This is Switzerland's gift to founders. The only tax is wealth tax on the assets going forward (~0.3-0.5%/yr in Zurich).
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* The Identity Question */}
-      <Card className="bg-[var(--card)] border-[var(--border)]">
-        <CardHeader>
-          <CardTitle className="text-[var(--color-gold)]">The Identity Question</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-sm text-[var(--color-cream)] leading-relaxed">
-            After 4 years of "I'm the CEO of Tercier, we're disrupting hotel intelligence" — who is Marco at 38 with money in the bank and no title?
-          </p>
-
-          <div className="space-y-3">
-            <div className="bg-[var(--color-ink)] rounded-lg p-4 border-l-2 border-[var(--color-terracotta)]">
-              <h4 className="text-sm font-bold text-[var(--color-terracotta)]">The dinner party problem</h4>
-              <p className="text-xs text-[var(--color-muted-foreground)] mt-1">
-                {s.exitProceeds <= 5_000_000
-                  ? '"I\'m between things, exploring" — which in Zurich means "unemployed but doesn\'t want to say it." You need a project title within 6 months or the social pressure gets uncomfortable.'
-                  : s.exitProceeds <= 10_000_000
-                  ? '"I\'m an investor and advisor" — acceptable in Zurich, especially if you can name 2-3 companies. But it feels thin after being a builder.'
-                  : '"I invest in and build companies" — which is what every rich person with no job says. But at CHF 20M+ with a real exit behind you, it carries weight. People will ask about Tercier, and the story tells itself.'}
-              </p>
-            </div>
-
-            <div className="bg-[var(--color-ink)] rounded-lg p-4 border-l-2 border-[var(--color-gold)]">
-              <h4 className="text-sm font-bold text-[var(--color-gold)]">The relationship with ambition</h4>
-              <p className="text-xs text-[var(--color-muted-foreground)] mt-1">
-                Is the next thing about money, impact, status, or just needing to build? At {LABELS[active]}, the answer shifts: {s.exitProceeds <= 10_000_000
-                  ? 'it\'s still partly about money. You\'re comfortable but not "set for generations" comfortable. The financial incentive to build again is real.'
-                  : 'money isn\'t the driver anymore. The next thing is about impact, proving you can do it again, and honestly — because sitting still makes you miserable. That\'s okay. Channel it.'}
-              </p>
-            </div>
-
-            <div className="bg-[var(--color-ink)] rounded-lg p-4 border-l-2 border-[var(--color-cream)]">
-              <h4 className="text-sm font-bold text-[var(--color-cream)]">The fact that 38 is young as hell</h4>
-              <p className="text-xs text-[var(--color-muted-foreground)] mt-1">
-                There are probably 2-3 more big professional chapters ahead. Bezos founded Amazon at 30. Reed Hastings pivoted Netflix to streaming at 47. Marc Benioff started Salesforce at 35. At 38 with a successful exit, capital, network, and technical chops — you're just getting started. The best founders often peak on their second or third company. This exit was the warm-up.
-              </p>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Pre-exit savings breakdown */}
-      <Card className="bg-[var(--card)] border-[var(--border)]">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-sm text-[var(--color-muted-foreground)]">Pre-Exit Savings Calculation</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-1">
-            {SAVINGS.breakdown.map((line, i) => (
-              <p key={i} className="text-xs text-[var(--color-muted-foreground)] font-mono">{line}</p>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }
