@@ -66,18 +66,22 @@ export default function ValuationPage() {
   const totalMarketCost = assumptions.months * 19945;
   const sacrifice = totalMarketCost - totalSalary;
 
-  // Cap table evolution — CORRECT per counterproposal response Apr 4, 2026
-  // Marco starts at 0%, earns through vesting. A/C/M relative split stays fixed through dilution.
-  // Anti-dilution floors: 10% through Series A, 8% from Series B. PSOP 5% off cap table (phantom).
+  // Cap table evolution — per counterproposal response Apr 4, 2026
+  // Cap table is 80/20: Amedeo 40% + Corsaro 40% + Marco 20% (allocated, vests over time)
+  // Marco's 20% vests: 0% → 5% (M12) → 12% (M24) → 20% (M36)
+  // Unvested Marco shares are allocated but restricted (not redistributed to A/C)
+  // Anti-dilution floors: 10% through Series A, 8% from Series B. PSOP 5% off cap table.
+  // Exit kicker is PRE-DILUTION: replaces Marco's % at exit, A/C adjust proportionally.
   const capTableStages = [
-    { stage: 'Day 1 (unvested)', marco: 0, amedeo: 50, corsaro: 50, investors: 0 },
-    { stage: 'M12 cliff (+5%)', marco: 5, amedeo: 47.5, corsaro: 47.5, investors: 0 },
-    { stage: 'M24 vest (+7%)', marco: 12, amedeo: 44, corsaro: 44, investors: 0 },
-    { stage: 'M36 vest (+8%)', marco: 20, amedeo: 40, corsaro: 40, investors: 0 },
+    { stage: 'Day 1 (allocated, unvested)', marco: 20, amedeo: 40, corsaro: 40, investors: 0 },
+    { stage: 'M12 cliff (5% vested)', marco: 5, amedeo: 40, corsaro: 40, investors: 0 },
+    { stage: 'M24 vest (12% vested)', marco: 12, amedeo: 40, corsaro: 40, investors: 0 },
+    { stage: 'M36 fully vested (20%)', marco: 20, amedeo: 40, corsaro: 40, investors: 0 },
     { stage: 'Post Series A (20% dilution)', marco: 16, amedeo: 32, corsaro: 32, investors: 20 },
-    { stage: 'Post A+B (18% additional)', marco: 13.1, amedeo: 26.2, corsaro: 26.2, investors: 34.4 },
-    { stage: 'Exit >€30M (kicker → 23%)', marco: 23, amedeo: 38.5, corsaro: 38.5, investors: 0 },
-    { stage: 'Exit >€100M (kicker → 30%)', marco: 30, amedeo: 35, corsaro: 35, investors: 0 },
+    { stage: 'Post A+B (+18% dilution)', marco: 13.1, amedeo: 26.2, corsaro: 26.2, investors: 34.4 },
+    { stage: 'Exit >€30M (pre-dilution kicker 23%)', marco: 23, amedeo: 38.5, corsaro: 38.5, investors: 0 },
+    { stage: 'Exit >€50M (pre-dilution kicker 25%)', marco: 25, amedeo: 37.5, corsaro: 37.5, investors: 0 },
+    { stage: 'Exit >€100M (pre-dilution kicker 30%)', marco: 30, amedeo: 35, corsaro: 35, investors: 0 },
   ];
 
   return (
