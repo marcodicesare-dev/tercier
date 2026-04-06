@@ -58,14 +58,14 @@ The founding team explicitly chose AI-native development: the initial developer 
 - **Full proposal details:** `knowledge/lumina-proposal-2026-03-29/`
 - **Response document:** `knowledge/lumina-proposal-2026-03-29/counterproposal-response-2026-04-04.md`
 
-#### Current Agreed Terms (near-final, pending in-person meeting)
+#### Current Agreed Terms (accepted April 6, meeting April 11)
 - **Cap table:** 40% Amedeo / 40% Corsaro / 20% Marco + 5% PSOP off cap table
-- **Exit kicker:** 20% base → 23% at €30M → 25% at €50M → 30% cap at €100M+
+- **Exit kicker:** vested % under €30M → 23% at €30M → 25% at €50M → 30% cap at €100M+
 - **Vesting:** 5% at M12 (15+ paying hotels) → 7% at M24 (ARR ≥ €500K) → 8% at M36 (ARR ≥ €1.5M)
 - **Salary:** CHF 106K → 150K at €300K ARR → 185K at €1.5M → 220K at €3M/Series A (with 6-month runway clause)
 - **Anti-dilution:** Pro-rata in every round. Floor: 10% through Series A, 8% from Series B
 - **Governance:** Board of 3, decisions 2/3, drag-along, tag-along, non-compete 12mo hotel AI SaaS
-- **Capital:** €200K (€100K each), Swiss AG Zug
+- **Capital:** €200K (€100K each), Swiss AG Zurich
 - **Timeline:** Sign → repo access → May 50% → July 100% (M1)
 
 ---

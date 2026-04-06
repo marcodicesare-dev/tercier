@@ -12,7 +12,7 @@
 
 **The moat is the dataset.** 1.5M+ hotels globally, structured intelligence per property: 6-dimension quality fingerprints, guest segment distributions, multilingual review corpora, competitive sets, amenity inventories, brand affiliations, owner response behavior. No competitor has this. The dataset IS the product.
 
-**The founders:** Marco Di Cesare (CEO, operator, builder), Amedeo Guffanti (JAKALA Global MD, capital + hotel pipeline), Marco Corsaro (JAKALA Digital, SEO/analytics). Swiss AG, Zug.
+**The founders:** Marco Di Cesare (CEO, operator, builder), Amedeo Guffanti (JAKALA Global MD, capital + hotel pipeline), Marco Corsaro (JAKALA Digital, SEO/analytics). Swiss AG, Zurich.
 
 **The target:** CHF 500M+ valuation at M48 via VC-accelerated path. 1,500-2,000 properties, EUR 62.5M ARR at 8x multiple. Starts luxury, expands to lifestyle/boutique/upscale chains. TAM: 200-300K hotels globally, EUR 3-7B.
 
