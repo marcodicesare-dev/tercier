@@ -91,6 +91,7 @@ export const DEFAULT_ASSUMPTIONS: Assumptions = {
 
   admin: [
     { key: 'treuhand', label: 'Treuhand / accounting', tiers: [300, 300, 500, 700] },
+    { key: 'domicile', label: 'Domiciliation address (Nexova, Bahnhofstrasse)', tiers: [150, 150, 150, 150] },
     { key: 'legal', label: 'Legal retainer', tiers: [250, 250, 300, 400] },
     { key: 'd_o', label: 'D&O insurance (CHF 1M cover)', tiers: [167, 167, 200, 250] },
     { key: 'cyber', label: 'Cyber insurance', tiers: [34, 34, 50, 75] },
