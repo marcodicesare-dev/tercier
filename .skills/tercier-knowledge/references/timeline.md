@@ -262,3 +262,14 @@ All documents and datasets are stored in the repo root and subdirectories. Refer
 - Lumina proposal: RECEIVED — counter-proposal in preparation
 - Contact enrichment: v6 complete (420 resolved), recovery v1 running
 
+
+### April 6, 2026
+- **DEAL ACCEPTED.** Marco sent acceptance email to Amedeo & Corsaro. All 4 adjustments accepted (kicker 30% cap, vesting 5/7/8, salary runway clause, anti-dilution 10%/8%). Meeting set for Friday April 11 after 16:00.
+- Two SHA clarifications requested: (1) monthly pro-rata vesting after cliff, (2) runway = cash / net burn (profitable = infinite runway, clause auto-satisfied)
+- Marco confirmed available from tomorrow, 50% from May, 100% from June. Already resigned from FELFEL.
+- Decision: incorporate in Zurich (not Zug). Domiciliation at Nexova, Bahnhofstrasse 71, CHF 150/mo.
+- Financial model updated: Zurich tax 19.59%, indie churn 15%, Zurich hires from M12, domiciliation added. Breakeven still M12, lowest cash CHF 54,649 at M11.
+- Monte Carlo regenerated: bootstrapped P50 ARR M48 €7.6M, Full VC P50 €22.3M.
+- Product framing corrected across all repo files: "monthly deliverables" → "platform capabilities". Lumina is an autonomous AI platform, not a deliverable service.
+- Financial dashboard deployed to tercier.vercel.app with 8 pages: Key Metrics, P&L, Cash Flow, Scenarios, Monte Carlo, Valuation & Exit, Zug vs Zurich, Post-Exit Life Simulator.
+- CEO Brief written: PMF analysis (EvolutionIQ precedent), team structure recommendation, AI-native operating model, competitive risk map (Lighthouse, Kempinski ReviewPro).
