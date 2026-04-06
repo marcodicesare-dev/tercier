@@ -88,7 +88,7 @@ export function FinancialSidebar() {
       </div>
 
       <div className="px-4 py-2 border-t border-[var(--sidebar-border)] text-[9px] text-[var(--color-muted-foreground)]">
-        Lumina AG &middot; Baar/Zug
+        Lumina AG &middot; Zurich
       </div>
     </aside>
   );

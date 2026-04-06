@@ -157,7 +157,7 @@ export default function ZugVsZurichPage() {
           VERDICT: Zug/Baar saves {fmtChf(cumulativeSavings)} in corporate tax over 4 years.
         </p>
         <p className="text-xs text-[var(--color-muted-foreground)] mt-1">
-          Incorporation cost difference is negligible. Choose Zug.
+          This comparison is kept as a reference. Decision: incorporate in Zurich for practical reasons.
         </p>
       </div>
     </div>

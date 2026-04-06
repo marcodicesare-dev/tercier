@@ -63,7 +63,7 @@ export default function PnlPage() {
       section: i === 0 ? 'Admin & Professional' : undefined,
     })),
     { key: 'ws_internet', label: 'Internet (Sunrise 1Gbit)', getValue: (d: any) => d.wsInternet, section: 'Workspace' },
-    { key: 'ws_coworking', label: 'Coworking (Westhive Zug)', getValue: (d: any) => d.wsCoworking },
+    { key: 'ws_coworking', label: 'Coworking (Zurich)', getValue: (d: any) => d.wsCoworking },
     { key: 'sm_travel', label: 'Travel (client visits)', getValue: (d: any) => d.smTravel, section: 'Sales & Marketing' },
     { key: 'sm_marketing', label: 'Marketing & events', getValue: (d: any) => d.smMarketing },
     { key: 'processing', label: 'Payment processing (Stripe 3%)', getValue: (d: any) => d.processing, section: 'Variable & Other' },
