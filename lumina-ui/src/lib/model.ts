@@ -285,7 +285,7 @@ export function runModel(a: Assumptions): ModelOutput {
     const d = monthly[v.month - 1];
     const met = d ? v.check(d) : false;
     if (met) cumPct += v.additionalPct;
-    return { month: v.month, met, cumulative: cumPct };
+    return { month: v.month, met, cumulative: Math.round(cumPct * 1000) / 1000 }; // avoid floating point noise
   });
 
   return {
