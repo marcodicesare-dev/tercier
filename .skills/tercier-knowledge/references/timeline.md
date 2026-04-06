@@ -144,7 +144,7 @@
 
 **Key Outputs:**
 - Competitive landscape: $2B+ VC mapped, every player with gaps
-- "What Hotels Actually Buy" — agency replacement thesis, 5 monthly deliverables
+- "What Hotels Actually Buy" — agency replacement thesis, 5 platform capabilities (reframed Apr 2026 from "monthly deliverables")
 - Corsaro & Guffanti thesis distilled from call transcripts
 - Equity & deal benchmarks (Carta 2026 data)
 

@@ -9,7 +9,7 @@ description: "AI Discovery & Visibility Intelligence for hotels. Use this skill 
 
 **84% of hotels worldwide are invisible in AI search** (Hotelrank.ai, Jan 2026). This is Tercier's sales HOOK — the insight that gets the first meeting. The AI discovery layer provides the urgency: "Let me show you how ChatGPT sees your hotel right now."
 
-But AI discovery is the HOOK, not the product. The product is the full commercial intelligence system. AI discovery creates the meeting. The monthly deliverables close the deal.
+But AI discovery is the HOOK, not the product. The product is the full commercial intelligence platform. AI discovery creates the meeting. The platform capabilities close the deal.
 
 Key proof points:
 - 37% of travelers use AI LLMs for trip planning (BCG/NYU, Mar 2026)

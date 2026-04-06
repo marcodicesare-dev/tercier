@@ -42,6 +42,6 @@ AllTopHotels (alltophotels.com) is a B2B hotel data + sales intelligence platfor
 
 **What they have that overlaps with Tercier:** Hotel database with contacts, basic reviews analysis, property metadata.
 
-**What Tercier has that they don't:** 6-dimension quality fingerprinting, trip-type guest segmentation, per-language review intelligence, auto-computed competitive sets, multilingual content generation, AI discovery audits, temporal trend data. AllTopHotels is a data provider. Tercier is a commercial intelligence platform that produces monthly deliverables.
+**What Tercier has that they don't:** 6-dimension quality fingerprinting, trip-type guest segmentation, per-language review intelligence, auto-computed competitive sets, multilingual content generation, AI discovery audits, temporal trend data. AllTopHotels is a data provider. Lumina is an always-on commercial intelligence platform with live dashboards and on-demand content generation.
 
 **Strategic implication:** AllTopHotels validates the market. Hotels (and companies selling to hotels) pay for this data. Tercier's differentiation is the intelligence layer on top — not just "here's hotel data" but "here's what to do with it, and here's the content, done."

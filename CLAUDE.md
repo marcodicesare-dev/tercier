@@ -30,7 +30,7 @@ troy/                              This repo — research, strategy, data, intel
 │   │   ├── SKILL.md               Canonical knowledge base (load for ANY Tercier question)
 │   │   └── references/
 │   │       ├── product-layers.md          7-layer platform architecture
-│   │       ├── what-hotels-buy.md         Agency replacement thesis + monthly deliverables
+│   │       ├── what-hotels-buy.md         Agency replacement thesis — platform capabilities (NOT deliverables)
 │   │       ├── competitive-landscape.md   Competitive map from state-of-art research
 │   │       ├── synthetic-research-methodology.md  Survey pipeline spec
 │   │       └── timeline.md                Chronological record
@@ -114,9 +114,11 @@ This repo has Monte Carlo simulations with 10K runs each. When citing financials
 
 The dataset schema is defined in `.skills/hotels-dataset/references/intelligence-schema.md` and deployed in Supabase (project `rfxuxkbfpewultpuojpe`, 11 tables total). When building pipelines, ingestion scripts, or enrichment tools, every hotel record must conform to this schema. Don't flatten, don't abbreviate, don't skip fields.
 
-### 5. The Kitchen Sink Rule
+### 5. The Kitchen Sink Rule (Platform Capabilities, NOT Deliverables)
 
-Every data field must serve at least one of the 5 monthly deliverables ("What Changed", "Who Matters Now", "Where You're Losing", "What to Do About It", "Here It Is, Done"). If a field doesn't map to a deliverable, it's noise — don't add it. Social media = 4 fields max (digital maturity signal for sales). Not a social intelligence layer.
+Every data field must serve at least one of the 5 core platform capabilities: live competitive intelligence ("What Changed"), guest persona modeling ("Who Matters Now"), competitive gap analysis ("Where You're Losing"), AI-ranked priority actions ("What to Do About It"), and on-demand content generation ("Here It Is, Done"). If a field doesn't power a platform view or content generation, it's noise — don't add it. Social media = 4 fields max (digital maturity signal for sales). Not a social intelligence layer.
+
+**CRITICAL PRODUCT FRAMING:** Lumina is an always-on AI platform, NOT a monthly deliverable service. The 7-layer intelligence stack runs continuously. Hotels log into a live dashboard with real-time intelligence — not monthly reports. Content is generated on-demand when the hotel marketing person needs it ("generate a wellness landing page in DE/EN/FR"), not batched and delivered. No Lumina employee writes content for customers. The platform does it autonomously. Think Corsaro's vision: "a virtual revenue manager you can talk to — just ask me."
 
 ---
 

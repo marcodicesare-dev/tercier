@@ -1,6 +1,6 @@
 ---
 name: hotels-dataset
-description: "Provides the strategy and architecture for building the world's most comprehensive hotel intelligence dataset. An agent should load this skill when designing data pipelines, planning discovery phases, defining data schemas, computing derived intelligence scores, or making any decision about the global hotels dataset. Covers the full vision (1.5M+ hotels), multi-source strategy (TripAdvisor + Google Places + DataForSEO + supporting sources), 4-phase execution plan, 297-field schema, deep relational model, derived intelligence products, and how the dataset maps to Tercier's 5 monthly deliverables."
+description: "Provides the strategy and architecture for building the world's most comprehensive hotel intelligence dataset. An agent should load this skill when designing data pipelines, planning discovery phases, defining data schemas, computing derived intelligence scores, or making any decision about the global hotels dataset. Covers the full vision (1.5M+ hotels), multi-source strategy (TripAdvisor + Google Places + DataForSEO + supporting sources), 4-phase execution plan, 297-field schema, deep relational model, derived intelligence products, and how the dataset powers Lumina's 5 core platform capabilities."
 ---
 
 # Global Hotels Dataset — Strategy & Architecture
@@ -140,7 +140,7 @@ City priority list: `references/city-priority-list.md`
 
 ### The Kitchen Sink Rule
 
-Every field must serve at least one of the 5 monthly deliverables. If it doesn't, it's noise.
+Every field must serve at least one of the 5 core platform capabilities (live intelligence, personas, competitive gaps, AI-ranked priorities, on-demand content). If it doesn't power a platform view or content generation, it's noise.
 
 | Deliverable | Core Data Sources |
 |---|---|
