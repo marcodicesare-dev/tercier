@@ -148,6 +148,16 @@ export default function CashFlowPage() {
                     {data.map(d => (<td key={d.month} className="px-2 py-1.5 text-right tabular-nums text-[var(--color-cream)]">{fmtCHF(d.contingency)}</td>))}
                   </tr>
 
+                  <tr className="bg-[var(--color-ink-light)]">
+                    <td colSpan={data.length + 1} className="sticky left-0 bg-[var(--color-ink-light)] z-10 px-3 py-1.5 text-[var(--color-gold)] text-[10px] uppercase tracking-wider">Outflows — One-Time (M1 only)</td>
+                  </tr>
+                  {assumptions.oneTimeCosts.map(ot => (
+                    <tr key={ot.key} className="border-b border-[var(--border)]">
+                      <td className="sticky left-0 bg-[var(--card)] z-10 px-3 py-1.5 text-[var(--color-muted-foreground)]">{ot.label}</td>
+                      {data.map(d => (<td key={d.month} className="px-2 py-1.5 text-right tabular-nums text-[var(--color-cream)]">{fmtCHF(d.oneTimeCosts[ot.key] || 0)}</td>))}
+                    </tr>
+                  ))}
+
                   <tr className="border-b border-[var(--border)] bg-[var(--color-ink-light)]">
                     <td className="sticky left-0 bg-[var(--color-ink-light)] z-10 px-3 py-1.5 font-bold text-[var(--color-cream)]">Total Outflows</td>
                     {data.map(d => (
