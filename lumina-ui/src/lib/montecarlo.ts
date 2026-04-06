@@ -63,8 +63,8 @@ export const DEFAULT_MC_PARAMS: MonteCarloParams = {
   chainPipelineMax: 12,
   indieRateMin: 1.5,
   indieRateMax: 3,
-  indieChurnMin: 0.08,
-  indieChurnMax: 0.18,
+  indieChurnMin: 0.10,
+  indieChurnMax: 0.22, // realistic SMB SaaS churn range
   arpuVariance: 0.15,
   phase2TimingMin: 20,
   phase2TimingMax: 28,

@@ -29,7 +29,7 @@ export const DEFAULT_ASSUMPTIONS: Assumptions = {
   indieStartMonth: 7,
   indieBaseRate: 2,
   indieGrowthYoY: 0.20,
-  indieChurnAnnual: 0.12,
+  indieChurnAnnual: 0.15, // 15% more realistic for SMB SaaS (was 12%)
 
   ceoBaseSalary: 106080,
   ceoSocialRates: {
@@ -45,13 +45,19 @@ export const DEFAULT_ASSUMPTIONS: Assumptions = {
   ],
 
   team: [
-    { key: 'dev', label: 'Developer FT (€4K/mo)', eurCost: 4000, startMonth: 1 },
-    { key: 'pm', label: 'PM PT (€4K/mo)', eurCost: 4000, startMonth: 1 },
-    { key: 'cs', label: 'CS/Implementation (€5K/mo, M12+)', eurCost: 5000, startMonth: 12 },
-    { key: 'seneng', label: 'Senior Engineer (€7K/mo, M18+)', eurCost: 7000, startMonth: 18 },
-    { key: 'sales', label: 'Sales/BD (€6K/mo, M18+)', eurCost: 6000, startMonth: 18 },
-    { key: 'eng', label: 'Engineer (€6K/mo, M30+)', eurCost: 6000, startMonth: 30 },
-    { key: 'mktg', label: 'Marketing (€5K/mo, M36+)', eurCost: 5000, startMonth: 36 },
+    // M1: Elise (dev, remote) + Person #2 (PM or dev, remote) — €4K each, within budget
+    { key: 'dev', label: 'Elise — Dev FT remote (€4K/mo)', eurCost: 4000, startMonth: 1 },
+    { key: 'pm', label: 'Person #2 — remote (€4K/mo)', eurCost: 4000, startMonth: 1 },
+    // M12+: Hire #3 in Zurich — dev or product eng (CHF 8.5K ≈ €9.2K total company cost)
+    { key: 'eng_zh', label: 'Engineer Zurich (CHF 8.5K/mo)', eurCost: 9200, startMonth: 12 },
+    // M18+: Hire #4 in Zurich — senior eng or sales eng
+    { key: 'seneng_zh', label: 'Senior Eng Zurich (CHF 10K/mo)', eurCost: 10800, startMonth: 18 },
+    // M24+: Hire #5 — sales/BD, can be remote or Zurich
+    { key: 'sales', label: 'Sales/BD (€6K/mo or CHF ~8K)', eurCost: 6000, startMonth: 24 },
+    // M30+: Hire #6 in Zurich
+    { key: 'eng2_zh', label: 'Engineer #2 Zurich (CHF 8.5K/mo)', eurCost: 9200, startMonth: 30 },
+    // M36+: Hire #7 — marketing/growth
+    { key: 'mktg', label: 'Marketing/Growth (€5K/mo)', eurCost: 5000, startMonth: 36 },
   ],
 
   aiCogsPerHotelEur: 50,
@@ -104,7 +110,7 @@ export const DEFAULT_ASSUMPTIONS: Assumptions = {
   oneTimeCosts: [
     { key: 'ot_nexova', label: 'Nexova AG Plus formation', amount: 690 },
     { key: 'ot_register', label: 'Commercial register entry', amount: 650 },
-    { key: 'ot_notary_zug', label: 'Notary fee (Zug tariff)', amount: 1000 },
+    { key: 'ot_notary_zh', label: 'Notary fee (Zurich tariff)', amount: 1500 },
     { key: 'ot_capital_dep', label: 'Capital deposit account', amount: 250 },
     { key: 'ot_signatures', label: 'Signature certifications', amount: 100 },
     { key: 'ot_macbook', label: 'MacBook Pro 16" M5 Pro 64GB/2TB', amount: 3700 },
@@ -153,6 +159,6 @@ export const DEFAULT_ASSUMPTIONS: Assumptions = {
     },
   ],
 
-  zugTaxRate: 0.1182,
+  zugTaxRate: 0.1959, // Incorporating in Zurich now, not Zug
   zurichTaxRate: 0.1959,
 };
