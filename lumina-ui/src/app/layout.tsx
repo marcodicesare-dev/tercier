@@ -17,12 +17,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <Link href="/" className="text-xs uppercase tracking-[0.28em] text-stone-500">
                 Lumina Intelligence
               </Link>
-              <h1 className="mt-2 font-serif text-3xl text-[var(--lumina-ink)] sm:text-4xl">
-                Hotel Data Moat
-              </h1>
+              <h1 className="mt-2 font-serif text-3xl text-[var(--lumina-ink)] sm:text-4xl">Portfolio intelligence for every hotel</h1>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-stone-600">
-                Instant intelligence cards for every property: quality fingerprint, personas, topic sentiment,
-                competition, Q&amp;A, and content seeds from the live Lumina data backbone.
+                Read the portfolio like an investor briefing: quality, guest mix, market position, and the clearest commercial gap.
               </p>
             </div>
             <nav className="flex gap-3 text-sm text-stone-600">
@@ -34,6 +31,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 href="/compare"
               >
                 Compare
+              </Link>
+              <Link
+                className="rounded-full border border-stone-200 bg-white px-4 py-2 hover:border-stone-300"
+                href="/financial"
+              >
+                Financial
               </Link>
             </nav>
           </header>

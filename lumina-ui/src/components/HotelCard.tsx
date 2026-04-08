@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import type { HotelDashboardRow } from '@/lib/types';
-import { cx, formatDecimal, formatNumber, formatPercent, titleCase } from '@/lib/utils';
+import { getCardOpportunityInsight } from '@/lib/insights';
+import { formatDecimal, formatNumber, formatPercent, titleCase } from '@/lib/utils';
 
 function primarySegmentLabel(hotel: HotelDashboardRow): string {
   if (!hotel.ta_primary_segment) return 'Unknown segment';
@@ -10,20 +11,29 @@ function primarySegmentLabel(hotel: HotelDashboardRow): string {
   return `${titleCase(hotel.ta_primary_segment)} ${formatPercent(value)}`;
 }
 
+function qualityScore(hotel: HotelDashboardRow): string {
+  if (hotel.score_hqi == null) return '—';
+  return `${Math.round(hotel.score_hqi * 100)}/100`;
+}
+
 export function HotelCard({ hotel }: { hotel: HotelDashboardRow }) {
+  const insight = getCardOpportunityInsight(hotel);
+
   return (
     <Link
       href={`/hotel/${hotel.hotel_id}`}
-      className="group flex h-full flex-col rounded-3xl border border-stone-200 bg-white/90 p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-stone-300 hover:shadow-lg"
+      className="group flex h-full flex-col rounded-[2rem] border border-stone-200 bg-white/95 p-6 shadow-sm transition hover:-translate-y-0.5 hover:border-stone-300 hover:shadow-lg"
     >
       <div className="flex items-start justify-between gap-4">
         <div>
-          <p className="text-xs uppercase tracking-[0.2em] text-stone-500">{hotel.city ?? 'Unknown city'}</p>
-          <h3 className="mt-2 text-xl font-semibold text-[var(--lumina-ink)]">{hotel.name}</h3>
-          <p className="mt-1 text-sm text-stone-600">
-            {[hotel.country, hotel.ta_brand ?? (hotel.flag_is_independent ? 'Independent' : null)]
+          <p className="text-xs uppercase tracking-[0.2em] text-stone-500">
+            {[hotel.ta_brand ?? (hotel.flag_is_independent ? 'Independent' : null), hotel.city]
               .filter(Boolean)
               .join(' · ')}
+          </p>
+          <h3 className="mt-2 text-xl font-semibold text-[var(--lumina-ink)]">{hotel.name}</h3>
+          <p className="mt-2 max-h-12 overflow-hidden text-sm leading-6 text-stone-600">
+            {hotel.gp_editorial_summary ?? 'Hotel summary unavailable.'}
           </p>
         </div>
         <span className="rounded-full bg-stone-100 px-3 py-1 text-xs font-medium text-stone-700">
@@ -31,59 +41,52 @@ export function HotelCard({ hotel }: { hotel: HotelDashboardRow }) {
         </span>
       </div>
 
-      <div className="mt-5 grid grid-cols-2 gap-3">
-        <div className="rounded-2xl bg-[var(--warm-cream)] p-3">
-          <p className="text-xs uppercase tracking-[0.18em] text-stone-500">HQI</p>
-          <p className="mt-1 text-2xl font-semibold text-[var(--deep-terracotta)]">{formatDecimal(hotel.score_hqi, 2)}</p>
-        </div>
-        <div className="rounded-2xl bg-[var(--warm-cream)] p-3">
-          <p className="text-xs uppercase tracking-[0.18em] text-stone-500">TOS</p>
-          <p className="mt-1 text-2xl font-semibold text-[var(--deep-terracotta)]">{formatDecimal(hotel.score_tos, 2)}</p>
-        </div>
+      <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-stone-700">
+        <span>TA {formatDecimal(hotel.ta_rating, 1)}</span>
+        <span className="text-stone-300">·</span>
+        <span>Google {formatDecimal(hotel.gp_rating, 1)}</span>
+        <span className="text-stone-300">·</span>
+        <span>{formatNumber(hotel.total_reviews_db)} reviews</span>
       </div>
 
-      <div className="mt-4 flex flex-wrap gap-2">
-        <span className="rounded-full bg-[#efe4d8] px-3 py-1 text-xs font-medium text-[var(--deep-terracotta)]">
-          {primarySegmentLabel(hotel)}
-        </span>
-        {hotel.flag_tercier_high_priority ? (
-          <span className="rounded-full bg-rose-100 px-3 py-1 text-xs font-medium text-rose-700">
-            High priority
+      <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm text-stone-600">
+        {hotel.ta_ranking != null && hotel.ta_ranking_out_of != null ? (
+          <span>
+            #{formatNumber(hotel.ta_ranking)} of {formatNumber(hotel.ta_ranking_out_of)} in {hotel.ta_ranking_geo ?? hotel.city ?? 'market'}
           </span>
         ) : null}
+        {hotel.ta_ranking != null && hotel.ta_review_language_count != null ? <span className="text-stone-300">·</span> : null}
+        {hotel.ta_review_language_count != null ? <span>{formatNumber(hotel.ta_review_language_count)} languages</span> : null}
       </div>
 
-      <dl className="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 text-sm text-stone-700">
-        <div>
-          <dt className="text-stone-500">TripAdvisor</dt>
-          <dd className="font-medium">{formatDecimal(hotel.ta_rating, 1)}</dd>
+      <div className="mt-5 grid grid-cols-[132px_1fr] gap-3">
+        <div className="rounded-3xl bg-[var(--warm-cream)] p-4">
+          <p className="text-xs uppercase tracking-[0.18em] text-stone-500">Quality</p>
+          <p className="mt-2 text-2xl font-semibold text-[var(--deep-terracotta)]">{qualityScore(hotel)}</p>
         </div>
-        <div>
-          <dt className="text-stone-500">Google</dt>
-          <dd className="font-medium">{formatDecimal(hotel.gp_rating, 1)}</dd>
+        <div className="rounded-3xl border border-stone-200 bg-white p-4">
+          <p className="text-sm text-stone-600">
+            Strongest: <span className="font-medium text-[var(--lumina-ink)]">{titleCase(hotel.ta_subrating_strongest)}</span>
+          </p>
+          <p className="mt-2 text-sm text-stone-600">
+            Weakest: <span className="font-medium text-[var(--lumina-ink)]">{titleCase(hotel.ta_subrating_weakest)}</span>
+          </p>
+          <p className="mt-2 text-sm text-stone-600">
+            Primary: <span className="font-medium text-[var(--lumina-ink)]">{primarySegmentLabel(hotel)}</span>
+          </p>
+          <p className="mt-2 text-sm text-stone-600">
+            Competitors: <span className="font-medium text-[var(--lumina-ink)]">{formatNumber(hotel.competitor_count)} mapped</span>
+          </p>
         </div>
-        <div>
-          <dt className="text-stone-500">Reviews</dt>
-          <dd className="font-medium">{formatNumber(hotel.total_reviews_db)}</dd>
-        </div>
-        <div>
-          <dt className="text-stone-500">Topics</dt>
-          <dd className="font-medium">{formatNumber(hotel.topic_mentions_total)}</dd>
-        </div>
-      </dl>
+      </div>
 
-      <div className="mt-6 flex items-center justify-between text-sm">
-        <span
-          className={cx(
-            'rounded-full px-3 py-1 font-medium',
-            hotel.enrichment_status?.includes('complete')
-              ? 'bg-emerald-100 text-emerald-700'
-              : 'bg-amber-100 text-amber-700',
-          )}
-        >
-          {hotel.enrichment_status ?? 'unknown'}
-        </span>
-        <span className="text-stone-500 transition group-hover:text-[var(--deep-terracotta)]">Open card →</span>
+      <div className="mt-6 rounded-3xl bg-stone-50 px-4 py-4">
+        <p className="text-xs uppercase tracking-[0.18em] text-stone-500">Opportunity</p>
+        <p className="mt-2 text-sm leading-6 text-[var(--lumina-ink)]">{insight}</p>
+      </div>
+
+      <div className="mt-6 flex items-center justify-end text-sm">
+        <span className="text-stone-500 transition group-hover:text-[var(--deep-terracotta)]">Open briefing →</span>
       </div>
     </Link>
   );

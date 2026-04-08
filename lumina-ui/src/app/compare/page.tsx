@@ -1,9 +1,25 @@
 import Link from 'next/link';
 import { ComparisonRadar } from '@/components/ComparisonRadar';
+import type { HotelDashboardRow } from '@/lib/types';
 import { getHotelsByIds, getPortfolioHotels } from '@/lib/data';
 import { formatDecimal, formatNumber } from '@/lib/utils';
 
 export const dynamic = 'force-dynamic';
+
+function buildCompareHref(ids: string[]): string {
+  return `/compare?ids=${ids.join(',')}`;
+}
+
+function suggestedPairs(portfolio: HotelDashboardRow[]): Array<[HotelDashboardRow, HotelDashboardRow]> {
+  const ranked = [...portfolio].sort((left, right) => (right.score_hqi ?? -1) - (left.score_hqi ?? -1)).slice(0, 6);
+  const pairs: Array<[HotelDashboardRow, HotelDashboardRow]> = [];
+
+  for (let index = 0; index + 1 < ranked.length; index += 2) {
+    pairs.push([ranked[index], ranked[index + 1]]);
+  }
+
+  return pairs;
+}
 
 export default async function ComparePage({
   searchParams,
@@ -28,6 +44,11 @@ export default async function ComparePage({
         .map(id => hotels.find(hotel => hotel.hotel_id === id))
         .filter((hotel): hotel is NonNullable<typeof hotel> => Boolean(hotel))
     : [];
+  const selectedHotel = compareHotels[0] ?? null;
+  const secondChoiceSuggestions = portfolio
+    .filter(hotel => hotel.hotel_id !== selectedHotel?.hotel_id)
+    .slice(0, 6);
+  const pairSuggestions = suggestedPairs(portfolio);
 
   return (
     <main className="space-y-8">
@@ -60,11 +81,13 @@ export default async function ComparePage({
                     <dd className="font-medium">{formatNumber(hotel.total_reviews_db)}</dd>
                   </div>
                   <div>
-                    <dt className="text-stone-500">HQI</dt>
-                    <dd className="font-medium">{formatDecimal(hotel.score_hqi, 2)}</dd>
+                    <dt className="text-stone-500">Quality</dt>
+                    <dd className="font-medium">
+                      {hotel.score_hqi != null ? `${Math.round(hotel.score_hqi * 100)}/100` : '—'}
+                    </dd>
                   </div>
                   <div>
-                    <dt className="text-stone-500">TOS</dt>
+                    <dt className="text-stone-500">Opportunity</dt>
                     <dd className="font-medium">{formatDecimal(hotel.score_tos, 2)}</dd>
                   </div>
                   <div>
@@ -83,18 +106,34 @@ export default async function ComparePage({
             ))}
           </section>
         </>
-      ) : (
+      ) : compareHotels.length === 1 ? (
         <section className="rounded-[2rem] border border-dashed border-stone-300 bg-white/70 p-10 text-center shadow-sm">
-          <h3 className="font-serif text-2xl text-[var(--lumina-ink)]">Pick at least two hotels to compare</h3>
-          <p className="mt-2 text-sm text-stone-600">Try one of these quick links:</p>
+          <h3 className="font-serif text-2xl text-[var(--lumina-ink)]">Choose one more hotel to compare with {selectedHotel?.name}</h3>
+          <p className="mt-2 text-sm text-stone-600">Start with another portfolio hotel below.</p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
-            {portfolio.slice(0, 6).map(hotel => (
+            {secondChoiceSuggestions.map(hotel => (
               <Link
                 key={hotel.hotel_id}
-                href={`/compare?ids=${hotel.hotel_id}`}
+                href={buildCompareHref([selectedHotel!.hotel_id, hotel.hotel_id])}
                 className="rounded-full border border-stone-200 bg-white px-4 py-2 text-sm text-stone-700 hover:border-stone-300"
               >
                 {hotel.name}
+              </Link>
+            ))}
+          </div>
+        </section>
+      ) : (
+        <section className="rounded-[2rem] border border-dashed border-stone-300 bg-white/70 p-10 text-center shadow-sm">
+          <h3 className="font-serif text-2xl text-[var(--lumina-ink)]">Pick at least two hotels to compare</h3>
+          <p className="mt-2 text-sm text-stone-600">Try one of these quick pairs:</p>
+          <div className="mt-6 flex flex-wrap justify-center gap-3">
+            {pairSuggestions.map(([left, right]) => (
+              <Link
+                key={`${left.hotel_id}-${right.hotel_id}`}
+                href={buildCompareHref([left.hotel_id, right.hotel_id])}
+                className="rounded-full border border-stone-200 bg-white px-4 py-2 text-sm text-stone-700 hover:border-stone-300"
+              >
+                {left.name} vs {right.name}
               </Link>
             ))}
           </div>

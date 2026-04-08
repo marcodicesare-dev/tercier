@@ -1,8 +1,9 @@
 import { formatDecimal } from '@/lib/utils';
+import { CHART_THEME } from '@/lib/chart-theme';
 
 function Gauge({ label, value }: { label: string; value: number | null }) {
   const percent = Math.max(0, Math.min(100, Math.round((value ?? 0) * 100)));
-  const background = `conic-gradient(#8B4A2B ${percent}%, #efe4d8 ${percent}% 100%)`;
+  const background = `conic-gradient(${CHART_THEME.deepTerracotta} ${percent}%, ${CHART_THEME.grid} ${percent}% 100%)`;
 
   return (
     <div className="flex flex-col items-center gap-3 rounded-3xl border border-stone-200 bg-white p-5 shadow-sm">
@@ -32,7 +33,7 @@ export function ScoreGauges({
 }) {
   return (
     <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-      <Gauge label="HQI" value={hqi} />
+      <Gauge label="Quality" value={hqi} />
       <Gauge label="Opportunity" value={tos} />
       <Gauge label="Reputation risk" value={risk} />
       <Gauge label="Digital presence" value={digital} />
