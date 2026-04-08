@@ -25,23 +25,38 @@ export function ComparisonRadar({ hotels }: { hotels: HotelDashboardRow[] }) {
   });
 
   return (
-    <ResponsiveContainer width="100%" height={360}>
-      <RadarChart data={data}>
-        <PolarGrid stroke={CHART_THEME.grid} />
-        <PolarAngleAxis dataKey="dimension" tick={{ fill: CHART_THEME.tick, fontSize: 12 }} />
-        <PolarRadiusAxis domain={[3.5, 5]} tick={{ fill: CHART_THEME.tick, fontSize: 11 }} />
+    <div className="space-y-4">
+      <div className="flex flex-wrap gap-3">
         {hotels.map((hotel, index) => (
-          <Radar
-            key={hotel.hotel_id}
-            name={hotel.name}
-            dataKey={hotel.name}
-            stroke={COLORS[index % COLORS.length]}
-            fill={COLORS[index % COLORS.length]}
-            fillOpacity={0.15}
-            isAnimationActive={false}
-          />
+          <div key={hotel.hotel_id} className="inline-flex items-center gap-2 rounded-full border border-stone-200 bg-white px-3 py-2 text-sm text-stone-700">
+            <span
+              className="h-2.5 w-2.5 rounded-full"
+              style={{ backgroundColor: COLORS[index % COLORS.length] }}
+            />
+            <span className="font-medium text-[var(--lumina-ink)]">{hotel.name}</span>
+          </div>
         ))}
-      </RadarChart>
-    </ResponsiveContainer>
+      </div>
+
+      <ResponsiveContainer width="100%" height={360}>
+        <RadarChart data={data}>
+          <PolarGrid stroke={CHART_THEME.grid} />
+          <PolarAngleAxis dataKey="dimension" tick={{ fill: CHART_THEME.tick, fontSize: 12 }} />
+          <PolarRadiusAxis domain={[3.5, 5]} tick={{ fill: CHART_THEME.tick, fontSize: 11 }} />
+          {hotels.map((hotel, index) => (
+            <Radar
+              key={hotel.hotel_id}
+              name={hotel.name}
+              dataKey={hotel.name}
+              stroke={COLORS[index % COLORS.length]}
+              fill={COLORS[index % COLORS.length]}
+              strokeWidth={2}
+              fillOpacity={0.18}
+              isAnimationActive={false}
+            />
+          ))}
+        </RadarChart>
+      </ResponsiveContainer>
+    </div>
   );
 }

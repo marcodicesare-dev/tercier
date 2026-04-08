@@ -190,18 +190,31 @@ export default async function HotelPage({ params }: { params: Promise<{ id: stri
   const hasStayDetailColumn = personaCards.length > 0 || hasRepeatGuestCard || hasTypicalStayCard;
   const externalLinks = getHotelExternalLinks(hotel);
   const reviewExplorerIntro = `Browse ${formatNumber(reviewsPreview.total || hotel.total_reviews_db)} guest reviews, then jump from any claim to the exact TripAdvisor or Google source that proves it.`;
+  const heroNarrative = opportunity?.opportunity?.narrative ?? hotel.computed_opportunity_narrative ?? getQualityInsight(hotel);
+  const heroPrimaryDriver = opportunity?.opportunity?.primary_reason ?? hotel.computed_opportunity_primary ?? null;
+  const heroMetrics = [
+    hotel.ta_rating != null ? { label: 'TripAdvisor', value: formatDecimal(hotel.ta_rating, 1) } : null,
+    hotel.gp_rating != null ? { label: 'Google', value: formatDecimal(hotel.gp_rating, 1) } : null,
+    hotel.score_hqi != null ? { label: 'Quality', value: `${Math.round(hotel.score_hqi * 100)}/100` } : null,
+  ].filter((metric): metric is { label: string; value: string } => Boolean(metric));
 
   return (
     <main className="space-y-8">
       <section className="rounded-[2rem] border border-stone-200 bg-white/95 p-6 shadow-sm">
         <div className="flex flex-col gap-6 xl:flex-row xl:items-end xl:justify-between">
           <div className="max-w-4xl">
-            <p className="text-xs uppercase tracking-[0.22em] text-stone-500">
+            <p className="text-xs uppercase tracking-[0.22em] text-stone-600">
               {[hotel.city, hotel.country, hotel.ta_brand].filter(Boolean).join(' · ')}
             </p>
             <h1 className="mt-2 font-serif text-4xl text-[var(--lumina-ink)]">{hotel.name}</h1>
             {hotel.gp_editorial_summary ? (
               <p className="mt-3 max-w-3xl text-base leading-7 text-stone-700">{hotel.gp_editorial_summary}</p>
+            ) : null}
+            <p className="mt-4 max-w-3xl text-xl leading-8 text-[var(--lumina-ink)]">{heroNarrative}</p>
+            {heroPrimaryDriver ? (
+              <p className="mt-3 text-sm leading-6 text-stone-600">
+                Primary driver: <span className="font-medium text-[var(--lumina-ink)]">{titleCase(heroPrimaryDriver)}</span>
+              </p>
             ) : null}
             {heroFacts.length ? (
               <p className="mt-4 text-sm leading-6 text-stone-600">{heroFacts.join(' · ')}</p>
@@ -217,22 +230,16 @@ export default async function HotelPage({ params }: { params: Promise<{ id: stri
             ) : null}
           </div>
 
-          <div className="grid grid-cols-3 gap-4">
-            <div className="rounded-3xl bg-[var(--warm-cream)] px-5 py-4">
-              <p className="text-xs uppercase tracking-[0.18em] text-stone-500">TripAdvisor</p>
-              <p className="mt-2 text-3xl font-semibold text-[var(--deep-terracotta)]">{formatDecimal(hotel.ta_rating, 1)}</p>
+          {heroMetrics.length ? (
+            <div className={`grid gap-4 ${heroMetrics.length === 1 ? 'grid-cols-1' : heroMetrics.length === 2 ? 'grid-cols-2' : 'grid-cols-3'}`}>
+              {heroMetrics.map(metric => (
+                <div key={metric.label} className="rounded-3xl bg-[var(--warm-cream)] px-5 py-4">
+                  <p className="text-xs uppercase tracking-[0.18em] text-stone-600">{metric.label}</p>
+                  <p className="mt-2 text-3xl font-semibold text-[var(--deep-terracotta)]">{metric.value}</p>
+                </div>
+              ))}
             </div>
-            <div className="rounded-3xl bg-[var(--warm-cream)] px-5 py-4">
-              <p className="text-xs uppercase tracking-[0.18em] text-stone-500">Google</p>
-              <p className="mt-2 text-3xl font-semibold text-[var(--deep-terracotta)]">{formatDecimal(hotel.gp_rating, 1)}</p>
-            </div>
-            <div className="rounded-3xl bg-[var(--warm-cream)] px-5 py-4">
-              <p className="text-xs uppercase tracking-[0.18em] text-stone-500">Quality</p>
-              <p className="mt-2 text-3xl font-semibold text-[var(--deep-terracotta)]">
-                {hotel.score_hqi != null ? `${Math.round(hotel.score_hqi * 100)}/100` : '—'}
-              </p>
-            </div>
-          </div>
+          ) : null}
         </div>
 
         <div className="mt-6 flex flex-wrap gap-3 text-sm">

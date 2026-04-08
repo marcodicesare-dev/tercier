@@ -13,7 +13,7 @@
   --border: #d6d3d1;
   --input: #ffffff;
   --muted: #f5f5f4;
-  --muted-foreground: #78716c;
+  --muted-foreground: #5f5953;
   --sidebar: rgba(255, 255, 255, 0.72);
   --sidebar-foreground: #1a120b;
   --sidebar-accent: #f5efe6;
@@ -26,9 +26,9 @@
   --color-terracotta: #c17f59;
   --color-deep-terracotta: #8b4a2b;
   --color-gold: #c9a96e;
-  --color-muted-foreground: #78716c;
-  --chart-grid: #e7e0d6;
-  --chart-tick: #78716c;
+  --color-muted-foreground: #5f5953;
+  --chart-grid: #d4c6b4;
+  --chart-tick: #5f5953;
   --chart-tooltip-bg: #ffffff;
   --chart-tooltip-border: #d6d3d1;
   --chart-tooltip-text: #1a120b;

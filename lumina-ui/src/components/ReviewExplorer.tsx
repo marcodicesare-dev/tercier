@@ -99,7 +99,12 @@ export function ReviewExplorer({
           <div className="mt-4 flex flex-wrap gap-2">
             <Link
               href={buildHref(hotel.hotel_id, { lang: activeLang, aspect: activeAspect })}
-              className={`rounded-full px-3 py-1 text-xs font-medium ${!activeSentiment ? 'bg-[var(--lumina-ink)] text-white' : 'bg-stone-100 text-stone-700'}`}
+              className={`inline-flex min-h-7 items-center justify-center rounded-full border px-3 py-1 text-xs font-medium ${
+                !activeSentiment
+                  ? 'border-[var(--lumina-ink)] bg-[var(--lumina-ink)] text-white shadow-sm'
+                  : 'border-stone-200 bg-stone-100 text-stone-700'
+              }`}
+              style={!activeSentiment ? { color: '#ffffff' } : undefined}
             >
               All sentiment
             </Link>
@@ -107,7 +112,12 @@ export function ReviewExplorer({
               <Link
                 key={sentiment}
                 href={buildHref(hotel.hotel_id, { lang: activeLang, aspect: activeAspect, sentiment })}
-                className={`rounded-full px-3 py-1 text-xs font-medium ${activeSentiment === sentiment ? 'bg-[var(--lumina-ink)] text-white' : 'bg-stone-100 text-stone-700'}`}
+                className={`inline-flex min-h-7 items-center justify-center rounded-full border px-3 py-1 text-xs font-medium ${
+                  activeSentiment === sentiment
+                    ? 'border-[var(--lumina-ink)] bg-[var(--lumina-ink)] text-white shadow-sm'
+                    : 'border-stone-200 bg-stone-100 text-stone-700'
+                }`}
+                style={activeSentiment === sentiment ? { color: '#ffffff' } : undefined}
               >
                 {titleCase(sentiment)}
               </Link>

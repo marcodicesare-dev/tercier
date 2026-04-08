@@ -30,46 +30,46 @@ export function ChainSummaryCard({
 
   return (
     <section className="rounded-[2rem] border border-stone-200 bg-white/95 p-6 shadow-sm">
-      <p className="text-xs uppercase tracking-[0.22em] text-stone-500">Chain view</p>
+      <p className="text-xs uppercase tracking-[0.22em] text-stone-600">Chain view</p>
       <h2 className="mt-2 font-serif text-3xl text-[var(--lumina-ink)]">Portfolio intelligence</h2>
       <InsightSentence className="mt-4">{summary.headline}</InsightSentence>
 
       <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-3xl bg-[var(--warm-cream)] p-5">
-          <p className="text-xs uppercase tracking-[0.18em] text-stone-500">Properties</p>
+          <p className="text-xs uppercase tracking-[0.18em] text-stone-600">Properties</p>
           <p className="mt-3 text-3xl font-semibold text-[var(--deep-terracotta)]">{formatNumber(hotels.length)}</p>
         </div>
         <div className="rounded-3xl border border-stone-200 bg-white p-5">
-          <p className="text-xs uppercase tracking-[0.18em] text-stone-500">Avg rating</p>
+          <p className="text-xs uppercase tracking-[0.18em] text-stone-600">Avg rating</p>
           <p className="mt-3 text-3xl font-semibold text-[var(--deep-terracotta)]">{formatDecimal(avgRating, 2)}</p>
         </div>
         <div className="rounded-3xl border border-stone-200 bg-white p-5">
-          <p className="text-xs uppercase tracking-[0.18em] text-stone-500">Avg opportunity</p>
+          <p className="text-xs uppercase tracking-[0.18em] text-stone-600">Avg opportunity</p>
           <p className="mt-3 text-3xl font-semibold text-[var(--deep-terracotta)]">
             {avgOpportunity != null ? `${Math.round(avgOpportunity * 100)}/100` : '—'}
           </p>
         </div>
         <div className="rounded-3xl border border-stone-200 bg-white p-5">
-          <p className="text-xs uppercase tracking-[0.18em] text-stone-500">Countries</p>
+          <p className="text-xs uppercase tracking-[0.18em] text-stone-600">Countries</p>
           <p className="mt-3 text-3xl font-semibold text-[var(--deep-terracotta)]">{formatNumber(countryCount)}</p>
         </div>
       </div>
 
       <div className="mt-5 grid gap-4 lg:grid-cols-3">
         <div className="rounded-3xl border border-stone-200 bg-white p-5">
-          <p className="text-xs uppercase tracking-[0.18em] text-stone-500">Strengths</p>
+          <p className="text-xs uppercase tracking-[0.18em] text-stone-600">Strengths</p>
           <ul className="mt-3 space-y-2 text-sm leading-6 text-stone-700">
             {summary.strengths.map(item => <li key={item}>{item}</li>)}
           </ul>
         </div>
         <div className="rounded-3xl border border-stone-200 bg-white p-5">
-          <p className="text-xs uppercase tracking-[0.18em] text-stone-500">Weaknesses</p>
+          <p className="text-xs uppercase tracking-[0.18em] text-stone-600">Weaknesses</p>
           <ul className="mt-3 space-y-2 text-sm leading-6 text-stone-700">
             {summary.weaknesses.map(item => <li key={item}>{item}</li>)}
           </ul>
         </div>
         <div className="rounded-3xl border border-stone-200 bg-white p-5">
-          <p className="text-xs uppercase tracking-[0.18em] text-stone-500">Patterns</p>
+          <p className="text-xs uppercase tracking-[0.18em] text-stone-600">Patterns</p>
           <ul className="mt-3 space-y-2 text-sm leading-6 text-stone-700">
             {summary.patterns.map(item => <li key={item}>{item}</li>)}
           </ul>

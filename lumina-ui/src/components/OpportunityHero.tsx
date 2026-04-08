@@ -20,21 +20,23 @@ export function OpportunityHero({
   opportunity: HotelOpportunityData | null;
 }) {
   const score = opportunity?.opportunity?.score ?? hotel.score_tos ?? 0;
-  const narrative = opportunity?.opportunity?.narrative ?? hotel.computed_opportunity_narrative ?? 'Opportunity signals are still being assembled.';
   const reason = opportunity?.opportunity?.primary_reason ?? hotel.computed_opportunity_primary ?? null;
   const languageMarkets = opportunity?.language_markets?.slice(0, 5) ?? [];
   const topicWeaknesses = opportunity?.topic_weaknesses?.slice(0, 4) ?? [];
+  const verificationPrompt = reason
+    ? `${titleCase(reason)} is driving the ranking. Use the drill-downs below to verify it against guest reviews and source pages.`
+    : 'Use the drill-downs below to prove the opening brief against guest reviews and source pages.';
 
   return (
     <section className="rounded-[2rem] border border-stone-200 bg-white/95 p-6 shadow-sm">
       <div className="grid gap-5 xl:grid-cols-[0.9fr_1.1fr]">
         <div className="space-y-4">
-          <p className="text-xs uppercase tracking-[0.22em] text-stone-500">Opportunity briefing</p>
+          <p className="text-xs uppercase tracking-[0.22em] text-stone-600">Evidence briefing</p>
           <div className="flex items-end gap-4">
             <p className="text-5xl font-semibold text-[var(--deep-terracotta)]">{Math.round(score * 100)}</p>
-            <p className="pb-1 text-sm uppercase tracking-[0.18em] text-stone-500">Opportunity score / 100</p>
+            <p className="pb-1 text-sm uppercase tracking-[0.18em] text-stone-600">Opportunity score / 100</p>
           </div>
-          <InsightSentence>{narrative}</InsightSentence>
+          <InsightSentence>{verificationPrompt}</InsightSentence>
           {reason ? (
             <p className="text-sm text-stone-600">
               Primary driver: <span className="font-medium text-[var(--lumina-ink)]">{titleCase(reason)}</span>
@@ -65,14 +67,14 @@ export function OpportunityHero({
 
         <div className="grid gap-4 md:grid-cols-2">
           <div className="rounded-3xl bg-[var(--warm-cream)] p-5">
-            <p className="text-xs uppercase tracking-[0.18em] text-stone-500">Review velocity</p>
+            <p className="text-xs uppercase tracking-[0.18em] text-stone-600">Review velocity</p>
             <p className="mt-3 text-3xl font-semibold text-[var(--deep-terracotta)]">
               {formatNumber(opportunity?.review_velocity?.last_3_months ?? hotel.ta_reviews_last_90d_est ?? null)}
             </p>
             <p className="mt-2 text-sm text-stone-600">Reviews in the last 90 days feeding this brief.</p>
           </div>
           <div className="rounded-3xl border border-stone-200 bg-white p-5">
-            <p className="text-xs uppercase tracking-[0.18em] text-stone-500">Evidence paths</p>
+            <p className="text-xs uppercase tracking-[0.18em] text-stone-600">Evidence paths</p>
             <div className="mt-3 flex flex-wrap gap-2">
               {languageMarkets.slice(0, 4).map(language => (
                 <Link
@@ -89,7 +91,7 @@ export function OpportunityHero({
             </div>
           </div>
           <div className="rounded-3xl border border-stone-200 bg-white p-5 md:col-span-2">
-            <p className="text-xs uppercase tracking-[0.18em] text-stone-500">Weaknesses worth proving</p>
+            <p className="text-xs uppercase tracking-[0.18em] text-stone-600">Weaknesses worth proving</p>
             <div className="mt-3 flex flex-wrap gap-2">
               {topicWeaknesses.map(topic => (
                 <Link
