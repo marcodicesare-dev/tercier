@@ -2,8 +2,9 @@
 
 import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart, ResponsiveContainer } from 'recharts';
 import type { HotelDashboardRow } from '@/lib/types';
+import { CHART_THEME } from '@/lib/chart-theme';
 
-const COLORS = ['#8B4A2B', '#C17F59', '#6F8A91'];
+const COLORS = [CHART_THEME.deepTerracotta, CHART_THEME.terracotta, CHART_THEME.teal];
 
 export function ComparisonRadar({ hotels }: { hotels: HotelDashboardRow[] }) {
   const dimensions = [
@@ -26,9 +27,9 @@ export function ComparisonRadar({ hotels }: { hotels: HotelDashboardRow[] }) {
   return (
     <ResponsiveContainer width="100%" height={360}>
       <RadarChart data={data}>
-        <PolarGrid stroke="#d9cab9" />
-        <PolarAngleAxis dataKey="dimension" tick={{ fill: '#5f5247', fontSize: 12 }} />
-        <PolarRadiusAxis domain={[3.5, 5]} tick={{ fill: '#8b7b6d', fontSize: 11 }} />
+        <PolarGrid stroke={CHART_THEME.grid} />
+        <PolarAngleAxis dataKey="dimension" tick={{ fill: CHART_THEME.tick, fontSize: 12 }} />
+        <PolarRadiusAxis domain={[3.5, 5]} tick={{ fill: CHART_THEME.tick, fontSize: 11 }} />
         {hotels.map((hotel, index) => (
           <Radar
             key={hotel.hotel_id}

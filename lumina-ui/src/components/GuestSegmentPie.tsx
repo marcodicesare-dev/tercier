@@ -1,9 +1,11 @@
 'use client';
 
 import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from 'recharts';
+import { EmptyInsight } from '@/components/EmptyInsight';
 import type { HotelDashboardRow } from '@/lib/types';
+import { CHART_THEME } from '@/lib/chart-theme';
 
-const COLORS = ['#8B4A2B', '#C17F59', '#C9A96E', '#A9B388', '#6F8A91'];
+const COLORS = CHART_THEME.palette;
 
 export function GuestSegmentPie({ hotel }: { hotel: HotelDashboardRow }) {
   const data = [
@@ -13,6 +15,15 @@ export function GuestSegmentPie({ hotel }: { hotel: HotelDashboardRow }) {
     { name: 'Friends', value: hotel.ta_segment_pct_friends ?? 0 },
     { name: 'Solo', value: hotel.ta_segment_pct_solo ?? 0 },
   ].filter(item => item.value > 0);
+
+  if (!data.length) {
+    return (
+      <EmptyInsight
+        title="Guest segments not inferred yet"
+        body="This property does not yet have enough review coverage to show a meaningful segment mix."
+      />
+    );
+  }
 
   return (
     <ResponsiveContainer width="100%" height={280}>

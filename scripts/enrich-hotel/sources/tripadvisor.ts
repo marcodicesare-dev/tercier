@@ -1,10 +1,10 @@
 import { resolve } from 'node:path';
 import type { TADetailResponse, TAReview, TAReviewsResponse, TASearchResponse } from '../../phase0-enrichment/lib/types.js';
 import { searchHotel, getDetails, getReviews, nearbySearch } from '../../phase0-enrichment/lib/tripadvisor-client.js';
-import { nameSimilarity } from '../../phase0-enrichment/lib/matching.js';
 import { ConcurrencyLimiter } from '../../phase0-enrichment/lib/concurrency-limiter.js';
 import type { AmenityInsert, CompetitorHotelSeed, CompetitorInsert, DiscoveryResult, LangRatingInsert, PipelineContext, ReviewInsert, SourceResult } from '../types.js';
 import { cleanString, diffHours, getCachedOrFetch, joinPipe, mean, statusError, statusOk, statusSkipped, sum, toIsoDate, uniqueStrings } from '../utils.js';
+import { assessIdentityMatch, assertIdentityMatch } from '../identity.js';
 
 const CACHE_SEARCH = resolve(process.cwd(), 'scripts/enrich-hotel/cache/tripadvisor-search.jsonl');
 const CACHE_DETAILS = resolve(process.cwd(), 'scripts/enrich-hotel/cache/tripadvisor-details.jsonl');
@@ -227,10 +227,14 @@ export async function discoverTripadvisor(input: PipelineContext['input']): Prom
     for (const query of queries) {
       const { data } = await getCachedOrFetch<TASearchResponse>(CACHE_SEARCH, query, async () => await searchHotel(query));
       for (const item of data.data ?? []) {
-        const cityMatch = input.city && item.address_obj?.city
-          ? item.address_obj.city.toLowerCase().includes(input.city.toLowerCase())
-          : false;
-        const score = nameSimilarity(input.name, item.name) + (cityMatch ? 0.2 : 0);
+        const assessment = assessIdentityMatch(input, {
+          name: cleanString(item.name),
+          city: cleanString(item.address_obj?.city),
+          country: cleanString(item.address_obj?.country),
+          address: cleanString(item.address_obj?.address_string),
+        }, { source: 'tripadvisor_discovery' });
+        if (!assessment.ok) continue;
+        const score = assessment.confidence;
         if (!bestMatch || score > bestMatch.score) {
           bestMatch = {
             locationId: item.location_id,
@@ -241,10 +245,10 @@ export async function discoverTripadvisor(input: PipelineContext['input']): Prom
           };
         }
       }
-      if (bestMatch && bestMatch.score >= 0.75) break;
+      if (bestMatch && bestMatch.score >= 1.05) break;
     }
 
-    if (!bestMatch || bestMatch.score < 0.45) {
+    if (!bestMatch || bestMatch.score < 0.9) {
       return {
         ok: false,
         message: 'No confident TripAdvisor match found',
@@ -308,6 +312,20 @@ export async function runTripadvisor(context: PipelineContext): Promise<SourceRe
     );
 
     const details = detailsResult.data;
+    assertIdentityMatch(context.input, {
+      name: cleanString(details.name),
+      city: cleanString(details.address_obj?.city),
+      country: cleanString(details.address_obj?.country),
+      address: cleanString(details.address_obj?.address_string),
+      latitude: parseFloatOrNull(details.latitude),
+      longitude: parseFloatOrNull(details.longitude),
+    }, 'tripadvisor_details', {
+      ta_location_id: context.taLocationId,
+    }, {
+      currentLatitude: context.latitude,
+      currentLongitude: context.longitude,
+    });
+
     const amenities = details.amenities ?? [];
     const awards = extractAwards(details);
     const tcYears = awards

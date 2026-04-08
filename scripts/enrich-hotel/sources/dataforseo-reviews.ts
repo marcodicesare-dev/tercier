@@ -7,6 +7,7 @@ import {
   getDataForSeoString,
 } from './dataforseo-common.js';
 import { cleanString, diffHours, getCachedOrFetch, joinPipe, mean, statusError, statusOk, statusSkipped, toIsoDate } from '../utils.js';
+import { assessIdentityMatch } from '../identity.js';
 
 const CACHE_TA_REVIEWS = resolve(process.cwd(), 'scripts/enrich-hotel/cache/dataforseo-ta-reviews.jsonl');
 const CACHE_GOOGLE_REVIEWS = resolve(process.cwd(), 'scripts/enrich-hotel/cache/dataforseo-google-reviews.jsonl');
@@ -200,38 +201,33 @@ async function fetchGoogleReviews(context: PipelineContext): Promise<{ reviews: 
   const result = await getCachedOrFetch<any[]>(
     CACHE_GOOGLE_REVIEWS,
     cacheKey,
-    async () => {
-      try {
-        return await createDataForSeoTaskAndPoll(
-          '/business_data/google/reviews/task_post',
-          '/business_data/google/reviews/task_get',
-          [{
-            place_id: context.gpPlaceId,
-            ...locationParams,
-            language_name: 'English',
-            depth,
-            sort_by: 'newest',
-            priority: 2,
-          }],
-        );
-      } catch {
-        return await createDataForSeoTaskAndPoll(
-          '/business_data/google/reviews/task_post',
-          '/business_data/google/reviews/task_get',
-          [{
-            keyword: context.input.name,
-            ...locationParams,
-            language_name: 'English',
-            depth,
-            sort_by: 'newest',
-            priority: 2,
-          }],
-        );
-      }
-    },
+    async () => await createDataForSeoTaskAndPoll(
+      '/business_data/google/reviews/task_post',
+      '/business_data/google/reviews/task_get',
+      [{
+        place_id: context.gpPlaceId,
+        ...locationParams,
+        language_name: 'English',
+        depth,
+        sort_by: 'newest',
+        priority: 2,
+      }],
+    ),
   );
 
   const reviews = result.data
+    .filter(item => {
+      const candidatePlaceId = getDataForSeoString(item?.place_id);
+      const candidateName = getDataForSeoString(item?.place_name) ?? getDataForSeoString(item?.title);
+      if (candidatePlaceId && context.gpPlaceId && candidatePlaceId !== context.gpPlaceId) {
+        return false;
+      }
+      if (!candidateName) return true;
+      return assessIdentityMatch(context.input, {
+        name: candidateName,
+        address: getDataForSeoString(item?.address),
+      }, { source: 'dataforseo_google_reviews' }).ok;
+    })
     .map(mapDfseGoogleReview)
     .filter((review): review is ReviewInsert => Boolean(review));
 

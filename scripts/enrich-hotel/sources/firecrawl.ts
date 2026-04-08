@@ -15,6 +15,9 @@ interface FirecrawlScrapeResponse {
     metadata?: {
       title?: string;
       description?: string;
+      language?: string;
+      ogLocale?: string | string[];
+      'og:locale'?: string | string[];
     };
   };
 }
@@ -93,6 +96,53 @@ function findInstagramHandle(blob: string, links: string[] = []): string | null 
   return match?.[1] ? match[1].replace(/\/$/, '') : null;
 }
 
+function normalizeLanguageCode(value: unknown): string | null {
+  if (typeof value !== 'string') return null;
+  const normalized = value.trim().toLowerCase().replace(/_/g, '-');
+  return normalized || null;
+}
+
+function extractHtmlLanguage(blob: string): string | null {
+  const match = blob.match(/<html[^>]+lang=["']?([a-zA-Z_-]+)/i);
+  return normalizeLanguageCode(match?.[1] ?? null);
+}
+
+function listLocaleValues(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value
+      .map(item => normalizeLanguageCode(item))
+      .filter((item): item is string => Boolean(item));
+  }
+  const single = normalizeLanguageCode(value);
+  return single ? [single] : [];
+}
+
+function extractWebsiteLanguages(blob: string, metadata: FirecrawlScrapeResponse['data']['metadata']): {
+  primaryLanguage: string | null;
+  contentLanguages: string | null;
+  languageCount: number | null;
+} {
+  const languages = new Set<string>();
+  const primaryLanguage =
+    normalizeLanguageCode(metadata?.language) ??
+    listLocaleValues(metadata?.ogLocale)[0] ??
+    listLocaleValues(metadata?.['og:locale'])[0] ??
+    extractHtmlLanguage(blob);
+
+  if (primaryLanguage) languages.add(primaryLanguage);
+  for (const locale of listLocaleValues(metadata?.ogLocale)) languages.add(locale);
+  for (const locale of listLocaleValues(metadata?.['og:locale'])) languages.add(locale);
+  const htmlLanguage = extractHtmlLanguage(blob);
+  if (htmlLanguage) languages.add(htmlLanguage);
+
+  const contentLanguages = [...languages];
+  return {
+    primaryLanguage,
+    contentLanguages: contentLanguages.length ? contentLanguages.join(' | ') : null,
+    languageCount: contentLanguages.length || null,
+  };
+}
+
 export async function runFirecrawl(context: PipelineContext): Promise<SourceResult> {
   if (!context.websiteUrl) {
     return { statuses: [statusSkipped('firecrawl', 'No website URL')] };
@@ -107,12 +157,16 @@ export async function runFirecrawl(context: PipelineContext): Promise<SourceResu
     const data = scrapeResult.data.data ?? {};
     const htmlBlob = `${data.rawHtml ?? ''}\n${data.html ?? ''}\n${data.markdown ?? ''}`;
     const instagramHandle = findInstagramHandle(htmlBlob, data.links ?? []);
+    const languageSignals = extractWebsiteLanguages(htmlBlob, data.metadata);
 
     return {
       hotel: {
         dp_website_tech_cms: detectCms(htmlBlob),
         dp_website_tech_booking: detectBookingEngine(htmlBlob),
         dp_website_tech_analytics: detectAnalytics(htmlBlob),
+        dp_website_primary_language: languageSignals.primaryLanguage,
+        dp_website_content_languages: languageSignals.contentLanguages,
+        dp_website_language_count: languageSignals.languageCount,
         dp_instagram_handle: instagramHandle,
         dp_instagram_exists: instagramHandle ? true : null,
       },

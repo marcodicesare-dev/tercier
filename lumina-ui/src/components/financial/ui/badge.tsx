@@ -5,20 +5,20 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/shadcn-utils"
 
 const badgeVariants = cva(
-  "group/badge inline-flex h-5 w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-4xl border border-transparent px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-all focus-visible:border-[#C17F59] focus-visible:ring-[3px] focus-visible:ring-[#C17F59]/50 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 aria-invalid:border-[#DC2626] aria-invalid:ring-[#DC2626]/20 [&>svg]:pointer-events-none [&>svg]:size-3!",
+  "group/badge inline-flex h-5 w-fit shrink-0 items-center justify-center gap-1 overflow-hidden rounded-full border border-transparent px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-all focus-visible:border-[var(--terracotta)] focus-visible:ring-[3px] focus-visible:ring-[var(--terracotta)]/20 has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 aria-invalid:border-red-600 aria-invalid:ring-red-600/20 [&>svg]:pointer-events-none [&>svg]:size-3!",
   {
     variants: {
       variant: {
-        default: "bg-[#C17F59] text-[#1A120B] [a]:hover:bg-[#C17F59]/80",
+        default: "bg-[var(--terracotta)] text-white [a]:hover:bg-[var(--deep-terracotta)]",
         secondary:
-          "bg-[#8B4A2B] text-[#F5EFE6] [a]:hover:bg-[#8B4A2B]/80",
+          "bg-[var(--sidebar-accent)] text-[var(--deep-terracotta)] [a]:hover:bg-stone-200",
         destructive:
-          "border-[#DC2626] bg-[#DC2626]/15 text-[#F5EFE6] focus-visible:ring-[#DC2626]/20 [a]:hover:bg-[#DC2626]/20",
+          "border-red-600 bg-red-600/10 text-red-700 focus-visible:ring-red-600/20 [a]:hover:bg-red-600/20",
         outline:
-          "border-[#5A4A40] text-[#F5EFE6] [a]:hover:bg-[#504038] [a]:hover:text-[#BEB0A2]",
+          "border-[var(--border)] text-[var(--lumina-ink)] [a]:hover:bg-stone-50 [a]:hover:text-[var(--lumina-ink)]",
         ghost:
-          "hover:bg-[#504038] hover:text-[#BEB0A2]",
-        link: "text-[#C17F59] underline-offset-4 hover:underline",
+          "hover:bg-stone-100 hover:text-[var(--lumina-ink)]",
+        link: "text-[var(--terracotta)] underline-offset-4 hover:underline",
       },
     },
     defaultVariants: {

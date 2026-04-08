@@ -8,6 +8,7 @@ import { getMarcoEquityValue, getVestedEquity } from '@/lib/model';
 import { fmtChf, fmtEur, fmtPct } from '@/lib/format';
 import { chfToEur } from '@/lib/fx';
 import mcData from '@/data/montecarlo-results.json';
+import { CHART_THEME } from '@/lib/chart-theme';
 
 const MC = mcData as Record<string, any>;
 const MULTIPLES = [6, 8, 10, 12, 15];
@@ -19,7 +20,7 @@ const SCENARIO_NAMES: Record<string, string> = {
   series_ab: 'A + B',
   full_vc: 'Full VC',
 };
-const COLORS = ['#C17F59', '#C9A96E', '#8B4A2B', '#5B7FB5'];
+const COLORS = [CHART_THEME.terracotta, CHART_THEME.gold, CHART_THEME.deepTerracotta, CHART_THEME.blue];
 
 export default function ValuationPage() {
   const { model, assumptions } = useModel();
@@ -93,7 +94,7 @@ export default function ValuationPage() {
                   <td className="py-2 text-right tabular-nums text-[var(--color-gold)]">{fmtChf(d.arr)}</td>
                   <td className="py-2 text-right tabular-nums text-[var(--color-terracotta)]">{fmtEur(d.arrEur)}</td>
                   <td className="py-2 text-right tabular-nums">{d.paying}</td>
-                  <td className={`py-2 text-right tabular-nums ${d.ebitda >= 0 ? 'text-green-400' : 'text-red-400'}`}>{fmtChf(d.ebitda)}</td>
+                  <td className={`py-2 text-right tabular-nums ${d.ebitda >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>{fmtChf(d.ebitda)}</td>
                   <td className="py-2 text-right tabular-nums">{fmtChf(d.cash)}</td>
                 </tr>
               ))}
@@ -218,14 +219,14 @@ export default function ValuationPage() {
               'M48 P90': MC[id]?.percentiles?.marcoEquity?.M48?.p90 ?? 0,
               'M60 P50': MC[id]?.percentiles?.marcoEquity?.M60?.p50 ?? 0,
             }))}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#504038" />
-              <XAxis dataKey="name" tick={{ fill: '#A89A8C', fontSize: 11 }} />
-              <YAxis tick={{ fill: '#A89A8C', fontSize: 11 }} tickFormatter={v => fmtChf(v)} />
-              <Tooltip contentStyle={{ background: '#302520', border: '1px solid #4A3A30', borderRadius: 8, color: '#F5EFE6' }} labelStyle={{ color: '#F5EFE6' }} itemStyle={{ color: '#F5EFE6' }} formatter={(v: any) => fmtChf(Number(v))} />
+              <CartesianGrid strokeDasharray="3 3" stroke={CHART_THEME.grid} />
+              <XAxis dataKey="name" tick={{ fill: CHART_THEME.tick, fontSize: 11 }} />
+              <YAxis tick={{ fill: CHART_THEME.tick, fontSize: 11 }} tickFormatter={v => fmtChf(v)} />
+              <Tooltip contentStyle={{ background: CHART_THEME.tooltip.bg, border: `1px solid ${CHART_THEME.tooltip.border}`, borderRadius: 8, color: CHART_THEME.tooltip.text }} labelStyle={{ color: CHART_THEME.tooltip.text }} itemStyle={{ color: CHART_THEME.tooltip.text }} formatter={(v: any) => fmtChf(Number(v))} />
               <Legend />
-              <Bar dataKey="M48 P10" fill="#8B4A2B" name="M48 P10 (pessimistic)" />
-              <Bar dataKey="M48 P50" fill="#C17F59" name="M48 P50 (median)" />
-              <Bar dataKey="M48 P90" fill="#C9A96E" name="M48 P90 (optimistic)" />
+              <Bar dataKey="M48 P10" fill={CHART_THEME.deepTerracotta} name="M48 P10 (pessimistic)" />
+              <Bar dataKey="M48 P50" fill={CHART_THEME.terracotta} name="M48 P50 (median)" />
+              <Bar dataKey="M48 P90" fill={CHART_THEME.gold} name="M48 P90 (optimistic)" />
             </BarChart>
           </ResponsiveContainer>
           <table className="w-full text-sm mt-4">
@@ -266,13 +267,13 @@ export default function ValuationPage() {
         <CardContent>
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={equityData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#504038" />
-              <XAxis dataKey="month" tick={{ fill: '#A89A8C', fontSize: 12 }} />
-              <YAxis tick={{ fill: '#A89A8C', fontSize: 11 }} tickFormatter={v => fmtChf(v)} />
-              <Tooltip contentStyle={{ background: '#302520', border: '1px solid #4A3A30', borderRadius: 8, color: '#F5EFE6' }} labelStyle={{ color: '#F5EFE6' }} itemStyle={{ color: '#F5EFE6' }} formatter={(v: any) => fmtChf(Number(v))} />
+              <CartesianGrid strokeDasharray="3 3" stroke={CHART_THEME.grid} />
+              <XAxis dataKey="month" tick={{ fill: CHART_THEME.tick, fontSize: 12 }} />
+              <YAxis tick={{ fill: CHART_THEME.tick, fontSize: 11 }} tickFormatter={v => fmtChf(v)} />
+              <Tooltip contentStyle={{ background: CHART_THEME.tooltip.bg, border: `1px solid ${CHART_THEME.tooltip.border}`, borderRadius: 8, color: CHART_THEME.tooltip.text }} labelStyle={{ color: CHART_THEME.tooltip.text }} itemStyle={{ color: CHART_THEME.tooltip.text }} formatter={(v: any) => fmtChf(Number(v))} />
               <Bar dataKey="equityValue" name="Equity Value">
                 {equityData.map((_, i) => (
-                  <Cell key={i} fill={i < 2 ? '#C17F59' : '#C9A96E'} />
+                  <Cell key={i} fill={i < 2 ? CHART_THEME.terracotta : CHART_THEME.gold} />
                 ))}
               </Bar>
             </BarChart>

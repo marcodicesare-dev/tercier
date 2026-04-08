@@ -11,7 +11,7 @@
  */
 import 'dotenv/config';
 import { resolve } from 'path';
-import { supabase, logPipelineStart, logPipelineEnd } from './lib/supabase.js';
+import { fetchAllRows, supabase, logPipelineStart, logPipelineEnd } from './lib/supabase.js';
 import { getPlaceDetails, getGPCallCount } from './lib/google-places-client.js';
 import { readCache, writeCache, isCacheFresh } from './lib/cache.js';
 import { ProgressLogger } from './lib/logger.js';
@@ -63,17 +63,15 @@ export default async function enrichGooglePlaces(): Promise<void> {
   console.log('\n--- Step 4: Enrich Hotels with Google Place Details ---\n');
 
   // Fetch hotels with gp_place_id that haven't been enriched yet
-  const { data: hotels, error: fetchError } = await supabase
-    .from('hotels')
-    .select('id, hs_slug, name, gp_place_id, enrichment_status')
-    .not('gp_place_id', 'is', null)
-    .is('gp_enriched_at', null)
-    .order('hs_slug')
-    .limit(LIMIT);
-
-  if (fetchError) {
-    throw new Error(`Failed to fetch hotels: ${fetchError.message}`);
-  }
+  const hotels = await fetchAllRows((from, to) =>
+    supabase
+      .from('hotels')
+      .select('id, hs_slug, name, gp_place_id, enrichment_status')
+      .not('gp_place_id', 'is', null)
+      .is('gp_enriched_at', null)
+      .order('hs_slug')
+      .range(from, to),
+  LIMIT);
 
   if (!hotels || hotels.length === 0) {
     console.log('No hotels need Google enrichment. All done or run step 3 first.');

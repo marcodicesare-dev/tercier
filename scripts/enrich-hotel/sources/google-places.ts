@@ -2,9 +2,9 @@ import { resolve } from 'node:path';
 import type { GPAutocompleteResponse, GPPlaceDetails } from '../../phase0-enrichment/lib/types.js';
 import { getPlaceDetails } from '../../phase0-enrichment/lib/google-places-client.js';
 import { retryWithBackoff } from '../../phase0-enrichment/lib/retry-with-backoff.js';
-import { nameSimilarity } from '../../phase0-enrichment/lib/matching.js';
 import type { DiscoveryResult, PipelineContext, ReviewInsert, SourceResult } from '../types.js';
 import { cleanString, getCachedOrFetch, joinPipe, statusError, statusOk, statusSkipped } from '../utils.js';
+import { assessIdentityMatch, assertIdentityMatch } from '../identity.js';
 
 const CACHE_AUTOCOMPLETE = resolve(process.cwd(), 'scripts/enrich-hotel/cache/google-autocomplete.jsonl');
 const CACHE_DETAILS = resolve(process.cwd(), 'scripts/enrich-hotel/cache/google-details.jsonl');
@@ -86,7 +86,18 @@ export async function discoverGooglePlaces(context: PipelineContext): Promise<Di
         if (!prediction) continue;
         const name = cleanString(prediction.structuredFormat?.mainText?.text) ?? cleanString(prediction.text?.text) ?? '';
         const secondary = cleanString(prediction.structuredFormat?.secondaryText?.text) ?? '';
-        const score = nameSimilarity(context.input.name, name) + (context.input.city && secondary.toLowerCase().includes(context.input.city.toLowerCase()) ? 0.15 : 0);
+        const assessment = assessIdentityMatch(context.input, {
+          name,
+          address: secondary,
+          city: secondary,
+          country: secondary,
+        }, {
+          source: 'google_places_discovery',
+          currentLatitude: context.latitude,
+          currentLongitude: context.longitude,
+        });
+        if (!assessment.ok) continue;
+        const score = assessment.confidence;
         if (!bestMatch || score > bestMatch.score) {
           bestMatch = {
             placeId: prediction.placeId,
@@ -95,10 +106,10 @@ export async function discoverGooglePlaces(context: PipelineContext): Promise<Di
           };
         }
       }
-      if (bestMatch && bestMatch.score >= 0.8) break;
+      if (bestMatch && bestMatch.score >= 1.05) break;
     }
 
-    if (!bestMatch || bestMatch.score < 0.4) {
+    if (!bestMatch || bestMatch.score < 0.9) {
       return {
         ok: false,
         message: 'No confident Google Places match found',
@@ -131,6 +142,20 @@ export async function runGooglePlaces(context: PipelineContext): Promise<SourceR
     );
 
     const details = detailsResult.data;
+    assertIdentityMatch(context.input, {
+      name: cleanString(details.displayName?.text),
+      city: cleanString(details.shortFormattedAddress),
+      country: cleanString(details.formattedAddress),
+      address: cleanString(details.formattedAddress),
+      latitude: details.location?.latitude ?? null,
+      longitude: details.location?.longitude ?? null,
+    }, 'google_places_details', {
+      gp_place_id: context.gpPlaceId,
+    }, {
+      currentLatitude: context.latitude,
+      currentLongitude: context.longitude,
+    });
+
     const landmarks = details.addressDescriptor?.landmarks?.map(landmark => ({
       name: landmark.displayName.text,
       distance_m: landmark.straightLineDistanceMeters,

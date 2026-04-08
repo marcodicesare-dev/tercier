@@ -27,6 +27,8 @@ import type {
   SourceResult,
   SourceStatus,
 } from './types.js';
+import { IdentityConflictError, assertIdentityMatch, existingRowCandidate } from './identity.js';
+import { recordEnrichmentIncident } from './incidents.js';
 import { loadEnvFiles, mergeHotelPartials, parseCliTargets, slugify } from './utils.js';
 
 loadEnvFiles();
@@ -49,7 +51,17 @@ async function findExistingHotel(context: PipelineContext): Promise<ExistingHote
       .eq('ta_location_id', context.taLocationId)
       .limit(1);
     if (error) throw error;
-    if (data?.[0]) return data[0] as ExistingHotelRow;
+    if (data?.[0]) {
+      const row = data[0] as ExistingHotelRow;
+      assertIdentityMatch(context.input, existingRowCandidate(row), 'existing_tripadvisor_row', {
+        ta_location_id: context.taLocationId,
+        hotel_id: row.id,
+      }, {
+        currentLatitude: context.latitude,
+        currentLongitude: context.longitude,
+      });
+      return row;
+    }
   }
 
   if (context.gpPlaceId) {
@@ -59,19 +71,44 @@ async function findExistingHotel(context: PipelineContext): Promise<ExistingHote
       .eq('gp_place_id', context.gpPlaceId)
       .limit(1);
     if (error) throw error;
-    if (data?.[0]) return data[0] as ExistingHotelRow;
+    if (data?.[0]) {
+      const row = data[0] as ExistingHotelRow;
+      assertIdentityMatch(context.input, existingRowCandidate(row), 'existing_google_row', {
+        gp_place_id: context.gpPlaceId,
+        hotel_id: row.id,
+      }, {
+        currentLatitude: context.latitude,
+        currentLongitude: context.longitude,
+      });
+      return row;
+    }
   }
 
-  const { data, error } = await supabase
+  let query = supabase
     .from('hotels')
     .select('id, name, city, country, ta_location_id, gp_place_id, website_url, phone, latitude, longitude')
-    .ilike('name', context.input.name)
-    .limit(5);
+    .ilike('name', context.input.name);
+  if (context.input.city) {
+    query = query.ilike('city', context.input.city);
+  }
+  if (context.input.country) {
+    query = query.ilike('country', context.input.country);
+  }
+  const { data, error } = await query.limit(5);
   if (error) throw error;
 
-  const match = (data ?? []).find(row =>
-    !context.input.city || (row.city ?? '').toLowerCase() === context.input.city.toLowerCase(),
-  );
+  const match = (data ?? []).find(row => {
+    try {
+      return assertIdentityMatch(context.input, existingRowCandidate(row as ExistingHotelRow), 'existing_canonical_row', {
+        hotel_id: (row as ExistingHotelRow).id,
+      }, {
+        currentLatitude: context.latitude,
+        currentLongitude: context.longitude,
+      }).ok;
+    } catch {
+      return false;
+    }
+  });
   return (match as ExistingHotelRow | undefined) ?? null;
 }
 
@@ -96,7 +133,19 @@ async function upsertBaseHotel(context: PipelineContext): Promise<string> {
   if (existing) {
     const { error } = await supabase.from('hotels').update(payload).eq('id', existing.id);
     if (error) throw error;
-    context.existingHotel = existing;
+    context.existingHotel = {
+      ...existing,
+      ...payload,
+      name: payload.name ?? existing.name,
+      city: payload.city ?? existing.city,
+      country: payload.country ?? existing.country,
+      ta_location_id: payload.ta_location_id ?? existing.ta_location_id,
+      gp_place_id: payload.gp_place_id ?? existing.gp_place_id,
+      website_url: payload.website_url ?? existing.website_url,
+      phone: payload.phone ?? existing.phone,
+      latitude: payload.latitude ?? existing.latitude,
+      longitude: payload.longitude ?? existing.longitude,
+    };
     return existing.id;
   }
 
@@ -106,6 +155,18 @@ async function upsertBaseHotel(context: PipelineContext): Promise<string> {
     .select('id')
     .single();
   if (error) throw error;
+  context.existingHotel = {
+    id: data.id as string,
+    name: payload.name ?? context.input.name,
+    city: payload.city ?? null,
+    country: payload.country ?? null,
+    ta_location_id: payload.ta_location_id ?? null,
+    gp_place_id: payload.gp_place_id ?? null,
+    website_url: payload.website_url ?? null,
+    phone: payload.phone ?? null,
+    latitude: payload.latitude ?? null,
+    longitude: payload.longitude ?? null,
+  };
   return data.id as string;
 }
 
@@ -138,6 +199,34 @@ async function replaceReviews(hotelId: string, reviews: ReviewInsert[]): Promise
     hotel_id: hotelId,
     ...review,
   }));
+
+  const incomingIdsBySource = new Map<string, Set<string>>();
+  for (const row of rows) {
+    const ids = incomingIdsBySource.get(row.source) ?? new Set<string>();
+    ids.add(row.source_review_id);
+    incomingIdsBySource.set(row.source, ids);
+  }
+
+  for (const [source, incomingIds] of incomingIdsBySource.entries()) {
+    const { data: existingRows, error: existingError } = await supabase
+      .from('hotel_reviews')
+      .select('id, source_review_id')
+      .eq('hotel_id', hotelId)
+      .eq('source', source);
+    if (existingError) throw existingError;
+
+    const staleRowIds = (existingRows ?? [])
+      .filter(row => !incomingIds.has(row.source_review_id as string))
+      .map(row => row.id as string);
+
+    if (staleRowIds.length) {
+      const { error: deleteError } = await supabase
+        .from('hotel_reviews')
+        .delete()
+        .in('id', staleRowIds);
+      if (deleteError) throw deleteError;
+    }
+  }
 
   const BATCH_SIZE = 100;
   for (let index = 0; index < rows.length; index += BATCH_SIZE) {
@@ -520,6 +609,54 @@ async function upsertCompetitorHotels(
   await linkCompetitorHotels(parentHotelId, competitorIdByTaLocationId);
 }
 
+async function findHotelByCanonicalInput(input: PipelineContext['input']): Promise<ExistingHotelRow | null> {
+  let query = supabase
+    .from('hotels')
+    .select('id, name, city, country, ta_location_id, gp_place_id, website_url, phone, latitude, longitude')
+    .ilike('name', input.name);
+  if (input.city) query = query.ilike('city', input.city);
+  if (input.country) query = query.ilike('country', input.country);
+  const { data, error } = await query.limit(1);
+  if (error) throw error;
+  return (data?.[0] as ExistingHotelRow | undefined) ?? null;
+}
+
+async function quarantineHotelForReview(
+  input: PipelineContext['input'],
+  error: IdentityConflictError,
+): Promise<string | null> {
+  const existing = await findHotelByCanonicalInput(input);
+  const payload: HotelUpsert = {
+    name: input.name,
+    city: input.city ?? null,
+    country: input.country ?? null,
+    enrichment_status: 'identity_review_required',
+  };
+
+  let hotelId: string | null = existing?.id ?? null;
+  if (existing) {
+    const { error: updateError } = await supabase.from('hotels').update(payload).eq('id', existing.id);
+    if (updateError) throw updateError;
+  } else {
+    const { data, error: insertError } = await supabase.from('hotels').insert(payload).select('id').single();
+    if (insertError) throw insertError;
+    hotelId = data.id as string;
+  }
+
+  await recordEnrichmentIncident({
+    hotelId,
+    hotelName: input.name,
+    city: input.city ?? null,
+    country: input.country ?? null,
+    incidentType: 'identity_conflict',
+    source: error.source,
+    message: error.message,
+    evidence: error.evidence,
+  });
+
+  return hotelId;
+}
+
 async function processHotel(context: PipelineContext, dryRun: boolean): Promise<HotelProcessSummary> {
   console.log(`\n=== ${context.input.name}${context.input.city ? ` (${context.input.city})` : ''} ===`);
   console.log('Phase 1: discovery');
@@ -563,6 +700,12 @@ async function processHotel(context: PipelineContext, dryRun: boolean): Promise<
 
   const bootstrapHotel = mergeHotelPartials(bootstrapResults.map(result => result.hotel));
   applyHotelFieldsToContext(context, bootstrapHotel);
+  if (bootstrapStatuses.some(status => status.source === 'tripadvisor' && status.state === 'error' && status.message.toLowerCase().includes('identity'))) {
+    context.taLocationId = context.existingHotel?.ta_location_id ?? null;
+  }
+  if (bootstrapStatuses.some(status => status.source === 'google_places' && status.state === 'error' && status.message.toLowerCase().includes('identity'))) {
+    context.gpPlaceId = context.existingHotel?.gp_place_id ?? null;
+  }
 
   console.log('Phase 3: dependent enrichment');
   const dependentTasks = [
@@ -587,17 +730,28 @@ async function processHotel(context: PipelineContext, dryRun: boolean): Promise<
   const mergedHotel = mergeHotelPartials(sourceResults.map(result => result.hotel));
   const computed = computeDerivedFields(mergedHotel);
   const finalHotel = mergeHotelPartials([
+    context.existingHotel ? {
+      name: context.existingHotel.name,
+      city: context.existingHotel.city,
+      country: context.existingHotel.country,
+      ta_location_id: context.existingHotel.ta_location_id,
+      gp_place_id: context.existingHotel.gp_place_id,
+      website_url: context.existingHotel.website_url,
+      phone: context.existingHotel.phone,
+      latitude: context.existingHotel.latitude,
+      longitude: context.existingHotel.longitude,
+    } : undefined,
     {
       name: context.input.name,
-      city: context.input.city ?? null,
-      country: context.country ?? context.input.country ?? null,
-      ta_location_id: context.taLocationId ?? null,
-      gp_place_id: context.gpPlaceId ?? null,
+      city: context.input.city ?? context.existingHotel?.city ?? null,
+      country: context.country ?? context.input.country ?? context.existingHotel?.country ?? null,
+      ta_location_id: context.taLocationId ?? context.existingHotel?.ta_location_id ?? null,
+      gp_place_id: context.gpPlaceId ?? context.existingHotel?.gp_place_id ?? null,
       osm_id: context.osmId ?? null,
-      website_url: context.websiteUrl ?? null,
-      phone: context.phone ?? null,
-      latitude: context.latitude ?? null,
-      longitude: context.longitude ?? null,
+      website_url: context.websiteUrl ?? context.existingHotel?.website_url ?? null,
+      phone: context.phone ?? context.existingHotel?.phone ?? null,
+      latitude: context.latitude ?? context.existingHotel?.latitude ?? null,
+      longitude: context.longitude ?? context.existingHotel?.longitude ?? null,
       enrichment_status: 'hotel_enrichment_complete',
     },
     mergedHotel,
@@ -654,6 +808,7 @@ async function main(): Promise<void> {
   const startedAt = Date.now();
   const summaries: HotelProcessSummary[] = [];
   let failures = 0;
+  let retryableFailures = 0;
 
   console.log('\n============================================================');
   console.log('  HOTEL INTELLIGENCE ENRICHMENT');
@@ -666,6 +821,18 @@ async function main(): Promise<void> {
       summaries.push(await processHotel({ input: target }, dryRun));
     } catch (error) {
       failures += 1;
+      if (!dryRun && error instanceof IdentityConflictError) {
+        const hotelId = await quarantineHotelForReview(target, error);
+        console.error(`\n[IDENTITY_REVIEW_REQUIRED] ${target.name}: ${error.message}`);
+        summaries.push({
+          hotel: target.name,
+          hotelId: hotelId ?? `identity-review-${slugify(target.name)}`,
+          sourceStatuses: [{ source: error.source, state: 'error', message: error.message }],
+          filledColumns: 0,
+        });
+        continue;
+      }
+      retryableFailures += 1;
       const message =
         error instanceof Error
           ? error.message
@@ -700,6 +867,10 @@ async function main(): Promise<void> {
   console.log(`  Summary: ${outputPath}`);
   console.log(`  Duration: ${Math.round((Date.now() - startedAt) / 1000)}s`);
   console.log('============================================================\n');
+
+  if (retryableFailures > 0) {
+    process.exitCode = 1;
+  }
 }
 
 main().catch(error => {

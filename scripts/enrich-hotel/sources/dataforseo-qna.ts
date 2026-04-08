@@ -7,6 +7,7 @@ import {
   getDataForSeoString,
 } from './dataforseo-common.js';
 import { getCachedOrFetch, statusError, statusOk, statusSkipped } from '../utils.js';
+import { assessIdentityMatch } from '../identity.js';
 
 const CACHE_QNA = resolve(process.cwd(), 'scripts/enrich-hotel/cache/dataforseo-google-qna.jsonl');
 
@@ -87,9 +88,9 @@ function buildHotelQnaAggregates(qna: QnaInsert[]): HotelUpsert {
 }
 
 export async function runDataForSeoQna(context: PipelineContext): Promise<SourceResult> {
-  if (!context.gpPlaceId && !context.input.city && !context.input.country) {
+  if (!context.gpPlaceId) {
     return {
-      statuses: [statusSkipped('dataforseo_qna', 'No location context for Google Q&A lookup')],
+      statuses: [statusSkipped('dataforseo_qna', 'No Google Place ID for Google Q&A lookup')],
     };
   }
 
@@ -105,6 +106,7 @@ export async function runDataForSeoQna(context: PipelineContext): Promise<Source
         '/business_data/google/questions_and_answers/task_get',
         [{
           keyword: context.input.name,
+          place_id: context.gpPlaceId,
           ...locationParams,
           language_name: 'English',
           depth: 100,
@@ -114,6 +116,18 @@ export async function runDataForSeoQna(context: PipelineContext): Promise<Source
     );
 
     const qna = result.data
+      .filter(item => {
+        const candidatePlaceId = getDataForSeoString(item?.place_id);
+        const candidateName = getDataForSeoString(item?.title) ?? getDataForSeoString(item?.place_name);
+        if (candidatePlaceId && context.gpPlaceId && candidatePlaceId !== context.gpPlaceId) {
+          return false;
+        }
+        if (!candidateName) return true;
+        return assessIdentityMatch(context.input, {
+          name: candidateName,
+          address: getDataForSeoString(item?.address),
+        }, { source: 'dataforseo_qna' }).ok;
+      })
       .map(item => mapQnaItem(item, context.input.name))
       .filter((row): row is QnaInsert => Boolean(row));
 

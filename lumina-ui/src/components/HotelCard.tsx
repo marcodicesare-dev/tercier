@@ -32,9 +32,11 @@ export function HotelCard({ hotel }: { hotel: HotelDashboardRow }) {
               .join(' · ')}
           </p>
           <h3 className="mt-2 text-xl font-semibold text-[var(--lumina-ink)]">{hotel.name}</h3>
-          <p className="mt-2 max-h-12 overflow-hidden text-sm leading-6 text-stone-600">
-            {hotel.gp_editorial_summary ?? 'Hotel summary unavailable.'}
-          </p>
+          {hotel.gp_editorial_summary ? (
+            <p className="mt-2 max-h-12 overflow-hidden text-sm leading-6 text-stone-600">
+              {hotel.gp_editorial_summary}
+            </p>
+          ) : null}
         </div>
         <span className="rounded-full bg-stone-100 px-3 py-1 text-xs font-medium text-stone-700">
           {hotel.ta_price_level ?? '—'}

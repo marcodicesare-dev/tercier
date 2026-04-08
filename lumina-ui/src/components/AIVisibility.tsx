@@ -119,7 +119,7 @@ export function AIVisibility({
             <div className="rounded-2xl bg-[var(--warm-cream)] p-4">
               <p className="text-xs uppercase tracking-[0.18em] text-stone-500">Commercial signal</p>
               <p className="mt-2 text-sm text-[var(--lumina-ink)]">
-                AI discovery is a visible moat signal even before pricing or contact data enters the conversation.
+                Hotels visible in AI search tend to convert more direct demand from discovery-led trips.
               </p>
             </div>
           </div>

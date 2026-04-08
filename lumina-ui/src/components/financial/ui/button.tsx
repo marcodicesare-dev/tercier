@@ -6,20 +6,20 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/shadcn-utils"
 
 const buttonVariants = cva(
-  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-[#C17F59] focus-visible:ring-3 focus-visible:ring-[#C17F59]/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-[#DC2626] aria-invalid:ring-3 aria-invalid:ring-[#DC2626]/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  "group/button inline-flex shrink-0 items-center justify-center rounded-full border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-[var(--terracotta)] focus-visible:ring-3 focus-visible:ring-[var(--terracotta)]/20 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-red-600 aria-invalid:ring-3 aria-invalid:ring-red-600/20 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
   {
     variants: {
       variant: {
-        default: "bg-[#C17F59] text-[#1A120B] [a]:hover:bg-[#C17F59]/80",
+        default: "bg-[var(--deep-terracotta)] text-white [a]:hover:bg-[var(--lumina-ink)]",
         outline:
-          "border-[#5A4A40] bg-[#1A120B] text-[#F5EFE6] hover:bg-[#504038] hover:text-[#F5EFE6] aria-expanded:bg-[#504038] aria-expanded:text-[#F5EFE6]",
+          "border-[var(--border)] bg-white text-[var(--lumina-ink)] hover:border-stone-300 hover:bg-stone-50 aria-expanded:bg-stone-50 aria-expanded:text-[var(--lumina-ink)]",
         secondary:
-          "bg-[#8B4A2B] text-[#F5EFE6] hover:bg-[#8B4A2B]/80 aria-expanded:bg-[#8B4A2B] aria-expanded:text-[#F5EFE6]",
+          "bg-[var(--sidebar-accent)] text-[var(--deep-terracotta)] hover:bg-stone-200 aria-expanded:bg-stone-200 aria-expanded:text-[var(--deep-terracotta)]",
         ghost:
-          "text-[#F5EFE6] hover:bg-[#504038] hover:text-[#F5EFE6] aria-expanded:bg-[#504038] aria-expanded:text-[#F5EFE6]",
+          "text-[var(--lumina-ink)] hover:bg-stone-100 hover:text-[var(--lumina-ink)] aria-expanded:bg-stone-100 aria-expanded:text-[var(--lumina-ink)]",
         destructive:
-          "border-[#DC2626] bg-[#DC2626]/15 text-[#F5EFE6] hover:bg-[#DC2626]/25 focus-visible:border-[#DC2626] focus-visible:ring-[#DC2626]/25",
-        link: "text-[#C17F59] underline-offset-4 hover:underline",
+          "border-red-600 bg-red-600/10 text-red-700 hover:bg-red-600/15 focus-visible:border-red-600 focus-visible:ring-red-600/25",
+        link: "text-[var(--terracotta)] underline-offset-4 hover:underline",
       },
       size: {
         default:

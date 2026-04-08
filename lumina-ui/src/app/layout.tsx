@@ -18,9 +18,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 Lumina Intelligence
               </Link>
               <h1 className="mt-2 font-serif text-3xl text-[var(--lumina-ink)] sm:text-4xl">Portfolio intelligence for every hotel</h1>
-              <p className="mt-2 max-w-2xl text-sm leading-6 text-stone-600">
-                Read the portfolio like an investor briefing: quality, guest mix, market position, and the clearest commercial gap.
-              </p>
             </div>
             <nav className="flex gap-3 text-sm text-stone-600">
               <Link className="rounded-full border border-stone-200 bg-white px-4 py-2 hover:border-stone-300" href="/">

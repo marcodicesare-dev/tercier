@@ -8,6 +8,7 @@ import {
   getDataForSeoString,
 } from './dataforseo-common.js';
 import { cleanString, getCachedOrFetch, statusError, statusOk, statusSkipped } from '../utils.js';
+import { assessIdentityMatch } from '../identity.js';
 
 const CACHE_GMB = resolve(process.cwd(), 'scripts/enrich-hotel/cache/dataforseo-google-my-business.jsonl');
 
@@ -39,9 +40,9 @@ function normalizePopularTimes(value: any): Record<string, unknown> | null {
 }
 
 export async function runDataForSeoGmb(context: PipelineContext): Promise<SourceResult> {
-  if (!context.input.name) {
+  if (!context.gpPlaceId) {
     return {
-      statuses: [statusSkipped('dataforseo_gmb', 'Missing hotel name')],
+      statuses: [statusSkipped('dataforseo_gmb', 'No Google Place ID for Google My Business lookup')],
     };
   }
 
@@ -57,6 +58,7 @@ export async function runDataForSeoGmb(context: PipelineContext): Promise<Source
         '/business_data/google/my_business_info/task_get',
         [{
           keyword: context.input.name,
+          place_id: context.gpPlaceId,
           ...locationParams,
           language_name: 'English',
           priority: 2,
@@ -64,7 +66,18 @@ export async function runDataForSeoGmb(context: PipelineContext): Promise<Source
       ),
     );
 
-    const item = result.data[0] ?? null;
+    const item = (result.data ?? []).find(candidate => {
+      const candidatePlaceId = getDataForSeoString(candidate?.place_id);
+      const candidateName = getDataForSeoString(candidate?.title) ?? getDataForSeoString(candidate?.place_name);
+      if (candidatePlaceId && context.gpPlaceId && candidatePlaceId !== context.gpPlaceId) {
+        return false;
+      }
+      if (!candidateName) return true;
+      return assessIdentityMatch(context.input, {
+        name: candidateName,
+        address: getDataForSeoString(candidate?.address),
+      }, { source: 'dataforseo_gmb' }).ok;
+    }) ?? null;
     if (!item) {
       return {
         statuses: [statusSkipped('dataforseo_gmb', 'No Google My Business profile found')],

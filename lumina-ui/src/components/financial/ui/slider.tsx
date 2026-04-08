@@ -37,19 +37,18 @@ function Slider({
       <SliderPrimitive.Control className="relative flex w-full touch-none items-center select-none data-disabled:opacity-50 data-vertical:h-full data-vertical:min-h-40 data-vertical:w-auto data-vertical:flex-col">
         <SliderPrimitive.Track
           data-slot="slider-track"
-          className="relative grow overflow-hidden rounded-full select-none data-horizontal:h-1.5 data-horizontal:w-full data-vertical:h-full data-vertical:w-1.5"
-          style={{ backgroundColor: "#504038" }}
+          className="relative grow overflow-hidden rounded-full bg-stone-200 select-none data-horizontal:h-1.5 data-horizontal:w-full data-vertical:h-full data-vertical:w-1.5"
         >
           <SliderPrimitive.Indicator
             data-slot="slider-range"
-            className="bg-[#C17F59] select-none data-horizontal:h-full data-vertical:w-full"
+            className="bg-[var(--terracotta)] select-none data-horizontal:h-full data-vertical:w-full"
           />
         </SliderPrimitive.Track>
         {Array.from({ length: _values.length }, (_, index) => (
           <SliderPrimitive.Thumb
             data-slot="slider-thumb"
             key={index}
-            className="relative block size-4 shrink-0 rounded-full border-2 border-[#C17F59] bg-[#F5EFE6] shadow-md transition-[color,box-shadow] select-none after:absolute after:-inset-2 hover:ring-2 hover:ring-[#C17F59]/50 focus-visible:ring-2 focus-visible:ring-[#C17F59]/50 focus-visible:outline-hidden active:ring-2 active:ring-[#C17F59]/50 disabled:pointer-events-none disabled:opacity-50"
+            className="relative block size-4 shrink-0 rounded-full border-2 border-[var(--terracotta)] bg-white shadow-md transition-[color,box-shadow] select-none after:absolute after:-inset-2 hover:ring-2 hover:ring-[var(--terracotta)]/20 focus-visible:ring-2 focus-visible:ring-[var(--terracotta)]/20 focus-visible:outline-hidden active:ring-2 active:ring-[var(--terracotta)]/20 disabled:pointer-events-none disabled:opacity-50"
           />
         ))}
       </SliderPrimitive.Control>

@@ -1,11 +1,11 @@
 'use client';
 
-import { useMemo } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/financial/ui/card';
 import { Badge } from '@/components/financial/ui/badge';
-import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar, Cell } from 'recharts';
+import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { fmtChf, fmtEur, fmtPct } from '@/lib/format';
 import mcData from '@/data/montecarlo-results.json';
+import { CHART_THEME } from '@/lib/chart-theme';
 
 type MCResults = Record<string, any>;
 const results = mcData as MCResults;
@@ -15,7 +15,6 @@ const scenarioNames: Record<string, string> = {
   series_ab: 'Series A + B',
   full_vc: 'Full VC (A+B+C)',
 };
-const COLORS = ['#C17F59', '#C9A96E', '#8B4A2B', '#5B7FB5'];
 const milestones = ['M12', 'M24', 'M36', 'M48', 'M60'];
 
 function FanChart({ scenarioId, metric, label, formatter }: { scenarioId: string; metric: 'arr' | 'cash' | 'valuation'; label: string; formatter: (v: number) => string }) {
@@ -31,18 +30,18 @@ function FanChart({ scenarioId, metric, label, formatter }: { scenarioId: string
   return (
     <ResponsiveContainer width="100%" height={250}>
       <AreaChart data={data}>
-        <CartesianGrid strokeDasharray="3 3" stroke="#504038" />
-        <XAxis dataKey="month" tick={{ fill: '#A89A8C', fontSize: 11 }} />
-        <YAxis tick={{ fill: '#A89A8C', fontSize: 11 }} tickFormatter={v => formatter(v)} />
+        <CartesianGrid strokeDasharray="3 3" stroke={CHART_THEME.grid} />
+        <XAxis dataKey="month" tick={{ fill: CHART_THEME.tick, fontSize: 11 }} />
+        <YAxis tick={{ fill: CHART_THEME.tick, fontSize: 11 }} tickFormatter={v => formatter(v)} />
         <Tooltip
-          contentStyle={{ background: '#302520', border: '1px solid #4A3A30', borderRadius: 8, color: '#F5EFE6' }} labelStyle={{ color: '#F5EFE6' }} itemStyle={{ color: '#F5EFE6' }}
+          contentStyle={{ background: CHART_THEME.tooltip.bg, border: `1px solid ${CHART_THEME.tooltip.border}`, borderRadius: 8, color: CHART_THEME.tooltip.text }} labelStyle={{ color: CHART_THEME.tooltip.text }} itemStyle={{ color: CHART_THEME.tooltip.text }}
           formatter={(v: any, name: any) => [formatter(Number(v)), String(name)]}
         />
-        <Area type="monotone" dataKey="p90" stroke="none" fill="#C17F59" fillOpacity={0.1} name="P90" />
-        <Area type="monotone" dataKey="p75" stroke="none" fill="#C17F59" fillOpacity={0.15} name="P75" />
-        <Area type="monotone" dataKey="p50" stroke="#C17F59" strokeWidth={2} fill="#C17F59" fillOpacity={0.2} name="P50" />
-        <Area type="monotone" dataKey="p25" stroke="none" fill="#1A120B" fillOpacity={0.5} name="P25" />
-        <Area type="monotone" dataKey="p10" stroke="none" fill="#1A120B" fillOpacity={0.5} name="P10" />
+        <Area type="monotone" dataKey="p90" stroke="none" fill={CHART_THEME.terracotta} fillOpacity={0.1} name="P90" />
+        <Area type="monotone" dataKey="p75" stroke="none" fill={CHART_THEME.terracotta} fillOpacity={0.15} name="P75" />
+        <Area type="monotone" dataKey="p50" stroke={CHART_THEME.terracotta} strokeWidth={2} fill={CHART_THEME.terracotta} fillOpacity={0.2} name="P50" />
+        <Area type="monotone" dataKey="p25" stroke="none" fill={CHART_THEME.inkWash} fillOpacity={0.9} name="P25" />
+        <Area type="monotone" dataKey="p10" stroke="none" fill={CHART_THEME.inkWash} fillOpacity={0.65} name="P10" />
       </AreaChart>
     </ResponsiveContainer>
   );
@@ -83,19 +82,19 @@ export default function MonteCarloPage() {
               <tr className="border-b border-[var(--border)]">
                 <td className="py-2 text-[var(--color-muted-foreground)]">Vesting M12 (15+ paying)</td>
                 {Object.keys(scenarioNames).map(id => (
-                  <td key={id} className="py-2 text-right text-green-400">{fmtPct(results[id]?.probabilities.vestingM12 ?? 0)}</td>
+                  <td key={id} className="py-2 text-right text-emerald-600">{fmtPct(results[id]?.probabilities.vestingM12 ?? 0)}</td>
                 ))}
               </tr>
               <tr className="border-b border-[var(--border)]">
                 <td className="py-2 text-[var(--color-muted-foreground)]">Vesting M24 (ARR &ge; &euro;500K)</td>
                 {Object.keys(scenarioNames).map(id => (
-                  <td key={id} className="py-2 text-right text-green-400">{fmtPct(results[id]?.probabilities.vestingM24 ?? 0)}</td>
+                  <td key={id} className="py-2 text-right text-emerald-600">{fmtPct(results[id]?.probabilities.vestingM24 ?? 0)}</td>
                 ))}
               </tr>
               <tr className="border-b border-[var(--border)]">
                 <td className="py-2 text-[var(--color-muted-foreground)]">Vesting M36 (ARR &ge; &euro;1.5M)</td>
                 {Object.keys(scenarioNames).map(id => (
-                  <td key={id} className="py-2 text-right text-green-400">{fmtPct(results[id]?.probabilities.vestingM36 ?? 0)}</td>
+                  <td key={id} className="py-2 text-right text-emerald-600">{fmtPct(results[id]?.probabilities.vestingM36 ?? 0)}</td>
                 ))}
               </tr>
               {['M12', 'M24', 'M36'].map(m => (

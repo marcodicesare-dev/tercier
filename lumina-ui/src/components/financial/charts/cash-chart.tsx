@@ -2,6 +2,7 @@
 
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import type { MonthData } from '@/lib/financial-types';
+import { CHART_THEME } from '@/lib/chart-theme';
 
 interface CashChartProps {
   data: MonthData[];
@@ -18,31 +19,33 @@ export function CashChart({ data }: CashChartProps) {
       <AreaChart data={chartData}>
         <defs>
           <linearGradient id="cashGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="5%" stopColor="#C9A96E" stopOpacity={0.3} />
-            <stop offset="95%" stopColor="#C9A96E" stopOpacity={0} />
+            <stop offset="5%" stopColor={CHART_THEME.gold} stopOpacity={0.3} />
+            <stop offset="95%" stopColor={CHART_THEME.gold} stopOpacity={0} />
           </linearGradient>
         </defs>
-        <CartesianGrid strokeDasharray="3 3" stroke="#504038" />
+        <CartesianGrid strokeDasharray="3 3" stroke={CHART_THEME.grid} />
         <XAxis
           dataKey="month"
-          tick={{ fill: '#A89A8C', fontSize: 11 }}
+          tick={{ fill: CHART_THEME.tick, fontSize: 11 }}
           tickLine={false}
           interval={5}
         />
         <YAxis
-          tick={{ fill: '#A89A8C', fontSize: 11 }}
+          tick={{ fill: CHART_THEME.tick, fontSize: 11 }}
           tickLine={false}
           tickFormatter={v => `CHF ${(v / 1_000_000).toFixed(1)}M`}
         />
         <Tooltip
-          contentStyle={{ background: '#302520', border: '1px solid #4A3A30', borderRadius: 8, color: '#F5EFE6' }} labelStyle={{ color: '#F5EFE6' }} itemStyle={{ color: '#F5EFE6' }}
-          formatter={(v: any) => [`CHF ${Number(v).toLocaleString()}`, 'Cash']}
+          contentStyle={{ background: CHART_THEME.tooltip.bg, border: `1px solid ${CHART_THEME.tooltip.border}`, borderRadius: 12, color: CHART_THEME.tooltip.text }}
+          labelStyle={{ color: CHART_THEME.tooltip.text }}
+          itemStyle={{ color: CHART_THEME.tooltip.text }}
+          formatter={(v: any) => [`CHF ${Number(v).toLocaleString('en-CH')}`, 'Cash']}
         />
-        <ReferenceLine y={0} stroke="#DC2626" strokeDasharray="5 5" />
+        <ReferenceLine y={0} stroke={CHART_THEME.negative} strokeDasharray="5 5" />
         <Area
           type="monotone"
           dataKey="cash"
-          stroke="#C9A96E"
+          stroke={CHART_THEME.gold}
           strokeWidth={2}
           fill="url(#cashGrad)"
         />

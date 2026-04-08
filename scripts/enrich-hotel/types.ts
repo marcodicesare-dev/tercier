@@ -36,6 +36,8 @@ export interface PipelineContext {
   country?: string | null;
 }
 
+export type TerminalReviewStatus = 'identity_review_required';
+
 export interface DiscoveryResult {
   taLocationId?: string | null;
   gpPlaceId?: string | null;

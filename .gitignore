@@ -13,3 +13,47 @@ lumina-ui/.env.local
 lumina-ui/.next/
 lumina-ui/node_modules/
 .next/
+.deploy/
+
+# AI agent workspace junk
+.adal/
+.agents/
+.augment/
+.bob/
+.claude/skills/
+.codebuddy/
+.commandcode/
+.continue/
+.cortex/
+.crush/
+.factory/
+.goose/
+.iflow/
+.junie/
+.kilocode/
+.kiro/
+.kode/
+.mcpjam/
+.mux/
+.neovate/
+.openhands/
+.pi/
+.playwright-cli/
+.pochi/
+.qoder/
+.qwen/
+.roo/
+.trae/
+.vibe/
+.windsurf/
+.zencoder/
+.context/
+skills/
+skills-lock.json
+
+# Build artifacts
+tsconfig.tsbuildinfo
+package-lock.json
+
+# NLP batch cache
+scripts/nlp-pipeline/cache/

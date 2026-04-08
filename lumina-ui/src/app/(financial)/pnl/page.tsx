@@ -108,14 +108,14 @@ export default function PnlPage() {
               {model.annual.map(a => (
                 <tr key={a.year} className="border-b border-[var(--border)]">
                   <td className="py-2 font-medium">Y{a.year}</td>
-                  <td className="py-2 text-right text-green-400 tabular-nums">CHF {a.revenue.toLocaleString()}</td>
-                  <td className="py-2 text-right text-red-400 tabular-nums">CHF {a.costs.toLocaleString()}</td>
-                  <td className={`py-2 text-right font-bold tabular-nums ${a.ebitda >= 0 ? 'text-green-400' : 'text-red-400'}`}>
-                    CHF {a.ebitda.toLocaleString()}
+                  <td className="py-2 text-right text-emerald-600 tabular-nums">CHF {a.revenue.toLocaleString('en-CH')}</td>
+                  <td className="py-2 text-right text-red-600 tabular-nums">CHF {a.costs.toLocaleString('en-CH')}</td>
+                  <td className={`py-2 text-right font-bold tabular-nums ${a.ebitda >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
+                    CHF {a.ebitda.toLocaleString('en-CH')}
                   </td>
                   <td className="py-2 text-right tabular-nums">{(a.ebitdaMargin * 100).toFixed(1)}%</td>
                   <td className="py-2 text-right tabular-nums">{a.endPayingHotels}</td>
-                  <td className="py-2 text-right tabular-nums text-[var(--color-terracotta)]">€{Math.round(a.endArrEur).toLocaleString()}</td>
+                  <td className="py-2 text-right tabular-nums text-[var(--color-terracotta)]">€{Math.round(a.endArrEur).toLocaleString('en-CH')}</td>
                 </tr>
               ))}
             </tbody>

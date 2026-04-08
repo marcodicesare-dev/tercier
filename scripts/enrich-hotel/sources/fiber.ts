@@ -60,6 +60,7 @@ function confidenceFromTitleAndEmail(title: string | null, emailStatus: string |
 export async function runFiber(context: PipelineContext): Promise<SourceResult> {
   const websiteDomain = normalizeDomain(context.websiteUrl);
   const hotelName = context.input.name;
+  const cacheIdentity = [hotelName, context.input.city, context.input.country, websiteDomain].filter(Boolean).join('|');
   const apiKey = process.env.FIBER_API_KEY;
   if (!apiKey) {
     return { statuses: [statusSkipped('fiber', 'No Fiber API key')] };
@@ -68,7 +69,7 @@ export async function runFiber(context: PipelineContext): Promise<SourceResult> 
   try {
     const companyResult = await getCachedOrFetch<any>(
       CACHE_COMPANY,
-      hotelName,
+      cacheIdentity,
       async () =>
         await callFiber('/v1/kitchen-sink/company', {
           apiKey,
@@ -80,7 +81,7 @@ export async function runFiber(context: PipelineContext): Promise<SourceResult> 
 
     const personResult = await getCachedOrFetch<any>(
       CACHE_PERSON,
-      hotelName,
+      cacheIdentity,
       async () =>
         await callFiber('/v1/kitchen-sink/person', {
           apiKey,
@@ -90,6 +91,7 @@ export async function runFiber(context: PipelineContext): Promise<SourceResult> 
           getDetailedEducation: false,
           companyName: { value: hotelName },
           companyDomain: websiteDomain ? { value: websiteDomain } : null,
+          location: [context.input.city, context.input.country].filter(Boolean).join(', ') || null,
           jobTitle: { value: 'General Manager' },
         }),
     );

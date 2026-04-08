@@ -425,6 +425,9 @@ export interface HotelUpsert {
   dp_website_tech_cms?: string | null;
   dp_website_tech_booking?: string | null;
   dp_website_tech_analytics?: string | null;
+  dp_website_primary_language?: string | null;
+  dp_website_content_languages?: string | null;
+  dp_website_language_count?: number | null;
   dp_instagram_handle?: string | null;
   dp_instagram_exists?: boolean | null;
   dp_instagram_followers?: number | null;

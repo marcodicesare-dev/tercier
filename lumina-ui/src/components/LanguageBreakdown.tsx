@@ -47,11 +47,11 @@ export function LanguageBreakdown({
               {code}
             </span>
           )) : (
-            <span className="rounded-full bg-stone-100 px-3 py-1 text-xs text-stone-600">No website language signals captured</span>
+            <span className="rounded-full bg-stone-100 px-3 py-1 text-xs text-stone-600">Website language coverage not yet analyzed</span>
           )}
         </div>
       </div>
-      {gap ? (
+      {gap && supported.size > 0 ? (
         <div className="rounded-3xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
           Opportunity: {formatNumber(gap.review_count)} {gap.lang} reviews but no matching website content language signal. This is a direct localization gap, not a spoken-language guess.
         </div>

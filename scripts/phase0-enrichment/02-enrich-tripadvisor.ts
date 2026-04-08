@@ -11,7 +11,7 @@
  */
 import 'dotenv/config';
 import { resolve } from 'path';
-import { supabase, logPipelineStart, logPipelineEnd } from './lib/supabase.js';
+import { fetchAllRows, supabase, logPipelineStart, logPipelineEnd } from './lib/supabase.js';
 import { getDetails, nearbySearch, getReviews, getTACallCount } from './lib/tripadvisor-client.js';
 import { readCache, writeCache, isCacheFresh } from './lib/cache.js';
 import { ProgressLogger } from './lib/logger.js';
@@ -236,17 +236,15 @@ export default async function enrichTripadvisor(): Promise<void> {
   }
 
   // Fetch hotels that need enrichment
-  const { data: hotels, error: fetchError } = await supabase
-    .from('hotels')
-    .select('id, hs_slug, ta_location_id, name, city')
-    .eq('enrichment_status', 'ta_matched')
-    .not('ta_location_id', 'is', null)
-    .order('hs_slug')
-    .limit(LIMIT);
-
-  if (fetchError) {
-    throw new Error(`Failed to fetch hotels: ${fetchError.message}`);
-  }
+  const hotels = await fetchAllRows((from, to) =>
+    supabase
+      .from('hotels')
+      .select('id, hs_slug, ta_location_id, name, city')
+      .eq('enrichment_status', 'ta_matched')
+      .not('ta_location_id', 'is', null)
+      .order('hs_slug')
+      .range(from, to),
+  LIMIT);
 
   if (!hotels || hotels.length === 0) {
     console.log('No hotels need TA enrichment. All done or run step 1 first.');

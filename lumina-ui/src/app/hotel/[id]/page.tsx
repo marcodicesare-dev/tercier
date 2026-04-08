@@ -19,6 +19,7 @@ import {
   getContentSeedInsight,
   getDigitalOperationalInsight,
   getLanguageInsight,
+  getPersonaLabel,
   getPricingInsight,
   getQualityInsight,
   getTopicInsight,
@@ -175,9 +176,10 @@ export default async function HotelPage({ params }: { params: Promise<{ id: stri
   const compareTarget = data.competitors.find(competitor => competitor.competitor_id)?.competitor_id;
   const compareHref = compareTarget ? `/compare?ids=${hotel.hotel_id},${compareTarget}` : `/compare?ids=${hotel.hotel_id}`;
   const operationalItems = operationalSnapshot(hotel);
-  const personaCards = data.personas.slice(0, 3);
+  const personaCards = data.personas.filter(persona => Boolean(getPersonaLabel(persona))).slice(0, 3);
   const hasRepeatGuestCard = data.personaDeepDive.totalSignalReviews > 0;
   const hasTypicalStayCard = Boolean(primaryLengthOfStay);
+  const hasStayDetailColumn = personaCards.length > 0 || hasRepeatGuestCard || hasTypicalStayCard;
 
   return (
     <main className="space-y-8">
@@ -243,13 +245,14 @@ export default async function HotelPage({ params }: { params: Promise<{ id: stri
         <Section title="Who Stays Here">
           <div className="space-y-5">
             <p className="text-sm leading-6 text-stone-700">{stayInsight}</p>
-            <div className="grid gap-5 xl:grid-cols-[0.85fr_1.15fr]">
+            <div className={`grid gap-5 ${hasGuestSegmentSignal && hasStayDetailColumn ? 'xl:grid-cols-[0.85fr_1.15fr]' : 'xl:grid-cols-1'}`}>
               {hasGuestSegmentSignal ? (
                 <div className="rounded-3xl border border-stone-200 bg-white p-5">
                   <GuestSegmentPie hotel={hotel} />
                 </div>
               ) : null}
 
+              {hasStayDetailColumn ? (
               <div className="space-y-4">
                 {personaCards.length ? (
                   <div className="rounded-3xl border border-stone-200 bg-white p-5">
@@ -258,7 +261,7 @@ export default async function HotelPage({ params }: { params: Promise<{ id: stri
                       {personaCards.map(persona => (
                         <div key={`${persona.occasion}-${persona.spending_level}-${persona.group_detail}`} className="rounded-2xl bg-[var(--warm-cream)] p-4">
                           <p className="text-sm font-semibold text-[var(--lumina-ink)]">
-                            {[persona.occasion, persona.group_detail, persona.spending_level].filter(Boolean).map(titleCase).join(' · ')}
+                            {getPersonaLabel(persona)}
                           </p>
                           <p className="mt-1 text-sm text-stone-600">
                             {formatNumber(persona.review_count)} reviews · avg rating {formatDecimal(persona.avg_rating, 1)}
@@ -292,6 +295,7 @@ export default async function HotelPage({ params }: { params: Promise<{ id: stri
                   </div>
                 ) : null}
               </div>
+              ) : null}
             </div>
           </div>
         </Section>
@@ -332,12 +336,7 @@ export default async function HotelPage({ params }: { params: Promise<{ id: stri
 
       {hasTimelineSignal ? (
         <Section title="Review Momentum">
-          <div className="space-y-4">
-            <p className="text-sm leading-6 text-stone-700">
-              Review flow and score movement show whether the property is gaining traction or carrying unresolved issues forward.
-            </p>
-            <ReviewTimeline data={data.timeline} metricSnapshots={data.metricSnapshots} changes={data.changes} />
-          </div>
+          <ReviewTimeline data={data.timeline} metricSnapshots={data.metricSnapshots} changes={data.changes} />
         </Section>
       ) : null}
 

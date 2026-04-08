@@ -13,10 +13,11 @@ import {
 import { runLifeSimulation, getDefaultInputs, type LifeInputs, type TripPlan } from '@/lib/post-exit-sim';
 import { fmtChf } from '@/lib/format';
 import { Trash2, Plus } from 'lucide-react';
+import { CHART_THEME } from '@/lib/chart-theme';
 
 const EXIT_LEVELS = [5_000_000, 10_000_000, 20_000_000, 30_000_000, 40_000_000];
 const EXIT_LABELS = ['CHF 5M', 'CHF 10M', 'CHF 20M', 'CHF 30M', 'CHF 40M'];
-const COLORS = ['#8B4A2B', '#C17F59', '#C9A96E', '#6B8E5A', '#5B7FB5'];
+const COLORS = [CHART_THEME.deepTerracotta, CHART_THEME.terracotta, CHART_THEME.gold, CHART_THEME.positive, CHART_THEME.blue];
 
 function Section({ title, children }: { title: string; children: React.ReactNode }) {
   const [open, setOpen] = useState(true);
@@ -103,7 +104,7 @@ export default function PostExitPage() {
         {/* Exit selector */}
         <div className="grid grid-cols-5 gap-1">
           {EXIT_LEVELS.map((exit, i) => (
-            <button key={i} onClick={() => switchExit(i)} className={`py-1.5 rounded text-[10px] font-bold transition-all ${activeExit === i ? 'bg-[var(--color-terracotta)] text-[var(--color-ink)]' : 'bg-[var(--color-ink-light)] text-[var(--color-muted-foreground)] hover:text-[var(--color-cream)]'}`}>
+            <button key={i} onClick={() => switchExit(i)} className={`py-1.5 rounded text-[10px] font-bold transition-all ${activeExit === i ? 'bg-[var(--color-terracotta)] text-[var(--color-ink)]' : 'bg-[var(--color-ink-light)] text-[var(--color-muted-foreground)] hover:text-[var(--lumina-ink)]'}`}>
               {EXIT_LABELS[i]}
             </button>
           ))}
@@ -130,7 +131,7 @@ export default function PostExitPage() {
           <AssumptionSlider label="Dining out & bars" value={inputs.diningOut} onChange={v => update('diningOut', v)} min={500} max={5000} step={100} prefix="CHF " />
           <AssumptionSlider label="Subscriptions & misc" value={inputs.subscriptions} onChange={v => update('subscriptions', v)} min={50} max={500} step={25} prefix="CHF " />
           <AssumptionSlider label="Buffer / unexpected" value={inputs.miscMonthly} onChange={v => update('miscMonthly', v)} min={0} max={2000} step={100} prefix="CHF " />
-          <div className="text-[11px] text-[var(--color-terracotta)] font-mono pt-1">Total: CHF {monthlyLiving.toLocaleString()}/mo = CHF {(monthlyLiving * 12).toLocaleString()}/yr</div>
+          <div className="text-[11px] text-[var(--color-terracotta)] font-mono pt-1">Total: CHF {monthlyLiving.toLocaleString('en-CH')}/mo = CHF {(monthlyLiving * 12).toLocaleString('en-CH')}/yr</div>
         </Section>
 
         <Section title="Car">
@@ -151,20 +152,20 @@ export default function PostExitPage() {
             <div key={trip.id} className="bg-[var(--color-ink-light)] rounded p-2 space-y-1.5">
               <div className="flex items-center justify-between">
                 <input value={trip.name} onChange={e => updateTrip(trip.id, 'name', e.target.value)} className="text-[11px] font-medium bg-transparent text-[var(--color-cream)] border-none outline-none flex-1" />
-                <button onClick={() => removeTrip(trip.id)} className="text-[var(--color-muted-foreground)] hover:text-red-400"><Trash2 className="h-3 w-3" /></button>
+                <button onClick={() => removeTrip(trip.id)} className="text-[var(--color-muted-foreground)] hover:text-red-600"><Trash2 className="h-3 w-3" /></button>
               </div>
               <div className="grid grid-cols-3 gap-1">
                 <div>
                   <span className="text-[8px] text-[var(--color-muted-foreground)] block">Weeks</span>
-                  <input type="number" value={trip.weeks} onChange={e => updateTrip(trip.id, 'weeks', Number(e.target.value))} step={0.5} className="w-full h-5 text-[10px] text-center bg-[var(--color-ink)] border border-[var(--border)] rounded text-[var(--color-cream)]" />
+                  <input type="number" value={trip.weeks} onChange={e => updateTrip(trip.id, 'weeks', Number(e.target.value))} step={0.5} className="h-5 w-full rounded border border-[var(--border)] bg-white text-center text-[10px] text-[var(--lumina-ink)]" />
                 </div>
                 <div>
                   <span className="text-[8px] text-[var(--color-muted-foreground)] block">CHF/trip</span>
-                  <input type="number" value={trip.costPerTrip} onChange={e => updateTrip(trip.id, 'costPerTrip', Number(e.target.value))} step={500} className="w-full h-5 text-[10px] text-center bg-[var(--color-ink)] border border-[var(--border)] rounded text-[var(--color-cream)]" />
+                  <input type="number" value={trip.costPerTrip} onChange={e => updateTrip(trip.id, 'costPerTrip', Number(e.target.value))} step={500} className="h-5 w-full rounded border border-[var(--border)] bg-white text-center text-[10px] text-[var(--lumina-ink)]" />
                 </div>
                 <div>
                   <span className="text-[8px] text-[var(--color-muted-foreground)] block">×/yr</span>
-                  <input type="number" value={trip.perYear} onChange={e => updateTrip(trip.id, 'perYear', Number(e.target.value))} className="w-full h-5 text-[10px] text-center bg-[var(--color-ink)] border border-[var(--border)] rounded text-[var(--color-cream)]" />
+                  <input type="number" value={trip.perYear} onChange={e => updateTrip(trip.id, 'perYear', Number(e.target.value))} className="h-5 w-full rounded border border-[var(--border)] bg-white text-center text-[10px] text-[var(--lumina-ink)]" />
                 </div>
               </div>
             </div>
@@ -172,7 +173,7 @@ export default function PostExitPage() {
           <button onClick={addTrip} className="w-full py-1.5 text-[10px] text-[var(--color-terracotta)] border border-dashed border-[var(--color-deep-terracotta)] rounded hover:bg-[var(--color-ink-light)] flex items-center justify-center gap-1">
             <Plus className="h-3 w-3" /> Add trip
           </button>
-          <div className="text-[11px] text-[var(--color-terracotta)] font-mono pt-1">Total from trips: CHF {travelFromTrips.toLocaleString()}/yr</div>
+          <div className="text-[11px] text-[var(--color-terracotta)] font-mono pt-1">Total from trips: CHF {travelFromTrips.toLocaleString('en-CH')}/yr</div>
           <AssumptionSlider label="Override annual travel budget" value={inputs.travelBudget} onChange={v => update('travelBudget', v)} min={20000} max={300000} step={5000} prefix="CHF " />
         </Section>
 
@@ -214,17 +215,17 @@ export default function PostExitPage() {
           </div>
           <div className="bg-[var(--card)] border border-[var(--border)] rounded-lg p-3">
             <p className="text-[10px] text-[var(--color-muted-foreground)] uppercase">Annual Income</p>
-            <p className="text-xl font-bold text-green-400">{fmtChf(yr0.totalIncome)}/yr</p>
+            <p className="text-xl font-bold text-emerald-600">{fmtChf(yr0.totalIncome)}/yr</p>
             <p className="text-[9px] text-[var(--color-muted-foreground)]">Passive {fmtChf(yr0.passiveIncome)} + Wife {fmtChf(yr0.wifeIncome)}</p>
           </div>
           <div className="bg-[var(--card)] border border-[var(--border)] rounded-lg p-3">
             <p className="text-[10px] text-[var(--color-muted-foreground)] uppercase">Annual Expenses</p>
-            <p className="text-xl font-bold text-red-400">{fmtChf(yr0.totalExpenses)}/yr</p>
+            <p className="text-xl font-bold text-red-600">{fmtChf(yr0.totalExpenses)}/yr</p>
             <p className="text-[9px] text-[var(--color-muted-foreground)]">{fmtChf(Math.round(yr0.totalExpenses / 12))}/mo</p>
           </div>
           <div className="bg-[var(--card)] border border-[var(--border)] rounded-lg p-3">
             <p className="text-[10px] text-[var(--color-muted-foreground)] uppercase">Net Cashflow</p>
-            <p className={`text-xl font-bold ${yr0.netCashflow >= 0 ? 'text-green-400' : 'text-red-400'}`}>{fmtChf(yr0.netCashflow)}/yr</p>
+            <p className={`text-xl font-bold ${yr0.netCashflow >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>{fmtChf(yr0.netCashflow)}/yr</p>
             <p className="text-[9px] text-[var(--color-muted-foreground)]">{yr0.passiveIncomeCoversExpenses ? 'Passive income covers everything' : 'Needs wife income or drawdown'}</p>
           </div>
         </div>
@@ -237,21 +238,21 @@ export default function PostExitPage() {
           <CardContent>
             <ResponsiveContainer width="100%" height={200}>
               <BarChart data={[
-                { name: 'Housing', value: yr0.housing, fill: '#C17F59' },
-                { name: 'Living', value: yr0.living, fill: '#C9A96E' },
-                { name: 'Car', value: yr0.car, fill: '#8B4A2B' },
-                { name: 'Travel', value: yr0.travel, fill: '#6B8E5A' },
-                ...(yr0.property > 0 ? [{ name: 'Sardinia', value: yr0.property, fill: '#5B7FB5' }] : []),
-                ...(yr0.angel > 0 ? [{ name: 'Angel', value: yr0.angel, fill: '#A89A8C' }] : []),
-                { name: 'Tax', value: yr0.wealthTax, fill: '#DC2626' },
+                { name: 'Housing', value: yr0.housing, fill: CHART_THEME.terracotta },
+                { name: 'Living', value: yr0.living, fill: CHART_THEME.gold },
+                { name: 'Car', value: yr0.car, fill: CHART_THEME.deepTerracotta },
+                { name: 'Travel', value: yr0.travel, fill: CHART_THEME.positive },
+                ...(yr0.property > 0 ? [{ name: 'Sardinia', value: yr0.property, fill: CHART_THEME.blue }] : []),
+                ...(yr0.angel > 0 ? [{ name: 'Angel', value: yr0.angel, fill: CHART_THEME.tick }] : []),
+                { name: 'Tax', value: yr0.wealthTax, fill: CHART_THEME.negative },
               ]} layout="vertical">
-                <CartesianGrid strokeDasharray="3 3" stroke="#504038" />
-                <XAxis type="number" tick={{ fill: '#A89A8C', fontSize: 11 }} tickFormatter={v => fmtChf(v)} />
-                <YAxis type="category" dataKey="name" tick={{ fill: '#F5EFE6', fontSize: 11 }} width={70} />
-                <Tooltip contentStyle={{ background: '#302520', border: '1px solid #4A3A30', borderRadius: 8, color: '#F5EFE6' }} labelStyle={{ color: '#F5EFE6' }} itemStyle={{ color: '#F5EFE6' }} formatter={(v: any) => fmtChf(Number(v))} />
+                <CartesianGrid strokeDasharray="3 3" stroke={CHART_THEME.grid} />
+                <XAxis type="number" tick={{ fill: CHART_THEME.tick, fontSize: 11 }} tickFormatter={v => fmtChf(v)} />
+                <YAxis type="category" dataKey="name" tick={{ fill: CHART_THEME.tooltip.text, fontSize: 11 }} width={70} />
+                <Tooltip contentStyle={{ background: CHART_THEME.tooltip.bg, border: `1px solid ${CHART_THEME.tooltip.border}`, borderRadius: 8, color: CHART_THEME.tooltip.text }} labelStyle={{ color: CHART_THEME.tooltip.text }} itemStyle={{ color: CHART_THEME.tooltip.text }} formatter={(v: any) => fmtChf(Number(v))} />
                 <Bar dataKey="value">
                   {[yr0.housing, yr0.living, yr0.car, yr0.travel, yr0.property, yr0.angel, yr0.wealthTax].map((_, i) => (
-                    <Cell key={i} fill={['#C17F59', '#C9A96E', '#8B4A2B', '#6B8E5A', '#5B7FB5', '#A89A8C', '#DC2626'][i]} />
+                    <Cell key={i} fill={[CHART_THEME.terracotta, CHART_THEME.gold, CHART_THEME.deepTerracotta, CHART_THEME.positive, CHART_THEME.blue, CHART_THEME.tick, CHART_THEME.negative][i]} />
                   ))}
                 </Bar>
               </BarChart>
@@ -269,16 +270,16 @@ export default function PostExitPage() {
               <AreaChart data={projection.map(p => ({ year: p.year, age: p.age, netWorth: p.totalNetWorth, invested: p.investedAssets, realEstate: p.realEstateEquity }))}>
                 <defs>
                   <linearGradient id="nwGrad" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="5%" stopColor="#C9A96E" stopOpacity={0.3} />
-                    <stop offset="95%" stopColor="#C9A96E" stopOpacity={0} />
+                    <stop offset="5%" stopColor={CHART_THEME.gold} stopOpacity={0.3} />
+                    <stop offset="95%" stopColor={CHART_THEME.gold} stopOpacity={0} />
                   </linearGradient>
                 </defs>
-                <CartesianGrid strokeDasharray="3 3" stroke="#504038" />
-                <XAxis dataKey="year" tick={{ fill: '#A89A8C', fontSize: 11 }} />
-                <YAxis tick={{ fill: '#A89A8C', fontSize: 11 }} tickFormatter={v => fmtChf(v)} />
-                <Tooltip contentStyle={{ background: '#302520', border: '1px solid #4A3A30', borderRadius: 8, color: '#F5EFE6' }} labelStyle={{ color: '#F5EFE6' }} itemStyle={{ color: '#F5EFE6' }} formatter={(v: any) => fmtChf(Number(v))} />
-                <ReferenceLine y={0} stroke="#DC2626" strokeDasharray="5 5" />
-                <Area type="monotone" dataKey="netWorth" stroke="#C9A96E" strokeWidth={2} fill="url(#nwGrad)" name="Total Net Worth" />
+                <CartesianGrid strokeDasharray="3 3" stroke={CHART_THEME.grid} />
+                <XAxis dataKey="year" tick={{ fill: CHART_THEME.tick, fontSize: 11 }} />
+                <YAxis tick={{ fill: CHART_THEME.tick, fontSize: 11 }} tickFormatter={v => fmtChf(v)} />
+                <Tooltip contentStyle={{ background: CHART_THEME.tooltip.bg, border: `1px solid ${CHART_THEME.tooltip.border}`, borderRadius: 8, color: CHART_THEME.tooltip.text }} labelStyle={{ color: CHART_THEME.tooltip.text }} itemStyle={{ color: CHART_THEME.tooltip.text }} formatter={(v: any) => fmtChf(Number(v))} />
+                <ReferenceLine y={0} stroke={CHART_THEME.negative} strokeDasharray="5 5" />
+                <Area type="monotone" dataKey="netWorth" stroke={CHART_THEME.gold} strokeWidth={2} fill="url(#nwGrad)" name="Total Net Worth" />
               </AreaChart>
             </ResponsiveContainer>
             <div className="grid grid-cols-4 gap-3 mt-3 text-center">
@@ -304,10 +305,10 @@ export default function PostExitPage() {
                 allScenarios.forEach((s, si) => { point[s.label] = s.projection[i]?.totalNetWorth ?? 0; });
                 return point;
               })}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#504038" />
-                <XAxis dataKey="year" tick={{ fill: '#A89A8C', fontSize: 11 }} />
-                <YAxis tick={{ fill: '#A89A8C', fontSize: 11 }} tickFormatter={v => fmtChf(v)} />
-                <Tooltip contentStyle={{ background: '#302520', border: '1px solid #4A3A30', borderRadius: 8, color: '#F5EFE6' }} labelStyle={{ color: '#F5EFE6' }} itemStyle={{ color: '#F5EFE6' }} formatter={(v: any) => fmtChf(Number(v))} />
+                <CartesianGrid strokeDasharray="3 3" stroke={CHART_THEME.grid} />
+                <XAxis dataKey="year" tick={{ fill: CHART_THEME.tick, fontSize: 11 }} />
+                <YAxis tick={{ fill: CHART_THEME.tick, fontSize: 11 }} tickFormatter={v => fmtChf(v)} />
+                <Tooltip contentStyle={{ background: CHART_THEME.tooltip.bg, border: `1px solid ${CHART_THEME.tooltip.border}`, borderRadius: 8, color: CHART_THEME.tooltip.text }} labelStyle={{ color: CHART_THEME.tooltip.text }} itemStyle={{ color: CHART_THEME.tooltip.text }} formatter={(v: any) => fmtChf(Number(v))} />
                 <Legend />
                 {allScenarios.map((s, i) => (
                   <Line key={i} type="monotone" dataKey={s.label} stroke={COLORS[i]} strokeWidth={i === activeExit ? 3 : 1.5} dot={false} opacity={i === activeExit ? 1 : 0.5} />
@@ -325,13 +326,13 @@ export default function PostExitPage() {
           <CardContent>
             <ResponsiveContainer width="100%" height={250}>
               <LineChart data={projection.map(p => ({ year: p.year, income: p.totalIncome, expenses: p.totalExpenses }))}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#504038" />
-                <XAxis dataKey="year" tick={{ fill: '#A89A8C', fontSize: 11 }} />
-                <YAxis tick={{ fill: '#A89A8C', fontSize: 11 }} tickFormatter={v => fmtChf(v)} />
-                <Tooltip contentStyle={{ background: '#302520', border: '1px solid #4A3A30', borderRadius: 8, color: '#F5EFE6' }} labelStyle={{ color: '#F5EFE6' }} itemStyle={{ color: '#F5EFE6' }} formatter={(v: any) => fmtChf(Number(v))} />
+                <CartesianGrid strokeDasharray="3 3" stroke={CHART_THEME.grid} />
+                <XAxis dataKey="year" tick={{ fill: CHART_THEME.tick, fontSize: 11 }} />
+                <YAxis tick={{ fill: CHART_THEME.tick, fontSize: 11 }} tickFormatter={v => fmtChf(v)} />
+                <Tooltip contentStyle={{ background: CHART_THEME.tooltip.bg, border: `1px solid ${CHART_THEME.tooltip.border}`, borderRadius: 8, color: CHART_THEME.tooltip.text }} labelStyle={{ color: CHART_THEME.tooltip.text }} itemStyle={{ color: CHART_THEME.tooltip.text }} formatter={(v: any) => fmtChf(Number(v))} />
                 <Legend />
-                <Line type="monotone" dataKey="income" stroke="#6B8E5A" strokeWidth={2} dot={false} name="Income" />
-                <Line type="monotone" dataKey="expenses" stroke="#DC2626" strokeWidth={2} dot={false} name="Expenses" />
+                <Line type="monotone" dataKey="income" stroke={CHART_THEME.positive} strokeWidth={2} dot={false} name="Income" />
+                <Line type="monotone" dataKey="expenses" stroke={CHART_THEME.negative} strokeWidth={2} dot={false} name="Expenses" />
               </LineChart>
             </ResponsiveContainer>
           </CardContent>
@@ -356,12 +357,12 @@ export default function PostExitPage() {
                   <tr key={p.year} className="border-b border-[var(--border)] hover:bg-[var(--color-ink-light)]">
                     <td className="py-1 px-2 text-[var(--color-cream)]">{p.year}</td>
                     <td className="py-1 px-2 text-right">{p.age}</td>
-                    <td className="py-1 px-2 text-right text-green-400 tabular-nums">{fmtChf(p.totalIncome)}</td>
-                    <td className="py-1 px-2 text-right text-red-400 tabular-nums">{fmtChf(p.totalExpenses)}</td>
-                    <td className={`py-1 px-2 text-right font-medium tabular-nums ${p.netCashflow >= 0 ? 'text-green-400' : 'text-red-400'}`}>{fmtChf(p.netCashflow)}</td>
+                    <td className="py-1 px-2 text-right text-emerald-600 tabular-nums">{fmtChf(p.totalIncome)}</td>
+                    <td className="py-1 px-2 text-right text-red-600 tabular-nums">{fmtChf(p.totalExpenses)}</td>
+                    <td className={`py-1 px-2 text-right font-medium tabular-nums ${p.netCashflow >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>{fmtChf(p.netCashflow)}</td>
                     <td className="py-1 px-2 text-right text-[var(--color-gold)] font-medium tabular-nums">{fmtChf(p.totalNetWorth)}</td>
                     <td className="py-1 px-2 text-right">
-                      <Badge className={`text-[8px] ${p.passiveIncomeCoversExpenses ? 'bg-green-600/20 text-green-400' : 'bg-red-600/20 text-red-400'}`}>
+                      <Badge className={`text-[8px] ${p.passiveIncomeCoversExpenses ? 'bg-emerald-600/10 text-emerald-700' : 'bg-red-600/10 text-red-700'}`}>
                         {p.passiveIncomeCoversExpenses ? 'YES' : 'NO'}
                       </Badge>
                     </td>
@@ -398,7 +399,7 @@ export default function PostExitPage() {
               ].map(([label, val], i) => (
                 <div key={i} className="flex justify-between text-[11px] py-0.5">
                   <span className="text-[var(--color-muted-foreground)]">{label}</span>
-                  <span className="text-[var(--color-cream)] font-mono tabular-nums">CHF {Number(val).toLocaleString()}</span>
+                  <span className="text-[var(--color-cream)] font-mono tabular-nums">CHF {Number(val).toLocaleString('en-CH')}</span>
                 </div>
               ))}
               <div className="col-span-2 flex justify-between text-sm font-bold pt-2 border-t border-[var(--color-terracotta)]">

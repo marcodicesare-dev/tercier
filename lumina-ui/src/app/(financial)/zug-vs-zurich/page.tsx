@@ -3,8 +3,9 @@
 import { useModel } from '@/components/financial/model-context';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/financial/ui/card';
 import { MetricCard } from '@/components/financial/metric-card';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, Legend } from 'recharts';
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
 import { fmtChf } from '@/lib/format';
+import { CHART_THEME } from '@/lib/chart-theme';
 
 const TAX_RATES = {
   zug: 0.1182,
@@ -71,13 +72,13 @@ export default function ZugVsZurichPage() {
         <CardContent>
           <ResponsiveContainer width="100%" height={250}>
             <BarChart data={chartData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="#504038" />
-              <XAxis dataKey="year" tick={{ fill: '#A89A8C', fontSize: 12 }} />
-              <YAxis tick={{ fill: '#A89A8C', fontSize: 11 }} tickFormatter={v => fmtChf(v)} />
-              <Tooltip contentStyle={{ background: '#302520', border: '1px solid #4A3A30', borderRadius: 8, color: '#F5EFE6' }} labelStyle={{ color: '#F5EFE6' }} itemStyle={{ color: '#F5EFE6' }} formatter={(v: any) => fmtChf(Number(v))} />
+              <CartesianGrid strokeDasharray="3 3" stroke={CHART_THEME.grid} />
+              <XAxis dataKey="year" tick={{ fill: CHART_THEME.tick, fontSize: 12 }} />
+              <YAxis tick={{ fill: CHART_THEME.tick, fontSize: 11 }} tickFormatter={v => fmtChf(v)} />
+              <Tooltip contentStyle={{ background: CHART_THEME.tooltip.bg, border: `1px solid ${CHART_THEME.tooltip.border}`, borderRadius: 8, color: CHART_THEME.tooltip.text }} labelStyle={{ color: CHART_THEME.tooltip.text }} itemStyle={{ color: CHART_THEME.tooltip.text }} formatter={(v: any) => fmtChf(Number(v))} />
               <Legend />
-              <Bar dataKey="Zug/Baar" fill="#6B8E5A" />
-              <Bar dataKey="Zurich" fill="#DC2626" />
+              <Bar dataKey="Zug/Baar" fill={CHART_THEME.positive} />
+              <Bar dataKey="Zurich" fill={CHART_THEME.negative} />
             </BarChart>
           </ResponsiveContainer>
         </CardContent>
@@ -105,9 +106,9 @@ export default function ZugVsZurichPage() {
               {yearData.map(d => (
                 <tr key={d.year} className="border-b border-[var(--border)]">
                   <td className="py-2 font-medium">{d.year}</td>
-                  <td className={`py-2 text-right tabular-nums ${d.ebitda >= 0 ? 'text-green-400' : 'text-red-400'}`}>{fmtChf(d.ebitda)}</td>
+                  <td className={`py-2 text-right tabular-nums ${d.ebitda >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>{fmtChf(d.ebitda)}</td>
                   <td className="py-2 text-right tabular-nums">{fmtChf(d.zugTax)}</td>
-                  <td className="py-2 text-right tabular-nums text-green-400">{fmtChf(d.zugAfterTax)}</td>
+                  <td className="py-2 text-right tabular-nums text-emerald-600">{fmtChf(d.zugAfterTax)}</td>
                   <td className="py-2 text-right tabular-nums">{fmtChf(d.zurichTax)}</td>
                   <td className="py-2 text-right tabular-nums">{fmtChf(d.zurichAfterTax)}</td>
                   <td className="py-2 text-right tabular-nums text-[var(--color-gold)] font-bold">{fmtChf(d.savings)}</td>

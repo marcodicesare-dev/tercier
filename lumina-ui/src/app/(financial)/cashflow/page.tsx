@@ -11,7 +11,7 @@ function fmtCHF(v: number): string {
   if (v === 0) return '-';
   const neg = v < 0;
   const abs = Math.abs(Math.round(v));
-  return neg ? `(${abs.toLocaleString()})` : abs.toLocaleString();
+  return neg ? `(${abs.toLocaleString('en-CH')})` : abs.toLocaleString('en-CH');
 }
 
 export default function CashFlowPage() {
@@ -70,7 +70,7 @@ export default function CashFlowPage() {
                   <tr className="border-b border-[var(--border)]">
                     <td className="sticky left-0 bg-[var(--card)] z-10 px-3 py-1.5 text-[var(--color-muted-foreground)]">Revenue</td>
                     {data.map(d => (
-                      <td key={d.month} className="px-2 py-1.5 text-right tabular-nums text-green-400">{fmtCHF(d.rev)}</td>
+                      <td key={d.month} className="px-2 py-1.5 text-right tabular-nums text-emerald-600">{fmtCHF(d.rev)}</td>
                     ))}
                   </tr>
                   <tr className="border-b border-[var(--border)] bg-[var(--color-ink-light)]">
@@ -161,7 +161,7 @@ export default function CashFlowPage() {
                   <tr className="border-b border-[var(--border)] bg-[var(--color-ink-light)]">
                     <td className="sticky left-0 bg-[var(--color-ink-light)] z-10 px-3 py-1.5 font-bold text-[var(--color-cream)]">Total Outflows</td>
                     {data.map(d => (
-                      <td key={d.month} className="px-2 py-1.5 text-right tabular-nums font-bold text-red-400">{fmtCHF(d.totalCosts)}</td>
+                      <td key={d.month} className="px-2 py-1.5 text-right tabular-nums font-bold text-red-600">{fmtCHF(d.totalCosts)}</td>
                     ))}
                   </tr>
 
@@ -173,7 +173,7 @@ export default function CashFlowPage() {
                     {data.map(d => {
                       const net = d.cashIn - d.totalCosts;
                       return (
-                        <td key={d.month} className={`px-2 py-1.5 text-right tabular-nums ${net >= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                        <td key={d.month} className={`px-2 py-1.5 text-right tabular-nums ${net >= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
                           {fmtCHF(net)}
                         </td>
                       );
@@ -182,7 +182,7 @@ export default function CashFlowPage() {
                   <tr className="border-b border-[var(--border)] bg-[var(--color-ink-light)]">
                     <td className="sticky left-0 bg-[var(--color-ink-light)] z-10 px-3 py-1.5 font-bold text-[var(--color-cream)]">Closing Balance</td>
                     {data.map(d => (
-                      <td key={d.month} className={`px-2 py-1.5 text-right tabular-nums font-bold ${d.closing >= 0 ? 'text-[var(--color-gold)]' : 'text-red-400'}`}>
+                      <td key={d.month} className={`px-2 py-1.5 text-right tabular-nums font-bold ${d.closing >= 0 ? 'text-[var(--color-gold)]' : 'text-red-600'}`}>
                         {fmtCHF(Math.round(d.closing))}
                       </td>
                     ))}
@@ -192,7 +192,7 @@ export default function CashFlowPage() {
                     {data.map(d => {
                       const burn = d.totalCosts - d.rev;
                       return (
-                        <td key={d.month} className={`px-2 py-1.5 text-right tabular-nums ${burn <= 0 ? 'text-green-400' : 'text-red-400'}`}>
+                        <td key={d.month} className={`px-2 py-1.5 text-right tabular-nums ${burn <= 0 ? 'text-emerald-600' : 'text-red-600'}`}>
                           {burn <= 0 ? 'Profitable' : fmtCHF(burn)}
                         </td>
                       );
@@ -201,7 +201,7 @@ export default function CashFlowPage() {
                   <tr className="border-b border-[var(--border)]">
                     <td className="sticky left-0 bg-[var(--card)] z-10 px-3 py-1.5 text-[var(--color-muted-foreground)]">Runway (months)</td>
                     {data.map(d => (
-                      <td key={d.month} className={`px-2 py-1.5 text-right tabular-nums ${d.runway >= 999 ? 'text-green-400' : d.runway >= 12 ? 'text-[var(--color-gold)]' : d.runway >= 6 ? 'text-[var(--color-cream)]' : 'text-red-400'}`}>
+                      <td key={d.month} className={`px-2 py-1.5 text-right tabular-nums ${d.runway >= 999 ? 'text-emerald-600' : d.runway >= 12 ? 'text-[var(--color-gold)]' : d.runway >= 6 ? 'text-[var(--lumina-ink)]' : 'text-red-600'}`}>
                         {fmtRunway(d.runway)}
                       </td>
                     ))}
@@ -209,7 +209,7 @@ export default function CashFlowPage() {
                   <tr className="border-b border-[var(--border)]">
                     <td className="sticky left-0 bg-[var(--card)] z-10 px-3 py-1.5 text-[var(--color-muted-foreground)]">6-month clause met?</td>
                     {data.map(d => (
-                      <td key={d.month} className={`px-2 py-1.5 text-right tabular-nums font-medium ${d.clauseMet ? 'text-green-400' : 'text-red-400'}`}>
+                      <td key={d.month} className={`px-2 py-1.5 text-right tabular-nums font-medium ${d.clauseMet ? 'text-emerald-600' : 'text-red-600'}`}>
                         {d.clauseMet ? 'YES' : 'NO'}
                       </td>
                     ))}

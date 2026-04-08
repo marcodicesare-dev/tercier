@@ -134,8 +134,8 @@ export function PortfolioFilters({
       </label>
 
       <div className="flex items-end justify-end md:col-span-4">
-        <span className="text-xs uppercase tracking-[0.18em] text-stone-500">
-          {isPending ? 'Updating view' : 'Filters update instantly. Press Enter in search.'}
+        <span className="text-xs text-stone-500">
+          {isPending ? 'Updating view…' : 'Dropdowns filter instantly. Press Enter to search by name.'}
         </span>
       </div>
     </form>

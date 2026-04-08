@@ -14,7 +14,7 @@
  *   tsx scripts/phase0-enrichment/05-compute-derived-fields.ts [--limit N]
  */
 import 'dotenv/config';
-import { supabase, logPipelineStart, logPipelineEnd } from './lib/supabase.js';
+import { fetchAllRows, supabase, logPipelineStart, logPipelineEnd } from './lib/supabase.js';
 import { ProgressLogger } from './lib/logger.js';
 import type { HotelUpsert } from './lib/types.js';
 
@@ -242,16 +242,14 @@ export default async function computeDerivedFields(): Promise<void> {
   console.log('\n--- Step 5: Compute Derived Fields ---\n');
 
   // Fetch all hotels that have been enriched
-  const { data: hotels, error: fetchError } = await supabase
-    .from('hotels')
-    .select('*')
-    .in('enrichment_status', ['ta_enriched', 'gp_enriched', 'ta_match_failed'])
-    .order('hs_slug')
-    .limit(LIMIT);
-
-  if (fetchError) {
-    throw new Error(`Failed to fetch hotels: ${fetchError.message}`);
-  }
+  const hotels = await fetchAllRows((from, to) =>
+    supabase
+      .from('hotels')
+      .select('*')
+      .in('enrichment_status', ['ta_enriched', 'gp_enriched', 'ta_match_failed'])
+      .order('hs_slug')
+      .range(from, to),
+  LIMIT);
 
   if (!hotels || hotels.length === 0) {
     console.log('No hotels need computation. Run enrichment steps first.');

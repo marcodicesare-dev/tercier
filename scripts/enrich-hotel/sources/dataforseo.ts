@@ -71,6 +71,29 @@ function parseInstagramHandle(urls: unknown): string | null {
   return null;
 }
 
+function normalizeLanguageCode(value: unknown): string | null {
+  if (typeof value !== 'string') return null;
+  const normalized = value.trim().toLowerCase().replace(/_/g, '-');
+  return normalized || null;
+}
+
+function toWebsiteLanguageSignals(techItem: Record<string, unknown> | null | undefined): {
+  primaryLanguage: string | null;
+  contentLanguages: string | null;
+  languageCount: number | null;
+} {
+  const languages = new Set<string>();
+  const primaryLanguage = normalizeLanguageCode(techItem?.content_language_code) ?? normalizeLanguageCode(techItem?.language_code);
+  if (primaryLanguage) languages.add(primaryLanguage);
+
+  const contentLanguages = [...languages];
+  return {
+    primaryLanguage,
+    contentLanguages: contentLanguages.length ? contentLanguages.join(' | ') : null,
+    languageCount: contentLanguages.length || null,
+  };
+}
+
 export async function runDataForSeo(context: PipelineContext): Promise<SourceResult> {
   const domain = normalizeDomain(context.websiteUrl);
   if (!domain) {
@@ -120,6 +143,7 @@ export async function runDataForSeo(context: PipelineContext): Promise<SourceRes
     const paid = metrics.paid ?? {};
     const { cms, analytics } = detectTech(techItem?.technologies ?? null);
     const instagramHandle = parseInstagramHandle(techItem?.social_graph_urls);
+    const languageSignals = toWebsiteLanguageSignals(techItem);
 
     return {
       hotel: {
@@ -130,6 +154,9 @@ export async function runDataForSeo(context: PipelineContext): Promise<SourceRes
         seo_domain_authority: typeof rankItem?.rank === 'number' ? Math.round(rankItem.rank) : null,
         dp_website_tech_cms: cms,
         dp_website_tech_analytics: analytics,
+        dp_website_primary_language: languageSignals.primaryLanguage,
+        dp_website_content_languages: languageSignals.contentLanguages,
+        dp_website_language_count: languageSignals.languageCount,
         dp_instagram_handle: instagramHandle,
         dp_instagram_exists: instagramHandle ? true : null,
         phone: cleanString(Array.isArray(techItem?.phone_numbers) ? techItem.phone_numbers[0] : null) ?? context.phone ?? null,

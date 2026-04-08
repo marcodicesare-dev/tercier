@@ -1,9 +1,12 @@
+'use client';
+
+import { useState } from 'react';
 import type { HotelAmenityRow, HotelDashboardRow } from '@/lib/types';
 import { formatNumber, titleCase } from '@/lib/utils';
 
 const FLAG_AMENITIES: Array<{ key: keyof HotelDashboardRow; label: string; category: string }> = [
   { key: 'ta_has_free_wifi', label: 'Free Wi-Fi', category: 'technology' },
-  { key: 'ta_has_pool', label: 'Pool', category: 'wellness' },
+  { key: 'ta_has_pool', label: 'Pool', category: 'pool' },
   { key: 'ta_has_spa', label: 'Spa', category: 'wellness' },
   { key: 'ta_has_fitness', label: 'Fitness', category: 'wellness' },
   { key: 'ta_has_restaurant', label: 'Restaurant', category: 'dining' },
@@ -35,12 +38,17 @@ const CATEGORY_STYLES: Record<string, string> = {
   rooms: 'bg-orange-50 text-orange-700',
   family: 'bg-violet-50 text-violet-700',
   sustainability: 'bg-teal-50 text-teal-700',
+  pool: 'bg-cyan-50 text-cyan-700',
 };
 
+const DEFAULT_CATEGORY_ORDER = ['wellness', 'dining', 'pool', 'service', 'access', 'business', 'rooms', 'technology', 'family'];
+
 export function AmenitiesGrid({ hotel, amenities }: { hotel: HotelDashboardRow; amenities: HotelAmenityRow[] }) {
+  const [expanded, setExpanded] = useState(false);
   const grouped = new Map<string, Set<string>>();
+
   for (const amenity of amenities) {
-    const category = amenity.category ?? 'other';
+    const category = (amenity.category ?? 'other').trim().toLowerCase();
     if (!grouped.has(category)) grouped.set(category, new Set<string>());
     grouped.get(category)?.add(amenity.amenity);
   }
@@ -57,21 +65,44 @@ export function AmenitiesGrid({ hotel, amenities }: { hotel: HotelDashboardRow; 
       category,
       items: [...items].sort((a, b) => a.localeCompare(b)),
     }))
-    .sort((a, b) => b.items.length - a.items.length);
+    .sort((left, right) => {
+      const leftIndex = DEFAULT_CATEGORY_ORDER.indexOf(left.category);
+      const rightIndex = DEFAULT_CATEGORY_ORDER.indexOf(right.category);
+      if (leftIndex !== -1 || rightIndex !== -1) {
+        if (leftIndex === -1) return 1;
+        if (rightIndex === -1) return -1;
+        return leftIndex - rightIndex;
+      }
+      return right.items.length - left.items.length;
+    });
 
   if (!groups.length) {
     return <p className="text-sm text-stone-500">No amenity inventory captured yet.</p>;
   }
 
   const totalAmenities = groups.reduce((sum, group) => sum + group.items.length, 0);
+  const collapsedGroups = groups.filter(group => group.category !== 'other').slice(0, 5);
+  const visibleGroups = expanded ? groups : collapsedGroups.map(group => ({ ...group, items: group.items.slice(0, 5) }));
 
   return (
     <div className="space-y-5">
-      <p className="text-sm text-stone-600">
-        {formatNumber(totalAmenities)} amenities across {formatNumber(groups.length)} categories.
-      </p>
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p className="text-sm text-stone-600">
+          {formatNumber(totalAmenities)} amenities across {formatNumber(groups.length)} categories.
+        </p>
+        {groups.length > collapsedGroups.length || groups.some(group => group.items.length > 5) ? (
+          <button
+            type="button"
+            onClick={() => setExpanded(value => !value)}
+            className="rounded-full border border-stone-200 bg-white px-4 py-2 text-sm text-stone-700 hover:border-stone-300"
+          >
+            {expanded ? 'Show fewer amenities' : `Show all ${formatNumber(totalAmenities)} amenities`}
+          </button>
+        ) : null}
+      </div>
+
       <div className="grid gap-4 lg:grid-cols-2">
-        {groups.map(group => (
+        {visibleGroups.map(group => (
           <div key={group.category} className="rounded-3xl border border-stone-200 bg-white p-4">
             <div className="flex items-center justify-between">
               <h4 className="text-sm font-semibold text-[var(--lumina-ink)]">{titleCase(group.category)}</h4>

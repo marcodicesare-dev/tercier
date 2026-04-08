@@ -11,7 +11,7 @@ import 'dotenv/config';
 import { writeFileSync, mkdirSync, existsSync } from 'fs';
 import { resolve, dirname } from 'path';
 import { stringify } from 'csv-stringify/sync';
-import { supabase, logPipelineStart, logPipelineEnd } from './lib/supabase.js';
+import { fetchAllRows, supabase, logPipelineStart, logPipelineEnd } from './lib/supabase.js';
 
 // ── CLI args ──
 const args = process.argv.slice(2);
@@ -83,16 +83,14 @@ export default async function exportIntelligence(): Promise<void> {
   console.log('\n--- Step 6: Export Intelligence to CSV ---\n');
 
   // Fetch all computed hotels
-  const { data: hotels, error: fetchError } = await supabase
-    .from('hotels')
-    .select('*')
-    .eq('enrichment_status', 'computed')
-    .order('score_tos', { ascending: false, nullsFirst: false })
-    .limit(LIMIT);
-
-  if (fetchError) {
-    throw new Error(`Failed to fetch hotels: ${fetchError.message}`);
-  }
+  const hotels = await fetchAllRows((from, to) =>
+    supabase
+      .from('hotels')
+      .select('*')
+      .eq('enrichment_status', 'computed')
+      .order('score_tos', { ascending: false, nullsFirst: false })
+      .range(from, to),
+  LIMIT);
 
   if (!hotels || hotels.length === 0) {
     console.log('No computed hotels to export. Run step 5 first.');

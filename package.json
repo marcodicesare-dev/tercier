@@ -7,6 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "kempinski:stage-railway": "tsx scripts/kempinski/stage-railway-context.ts",
+    "kempinski:supervisor": "tsx scripts/kempinski/supervisor.ts",
+    "kempinski:status": "tsx scripts/kempinski/status.ts",
     "enrich": "tsx scripts/enrich-hotel/enrich.ts",
     "nlp:extract": "tsx scripts/nlp-pipeline/extract.ts",
     "enrich:hotel-contacts": "tsx scripts/hotel-contact-enrichment/01-enrich-decision-makers.ts",
@@ -54,6 +57,7 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "16.2.2",
+    "supabase": "^2.87.0",
     "tailwindcss": "^4",
     "tsx": "^4.21.0",
     "typescript": "^5"

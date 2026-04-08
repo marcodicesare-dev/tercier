@@ -36,11 +36,11 @@ export function MonthlyTable({ data, columns }: MonthlyTableProps) {
         <table className="w-full text-xs">
           <thead>
             <tr className="bg-[var(--color-deep-terracotta)]">
-              <th className="sticky left-0 bg-[var(--color-deep-terracotta)] z-10 px-3 py-2 text-left text-[var(--color-cream)] font-medium w-56 min-w-56">
+              <th className="sticky left-0 z-10 w-56 min-w-56 bg-[var(--color-deep-terracotta)] px-3 py-2 text-left font-medium text-white">
                 Item
               </th>
               {data.map(d => (
-                <th key={d.month} className="px-2 py-2 text-right text-[var(--color-cream)] font-medium min-w-20">
+                <th key={d.month} className="min-w-20 px-2 py-2 text-right font-medium text-white">
                   M{d.month}
                 </th>
               ))}
@@ -68,7 +68,7 @@ export function MonthlyTable({ data, columns }: MonthlyTableProps) {
                     key={col.key}
                     className={`border-b border-[var(--border)] hover:bg-[var(--color-ink-light)] ${col.bold ? 'bg-[var(--color-ink-light)]' : ''}`}
                   >
-                    <td className={`sticky left-0 bg-[var(--card)] z-10 px-3 py-1.5 ${col.bold ? 'font-bold text-[var(--color-cream)] bg-[var(--color-ink-light)]' : 'text-[var(--color-muted-foreground)]'}`}>
+                    <td className={`sticky left-0 z-10 bg-[var(--card)] px-3 py-1.5 ${col.bold ? 'bg-[var(--color-ink-light)] font-bold text-[var(--lumina-ink)]' : 'text-[var(--color-muted-foreground)]'}`}>
                       {col.label}
                     </td>
                     {data.map(d => {
@@ -76,7 +76,7 @@ export function MonthlyTable({ data, columns }: MonthlyTableProps) {
                       return (
                         <td
                           key={d.month}
-                          className={`px-2 py-1.5 text-right tabular-nums ${col.bold ? 'font-bold' : ''} ${v < 0 ? 'text-red-400' : v > 0 ? 'text-[var(--color-cream)]' : 'text-[var(--color-muted-foreground)]'}`}
+                          className={`px-2 py-1.5 text-right tabular-nums ${col.bold ? 'font-bold' : ''} ${v < 0 ? 'text-red-600' : v > 0 ? 'text-[var(--lumina-ink)]' : 'text-[var(--color-muted-foreground)]'}`}
                         >
                           {fmt(v)}
                         </td>

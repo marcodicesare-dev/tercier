@@ -37,7 +37,7 @@ export default function DashboardPage() {
     if (Math.abs(diff) < 1) return null;
     const pct = prev !== 0 ? ((diff / Math.abs(prev)) * 100).toFixed(0) : '∞';
     return (
-      <span className={`text-[10px] ml-1 ${diff > 0 ? 'text-green-400' : 'text-red-400'}`}>
+      <span className={`ml-1 text-[10px] ${diff > 0 ? 'text-emerald-600' : 'text-red-600'}`}>
         {diff > 0 ? '+' : ''}{pct}%
       </span>
     );
@@ -61,7 +61,7 @@ export default function DashboardPage() {
                 <X className="h-3 w-3" /> Clear comparison
               </button>
             ) : (
-              <button onClick={takeSnapshot} className="flex items-center gap-1 px-2 py-1 rounded bg-[var(--card)] border border-[var(--border)] text-[var(--color-muted-foreground)] text-xs hover:border-[var(--color-terracotta)] hover:text-[var(--color-cream)] transition-colors">
+              <button onClick={takeSnapshot} className="flex items-center gap-1 rounded border border-[var(--border)] bg-[var(--card)] px-2 py-1 text-xs text-[var(--color-muted-foreground)] transition-colors hover:border-[var(--color-terracotta)] hover:text-[var(--lumina-ink)]">
                 <Camera className="h-3 w-3" /> Snapshot for comparison
               </button>
             )}
@@ -118,7 +118,7 @@ export default function DashboardPage() {
 
       {/* Additional metrics row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-        <MetricCard label="CEO Salary" value={`CHF ${(d.ceoSalary / 1000).toFixed(0)}K/yr`} sublabel={`Total cost: CHF ${d.ceoTotal.toLocaleString()}/mo`} />
+        <MetricCard label="CEO Salary" value={`CHF ${(d.ceoSalary / 1000).toFixed(0)}K/yr`} sublabel={`Total cost: CHF ${d.ceoTotal.toLocaleString('en-CH')}/mo`} />
         <MetricCard label="Team Cost" value={fmtChf(d.teamTotal)} sublabel={`${assumptions.team.filter(t => d.month >= t.startMonth).length} of ${assumptions.team.length} hired`} />
         <MetricCard label="AI COGS" value={fmtChf(d.aiCogs)} sublabel={`€${assumptions.aiCogsPerHotelEur}/hotel × ${d.totalPaying}`} />
         <MetricCard label="Total Costs" value={fmtChf(d.totalCosts)} sublabel={sd ? `was ${fmtChf(sd.totalCosts)}` : undefined} color="red" />
@@ -174,10 +174,10 @@ export default function DashboardPage() {
               {model.ceoStepUpTimeline.map(s => (
                 <div key={s.month} className="flex justify-between items-center">
                   <span className={`text-sm ${s.month <= viewMonth ? 'text-[var(--color-cream)]' : 'text-[var(--color-muted-foreground)]'}`}>
-                    M{s.month}: CHF {s.salary.toLocaleString()}/yr
+                    M{s.month}: CHF {s.salary.toLocaleString('en-CH')}/yr
                   </span>
                   <div className="flex items-center gap-2">
-                    <span className="text-[10px] text-[var(--color-muted-foreground)]">CHF {s.total.toLocaleString()}/mo</span>
+                    <span className="text-[10px] text-[var(--color-muted-foreground)]">CHF {s.total.toLocaleString('en-CH')}/mo</span>
                     <Badge variant={s.month <= viewMonth ? 'default' : 'secondary'} className={s.month <= viewMonth ? 'bg-[var(--color-terracotta)] text-[var(--color-ink)]' : ''}>
                       {s.month <= viewMonth ? 'Active' : 'Pending'}
                     </Badge>

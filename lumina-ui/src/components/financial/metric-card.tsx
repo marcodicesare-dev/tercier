@@ -10,9 +10,9 @@ interface MetricCardProps {
 }
 
 const colorClasses = {
-  default: 'text-[var(--color-cream)]',
-  green: 'text-green-400',
-  red: 'text-red-400',
+  default: 'text-[var(--lumina-ink)]',
+  green: 'text-emerald-600',
+  red: 'text-red-600',
   gold: 'text-[var(--color-gold)]',
   terracotta: 'text-[var(--color-terracotta)]',
 };

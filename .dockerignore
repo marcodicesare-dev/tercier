@@ -1,0 +1,11 @@
+.git
+.context
+node_modules
+output
+.next
+lumina-ui/.next
+lumina-ui/node_modules
+scripts/phase0-enrichment/cache
+scripts/enrich-hotel/cache
+scripts/nlp-pipeline/cache
+supabase/.temp

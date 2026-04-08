@@ -1,9 +1,19 @@
+import { EmptyInsight } from '@/components/EmptyInsight';
 import type { HotelQnaRow } from '@/lib/types';
 
 export function QnAList({ questions }: { questions: HotelQnaRow[] }) {
+  if (!questions.length) {
+    return (
+      <EmptyInsight
+        title="No Google Q&A captured"
+        body="This property does not have useful pre-booking question threads yet, or the extraction has not finished."
+      />
+    );
+  }
+
   return (
     <div className="space-y-4">
-      {questions.map(question => (
+      {questions.slice(0, 8).map(question => (
         <article key={question.id} className="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm">
           <div className="flex flex-wrap items-center gap-2 text-xs uppercase tracking-[0.18em] text-stone-500">
             <span>{question.question_date ? new Date(question.question_date).toLocaleDateString() : 'Unknown date'}</span>

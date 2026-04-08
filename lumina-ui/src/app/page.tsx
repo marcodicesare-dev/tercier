@@ -98,9 +98,6 @@ export default async function PortfolioPage({
                 {formatNumber(enrichedHotels.length)} hotels · {formatNumber(countries.length)} countries · {formatNumber(reviewCount)} reviews
               </p>
             </div>
-            <p className="max-w-xl text-sm leading-6 text-stone-600">
-              Scan the portfolio for quality, guest mix, and the biggest commercial gap without seeing pipeline state.
-            </p>
           </div>
 
           <PortfolioFilters

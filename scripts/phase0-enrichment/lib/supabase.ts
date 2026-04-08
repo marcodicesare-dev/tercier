@@ -15,6 +15,43 @@ export const supabase: SupabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY,
   auth: { persistSession: false },
 });
 
+const DEFAULT_PAGE_SIZE = 1000;
+
+export async function fetchAllRows<T>(fetchPage: (
+  from: number,
+  to: number,
+) => Promise<{ data: T[] | null; error: { message: string } | null }>, limit = Infinity): Promise<T[]> {
+  const rows: T[] = [];
+  let from = 0;
+
+  while (true) {
+    const remaining = Number.isFinite(limit) ? limit - rows.length : DEFAULT_PAGE_SIZE;
+    if (remaining <= 0) break;
+
+    const pageSize = Math.min(DEFAULT_PAGE_SIZE, remaining);
+    const to = from + pageSize - 1;
+    const { data, error } = await fetchPage(from, to);
+
+    if (error) {
+      throw new Error(error.message);
+    }
+
+    if (!data || data.length === 0) {
+      break;
+    }
+
+    rows.push(...data);
+
+    if (data.length < pageSize) {
+      break;
+    }
+
+    from += data.length;
+  }
+
+  return rows;
+}
+
 /**
  * Log a pipeline run start.
  * Returns the run ID for later update.

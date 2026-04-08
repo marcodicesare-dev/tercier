@@ -9,7 +9,7 @@
  */
 import 'dotenv/config';
 import { resolve } from 'path';
-import { supabase, logPipelineStart, logPipelineEnd } from './lib/supabase.js';
+import { fetchAllRows, supabase, logPipelineStart, logPipelineEnd } from './lib/supabase.js';
 import { autocompleteHotel, getGPCallCount } from './lib/google-places-client.js';
 import { readCache, writeCache, isCacheFresh } from './lib/cache.js';
 import { nameSimilarity } from './lib/matching.js';
@@ -31,17 +31,15 @@ export default async function matchGooglePlaces(): Promise<void> {
 
   // Fetch hotels that need Google matching
   // Include both TA-enriched and TA-match-failed (Google might find them)
-  const { data: hotels, error: fetchError } = await supabase
-    .from('hotels')
-    .select('id, hs_slug, name, city, latitude, longitude, enrichment_status')
-    .in('enrichment_status', ['ta_enriched', 'ta_match_failed'])
-    .is('gp_place_id', null)
-    .order('hs_slug')
-    .limit(LIMIT);
-
-  if (fetchError) {
-    throw new Error(`Failed to fetch hotels: ${fetchError.message}`);
-  }
+  const hotels = await fetchAllRows((from, to) =>
+    supabase
+      .from('hotels')
+      .select('id, hs_slug, name, city, latitude, longitude, enrichment_status')
+      .in('enrichment_status', ['ta_enriched', 'ta_match_failed'])
+      .is('gp_place_id', null)
+      .order('hs_slug')
+      .range(from, to),
+  LIMIT);
 
   if (!hotels || hotels.length === 0) {
     console.log('No hotels need Google matching. All done or run prior steps first.');

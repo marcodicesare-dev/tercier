@@ -12,6 +12,16 @@ import type {
 import { formatDecimal, formatNumber, titleCase } from '@/lib/utils';
 
 const AI_QUERY_BENCHMARK = 20;
+const ENGLISH_CODES = new Set(['en', 'en-us', 'en-gb', 'english']);
+const EMPTY_TOKENS = new Set(['null', 'undefined', 'unknown', 'n/a', 'na', 'none']);
+
+function normalizeTextToken(value: string | null | undefined): string | null {
+  if (typeof value !== 'string') return null;
+  const normalized = value.trim();
+  if (!normalized) return null;
+  if (EMPTY_TOKENS.has(normalized.toLowerCase())) return null;
+  return normalized;
+}
 
 function roundScore(value: number | null | undefined): number | null {
   if (value == null || Number.isNaN(value)) return null;
@@ -28,6 +38,23 @@ function parseWebsiteLanguages(raw: string | null | undefined): string[] {
     .split(/[,|/]/)
     .map(value => value.trim().toLowerCase())
     .filter(Boolean);
+}
+
+function isEnglishLanguage(value: string | null | undefined): boolean {
+  if (!value) return false;
+  return ENGLISH_CODES.has(value.trim().toLowerCase());
+}
+
+function segmentRank(hotel: HotelDashboardRow): Array<{ label: string; value: number }> {
+  return [
+    { label: 'Family', value: hotel.ta_segment_pct_family ?? 0 },
+    { label: 'Couples', value: hotel.ta_segment_pct_couples ?? 0 },
+    { label: 'Business', value: hotel.ta_segment_pct_business ?? 0 },
+    { label: 'Friends', value: hotel.ta_segment_pct_friends ?? 0 },
+    { label: 'Solo', value: hotel.ta_segment_pct_solo ?? 0 },
+  ]
+    .filter(item => item.value > 0)
+    .sort((left, right) => right.value - left.value);
 }
 
 function getWebsiteLanguageCount(hotel: HotelDashboardRow): number {
@@ -156,16 +183,16 @@ export function getWhoStaysInsight(
   personas: GuestPersonaRow[],
   deepDive: GuestPersonaDeepDiveData,
 ): string {
-  const topPersona = personas[0] ?? null;
+  const topPersona = personas.find(persona => Boolean(getPersonaLabel(persona))) ?? null;
   const primarySegment = hotel.ta_primary_segment ? titleCase(hotel.ta_primary_segment) : null;
 
   if (topPersona) {
-    const parts = [
-      topPersona.occasion ? titleCase(topPersona.occasion) : null,
-      topPersona.group_detail ? titleCase(topPersona.group_detail) : null,
-      topPersona.spending_level ? titleCase(topPersona.spending_level) : null,
-    ].filter(Boolean);
-    return `${parts.join(' · ')} is the dominant persona, backed by ${formatNumber(topPersona.review_count)} reviews and an average rating of ${formatDecimal(topPersona.avg_rating, 1)}.`;
+    return `${getPersonaLabel(topPersona)} is the dominant persona, backed by ${formatNumber(topPersona.review_count)} reviews and an average rating of ${formatDecimal(topPersona.avg_rating, 1)}.`;
+  }
+
+  const rankedSegments = segmentRank(hotel);
+  if (rankedSegments.length >= 2) {
+    return `${rankedSegments[0].label} travelers dominate at ${Math.round(rankedSegments[0].value * 100)}%, followed by ${rankedSegments[1].label} at ${Math.round(rankedSegments[1].value * 100)}%.`;
   }
 
   if (primarySegment && deepDive.repeatGuestPct != null) {
@@ -225,14 +252,26 @@ export function getLanguageInsight(
 ): string {
   const websiteLanguages = parseWebsiteLanguages(hotel.dp_website_content_languages);
   const websiteLanguageCount = getWebsiteLanguageCount(hotel);
-  const gap = getTopLanguageGap(languages, websiteLanguages);
+  const nonEnglishDemand = languages.filter(language => !isEnglishLanguage(language.lang));
+  const gap = getTopLanguageGap(nonEnglishDemand, websiteLanguages);
 
-  if (gap && websiteLanguageCount > 0) {
-    return `Guests review in ${formatNumber(hotel.ta_review_language_count)} languages, while the site serves ${formatNumber(websiteLanguageCount)}. The biggest missed market is ${titleCase(gap.lang)} with ${formatNumber(gap.review_count)} reviews.`;
+  if (websiteLanguageCount <= 0) {
+    return 'Website language coverage has not been analyzed yet.';
   }
 
-  if (gap) {
-    return `${titleCase(gap.lang)} is the clearest uncovered language in the review mix with ${formatNumber(gap.review_count)} reviews.`;
+  if (gap && websiteLanguageCount > 0) {
+    const topGaps = nonEnglishDemand
+      .filter(language => {
+        const code = language.lang.trim().toLowerCase();
+        return !websiteLanguages.includes(code) && !websiteLanguages.some(item => item.startsWith(code) || code.startsWith(item));
+      })
+      .sort((left, right) => right.review_count - left.review_count)
+      .slice(0, 3)
+      .map(language => `${titleCase(language.lang)} (${formatNumber(language.review_count)})`);
+    const coverage = websiteLanguages.some(isEnglishLanguage) && websiteLanguageCount === 1
+      ? 'the site appears to serve English only'
+      : `the site serves ${formatNumber(websiteLanguageCount)} languages`;
+    return `Review demand is strongest in ${topGaps.join(', ')}, but ${coverage}.`;
   }
 
   return `Language demand is spread across ${formatNumber(hotel.ta_review_language_count)} review languages.`;
@@ -257,6 +296,18 @@ export function getAiVisibilityInsight(hotel: HotelDashboardRow, competitorAvera
   }
 
   return 'AI discovery signal exists, but the property is not yet converting that signal into a clear competitive edge.';
+}
+
+export function getPersonaLabel(persona: Pick<GuestPersonaRow, 'occasion' | 'group_detail' | 'spending_level'>): string | null {
+  const parts = [
+    normalizeTextToken(persona.occasion),
+    normalizeTextToken(persona.group_detail),
+    normalizeTextToken(persona.spending_level),
+  ]
+    .filter((value): value is string => Boolean(value))
+    .map(value => titleCase(value));
+
+  return parts.length ? parts.join(' · ') : null;
 }
 
 export function getPricingInsight(hotel: HotelDashboardRow, snapshots: HotelPriceSnapshotRow[]): string {

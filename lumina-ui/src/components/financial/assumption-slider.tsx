@@ -23,12 +23,12 @@ export function AssumptionSlider({
   const [editing, setEditing] = useState(false);
   const [inputVal, setInputVal] = useState(String(value));
 
-  const displayValue = format ? format(value) : `${prefix || ''}${value.toLocaleString()}${suffix || ''}`;
+  const displayValue = format ? format(value) : `${prefix || ''}${value.toLocaleString('en-CH')}${suffix || ''}`;
 
   return (
     <div className="space-y-1">
       <div className="flex justify-between items-center">
-        <span className="text-[11px] text-[#BEB0A2] leading-tight">{label}</span>
+        <span className="text-[11px] leading-tight text-stone-500">{label}</span>
         {editing ? (
           <Input
             type="number"
@@ -42,13 +42,13 @@ export function AssumptionSlider({
             onKeyDown={e => {
               if (e.key === 'Enter') (e.target as HTMLInputElement).blur();
             }}
-            className="w-20 h-5 border-[#C17F59] bg-[#1A120B] text-right text-[11px]"
+            className="h-6 w-20 border-[var(--terracotta)] bg-white text-right text-[11px] text-[var(--lumina-ink)]"
             autoFocus
           />
         ) : (
           <button
             onClick={() => { setInputVal(String(value)); setEditing(true); }}
-            className="cursor-pointer font-mono text-[11px] text-[#C17F59] hover:text-[#C9A96E] tabular-nums"
+            className="cursor-pointer font-mono text-[11px] tabular-nums text-[var(--terracotta)] hover:text-[var(--deep-terracotta)]"
           >
             {displayValue}
           </button>

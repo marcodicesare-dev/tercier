@@ -6,6 +6,32 @@
   --terracotta: #c17f59;
   --deep-terracotta: #8b4a2b;
   --mediterranean-gold: #c9a96e;
+  --card: #ffffff;
+  --card-foreground: #1a120b;
+  --popover: #ffffff;
+  --popover-foreground: #1a120b;
+  --border: #d6d3d1;
+  --input: #ffffff;
+  --muted: #f5f5f4;
+  --muted-foreground: #78716c;
+  --sidebar: rgba(255, 255, 255, 0.72);
+  --sidebar-foreground: #1a120b;
+  --sidebar-accent: #f5efe6;
+  --sidebar-border: #e7e5e4;
+  --radius: 0.875rem;
+  --color-cream: #f5efe6;
+  --color-ink: #1a120b;
+  --color-ink-light: #faf8f5;
+  --color-ink-lighter: #f5f5f4;
+  --color-terracotta: #c17f59;
+  --color-deep-terracotta: #8b4a2b;
+  --color-gold: #c9a96e;
+  --color-muted-foreground: #78716c;
+  --chart-grid: #e7e0d6;
+  --chart-tick: #78716c;
+  --chart-tooltip-bg: #ffffff;
+  --chart-tooltip-border: #d6d3d1;
+  --chart-tooltip-text: #1a120b;
 }
 
 html {
@@ -28,63 +54,4 @@ a {
 
 ::selection {
   background: rgba(193, 127, 89, 0.22);
-}
-
-/* Financial dashboard dark theme */
-.financial-theme {
-  --background: #1A120B;
-  --foreground: #F5EFE6;
-  --card: #302520;
-  --card-foreground: #F5EFE6;
-  --popover: #302520;
-  --popover-foreground: #F5EFE6;
-  --primary: #C17F59;
-  --primary-foreground: #1A120B;
-  --secondary: #8B4A2B;
-  --secondary-foreground: #F5EFE6;
-  --muted: #504038;
-  --muted-foreground: #BEB0A2;
-  --accent: #C9A96E;
-  --accent-foreground: #1A120B;
-  --destructive: #DC2626;
-  --border: #5A4A40;
-  --input: #504038;
-  --ring: #C17F59;
-  --chart-1: #C17F59;
-  --chart-2: #C9A96E;
-  --chart-3: #8B4A2B;
-  --chart-4: #6B8E5A;
-  --chart-5: #5B7FB5;
-  --radius: 0.625rem;
-  --sidebar: #140E08;
-  --sidebar-foreground: #F5EFE6;
-  --sidebar-primary: #C17F59;
-  --sidebar-primary-foreground: #1A120B;
-  --sidebar-accent: #302520;
-  --sidebar-accent-foreground: #F5EFE6;
-  --sidebar-border: #5A4A40;
-  --sidebar-ring: #C17F59;
-  --color-terracotta: #C17F59;
-  --color-deep-terracotta: #8B4A2B;
-  --color-gold: #C9A96E;
-  --color-ink: #1A120B;
-  --color-cream: #F5EFE6;
-  --color-ink-light: #302520;
-  --color-ink-lighter: #504038;
-  --color-muted-foreground: #BEB0A2;
-}
-
-.financial-theme ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-.financial-theme ::-webkit-scrollbar-track {
-  background: #1A120B;
-}
-.financial-theme ::-webkit-scrollbar-thumb {
-  background: #3A3028;
-  border-radius: 3px;
-}
-.financial-theme ::-webkit-scrollbar-thumb:hover {
-  background: #C17F59;
 }

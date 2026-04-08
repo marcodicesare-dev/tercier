@@ -2,6 +2,7 @@ import { resolve } from 'node:path';
 import { retryWithBackoff } from '../../phase0-enrichment/lib/retry-with-backoff.js';
 import type { DiscoveryResult, PipelineContext, SourceResult } from '../types.js';
 import { cleanString, getCachedOrFetch, statusError, statusOk, statusSkipped } from '../utils.js';
+import { assessIdentityMatch } from '../identity.js';
 
 const CACHE_OVERPASS = resolve(process.cwd(), 'scripts/enrich-hotel/cache/osm-overpass.jsonl');
 const CACHE_NOMINATIM = resolve(process.cwd(), 'scripts/enrich-hotel/cache/osm-nominatim.jsonl');
@@ -79,6 +80,20 @@ export async function discoverOsm(context: PipelineContext): Promise<DiscoveryRe
       return { ok: false, message: 'No OSM/Nominatim result found' };
     }
 
+    const assessment = assessIdentityMatch(context.input, {
+      name: cleanString(item.display_name?.split(',')[0]),
+      address: cleanString(item.display_name),
+      latitude: item.lat ? Number.parseFloat(item.lat) : null,
+      longitude: item.lon ? Number.parseFloat(item.lon) : null,
+    }, {
+      source: 'osm_discovery',
+      currentLatitude: context.latitude,
+      currentLongitude: context.longitude,
+    });
+    if (!assessment.ok) {
+      return { ok: false, message: assessment.blockingReason ?? 'No confident OSM/Nominatim result found' };
+    }
+
     const osmPrefix = item.osm_type === 'way' ? 'way' : item.osm_type === 'relation' ? 'relation' : 'node';
     return {
       ok: true,
@@ -122,6 +137,20 @@ export async function runOsm(context: PipelineContext): Promise<SourceResult> {
       );
       const item = nominatimResult.data[0];
       if (item?.osm_id && item.osm_type) {
+        const assessment = assessIdentityMatch(context.input, {
+          name: cleanString(item.display_name?.split(',')[0]),
+          address: cleanString(item.display_name),
+          latitude: item.lat ? Number.parseFloat(item.lat) : null,
+          longitude: item.lon ? Number.parseFloat(item.lon) : null,
+        }, {
+          source: 'osm_nominatim',
+          currentLatitude: context.latitude,
+          currentLongitude: context.longitude,
+        });
+        if (!assessment.ok) {
+          return { statuses: [statusSkipped('osm', assessment.blockingReason ?? 'No OSM match found')] };
+        }
+
         return {
           hotel: {
             osm_id: `${item.osm_type === 'way' ? 'way' : item.osm_type === 'relation' ? 'relation' : 'node'}/${item.osm_id}`,
