@@ -49,6 +49,9 @@ export interface HotelDashboardRow {
   dp_website_tech_cms: string | null;
   dp_website_tech_booking: string | null;
   dp_website_tech_analytics: string | null;
+  dp_website_primary_language?: string | null;
+  dp_website_content_languages?: string | null;
+  dp_website_language_count?: number | null;
   price_direct: number | null;
   price_lowest_ota: number | null;
   price_parity_score: number | null;
@@ -64,6 +67,70 @@ export interface HotelDashboardRow {
   competitor_count: number;
   topic_mentions_total: number;
   updated_at: string | null;
+  ta_has_free_wifi?: boolean | null;
+  ta_has_pool?: boolean | null;
+  ta_has_spa?: boolean | null;
+  ta_has_fitness?: boolean | null;
+  ta_has_restaurant?: boolean | null;
+  ta_has_bar?: boolean | null;
+  ta_has_parking?: boolean | null;
+  ta_has_ev_charging?: boolean | null;
+  ta_has_meeting_rooms?: boolean | null;
+  ta_has_business_center?: boolean | null;
+  ta_has_room_service?: boolean | null;
+  ta_has_concierge?: boolean | null;
+  ta_has_suites?: boolean | null;
+  ta_has_pet_friendly?: boolean | null;
+  ta_has_accessible?: boolean | null;
+  ta_has_butler_service?: boolean | null;
+  ta_has_babysitting?: boolean | null;
+  ta_has_airport_transfer?: boolean | null;
+  ta_has_breakfast?: boolean | null;
+  ta_has_air_conditioning?: boolean | null;
+  ta_has_minibar?: boolean | null;
+  ta_languages_spoken?: string | null;
+  ta_compset_avg_rating?: number | null;
+  ta_compset_avg_reviews?: number | null;
+  ta_reviews_vs_compset_ratio?: number | null;
+  qna_response_rate?: number | null;
+  gmb_popular_times?: unknown;
+  gmb_place_topics?: unknown;
+  gmb_book_online_url?: string | null;
+  gov_star_rating?: number | null;
+  gov_star_source?: string | null;
+  ai_visibility_score?: number | null;
+  ai_chatgpt_mentioned?: boolean | null;
+  ai_perplexity_mentioned?: boolean | null;
+  dp_has_schema_hotel?: boolean | null;
+  dp_schema_completeness?: number | null;
+  seo_monthly_traffic_est?: number | null;
+  seo_organic_keywords?: number | null;
+  seo_has_google_ads?: boolean | null;
+  dp_instagram_handle?: string | null;
+  dp_instagram_exists?: boolean | null;
+  dp_has_active_social?: boolean | null;
+  price_booking_com?: number | null;
+  price_expedia?: number | null;
+  price_hotels_com?: number | null;
+  price_ota_count?: number | null;
+  price_check_date?: string | null;
+  cx_gm_name?: string | null;
+  cx_gm_title?: string | null;
+  cx_gm_email?: string | null;
+  cx_gm_phone?: string | null;
+  cx_gm_linkedin?: string | null;
+  cx_gm_source?: string | null;
+  cx_gm_confidence?: string | null;
+  cx_active_job_count?: number | null;
+  cx_hiring_departments?: string | null;
+  cx_hiring_signals?: boolean | null;
+  cert_gstc?: boolean | null;
+  cert_gstc_body?: string | null;
+  cert_gstc_expiry?: string | null;
+  cert_green_key?: boolean | null;
+  cert_swisstainable?: string | null;
+  cert_earthcheck?: boolean | null;
+  cert_earthcheck_level?: string | null;
 }
 
 export interface HotelTopicRow {
@@ -154,6 +221,90 @@ export interface HotelQnaRow {
   latest_answer_date: string | null;
 }
 
+export interface HotelAmenityRow {
+  hotel_id: string;
+  source: string;
+  amenity: string;
+  category: string | null;
+}
+
+export interface HotelPriceSnapshotRow {
+  id: string;
+  hotel_id: string;
+  check_date: string;
+  check_in_date: string | null;
+  nights: number | null;
+  currency: string | null;
+  price_booking_com: number | null;
+  price_expedia: number | null;
+  price_hotels_com: number | null;
+  price_agoda: number | null;
+  price_direct: number | null;
+  price_lowest_ota: number | null;
+  price_parity_score: number | null;
+  ota_count: number | null;
+}
+
+export interface HotelMetricSnapshotRow {
+  id: string;
+  hotel_id: string;
+  snapshot_date: string;
+  ta_rating: number | null;
+  ta_num_reviews: number | null;
+  gp_rating: number | null;
+  gp_user_rating_count: number | null;
+  score_hqi: number | null;
+  score_tos: number | null;
+  ta_owner_response_rate: number | null;
+  seo_domain_authority: number | null;
+  seo_monthly_traffic_est: number | null;
+  ta_rating_vs_compset: number | null;
+  ta_reviews_vs_compset_ratio: number | null;
+}
+
+export interface HotelChangeRow {
+  metric: string;
+  previous: number | null;
+  current: number | null;
+  delta: number | null;
+  prev_date: string | null;
+  curr_date: string | null;
+}
+
+export interface PersonaDistributionRow {
+  label: string;
+  count: number;
+  pct: number;
+}
+
+export interface GuestPersonaDeepDiveData {
+  totalSignalReviews: number;
+  repeatGuestReviews: number;
+  repeatGuestPct: number | null;
+  spendingLevels: PersonaDistributionRow[];
+  occasions: PersonaDistributionRow[];
+  groupDetails: PersonaDistributionRow[];
+  lengthsOfStay: PersonaDistributionRow[];
+}
+
+export interface SemanticReviewMatchRow {
+  id: string;
+  hotel_id: string;
+  text: string | null;
+  lang: string;
+  rating: number | null;
+  sentiment: string | null;
+  topics: unknown;
+  published_date: string | null;
+  similarity: number;
+}
+
+export interface SemanticReviewQueryResult {
+  label: string;
+  query: string;
+  matches: SemanticReviewMatchRow[];
+}
+
 export interface HotelCardData {
   hotel: HotelDashboardRow | null;
   topics: HotelTopicRow[];
@@ -163,4 +314,11 @@ export interface HotelCardData {
   personas: GuestPersonaRow[];
   content_seeds: ContentSeedRow[];
   qna: HotelQnaRow[];
+  amenities: HotelAmenityRow[];
+  priceSnapshots: HotelPriceSnapshotRow[];
+  metricSnapshots: HotelMetricSnapshotRow[];
+  changes: HotelChangeRow[];
+  personaDeepDive: GuestPersonaDeepDiveData;
+  aiCompetitorAverage: number | null;
+  semanticReviewQueries: SemanticReviewQueryResult[];
 }
