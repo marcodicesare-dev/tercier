@@ -69,7 +69,7 @@ export function CompetitorTable({
                 <td className="px-4 py-3 text-stone-500">#{competitor.competitor_rank}</td>
                 <td className="px-4 py-3 font-medium text-[var(--lumina-ink)]">
                   {competitor.competitor_id ? (
-                    <Link href={`/compare?ids=${targetHotelId},${competitor.competitor_id}`} className="hover:text-[var(--deep-terracotta)]">
+                    <Link href={`/hotel/${competitor.competitor_id}`} className="hover:text-[var(--deep-terracotta)]">
                       {competitor.competitor_name ?? 'Unknown competitor'}
                     </Link>
                   ) : (
@@ -90,6 +90,20 @@ export function CompetitorTable({
             Showing {informativeCompetitors.length} scored competitors out of {competitors.length} mapped nearby properties.
           </div>
         ) : null}
+      </div>
+      <div className="flex flex-wrap gap-2 text-sm">
+        {informativeCompetitors
+          .filter(competitor => competitor.competitor_id)
+          .slice(0, 4)
+          .map(competitor => (
+            <Link
+              key={`${competitor.hotel_id}-${competitor.competitor_rank}-compare`}
+              href={`/compare?ids=${targetHotelId},${competitor.competitor_id}`}
+              className="rounded-full border border-stone-200 bg-white px-4 py-2 text-stone-700 hover:border-stone-300"
+            >
+              Compare vs {competitor.competitor_name}
+            </Link>
+          ))}
       </div>
     </div>
   );

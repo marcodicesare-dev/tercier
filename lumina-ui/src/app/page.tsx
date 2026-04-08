@@ -1,7 +1,10 @@
 import Link from 'next/link';
+import { ChainSummaryCard } from '@/components/ChainSummaryCard';
 import { HotelCard } from '@/components/HotelCard';
 import { PortfolioFilters } from '@/components/PortfolioFilters';
-import { getPortfolioHotels } from '@/lib/data';
+import { TopOpportunitiesList } from '@/components/TopOpportunitiesList';
+import { getChainData, getPortfolioHotels } from '@/lib/data';
+import { getChainSummary, getTopOpportunities } from '@/lib/insights';
 import type { HotelDashboardRow } from '@/lib/types';
 import { formatNumber } from '@/lib/utils';
 
@@ -60,12 +63,15 @@ export default async function PortfolioPage({
   const search = typeof params.search === 'string' ? params.search : '';
   const country = typeof params.country === 'string' ? params.country : '';
   const brand = typeof params.brand === 'string' ? params.brand : '';
-  const sort = typeof params.sort === 'string' ? params.sort : 'quality';
+  const sort = typeof params.sort === 'string' ? params.sort : 'opportunity';
   const requestedPage = typeof params.page === 'string' ? Number.parseInt(params.page, 10) : 1;
 
   const hotels = await getPortfolioHotels();
   const enrichedHotels = hotels.filter(isComplete);
   const filtered = filterHotels(enrichedHotels, search, country, brand, sort);
+  const chainData = await getChainData(brand || undefined);
+  const chainSummary = getChainSummary(filtered);
+  const topOpportunities = getTopOpportunities(filtered, 8);
 
   const countries = [...new Set(enrichedHotels.map(hotel => hotel.country).filter(Boolean))].sort();
   const brands = [...new Set(enrichedHotels.map(hotel => hotel.ta_brand).filter(Boolean))].sort();
@@ -97,6 +103,9 @@ export default async function PortfolioPage({
               <p className="mt-2 text-sm leading-6 text-stone-600">
                 {formatNumber(enrichedHotels.length)} hotels · {formatNumber(countries.length)} countries · {formatNumber(reviewCount)} reviews
               </p>
+              <p className="mt-3 max-w-3xl text-base leading-7 text-stone-700">
+                Every opportunity below should resolve to the guest reviews that prove it. Portfolio → hotel → topic or language gap → actual guest words → source.
+              </p>
             </div>
           </div>
 
@@ -113,6 +122,10 @@ export default async function PortfolioPage({
 
       {filtered.length ? (
         <>
+          <ChainSummaryCard hotels={filtered} summary={chainSummary} summaryRow={chainData.summaryRow} />
+
+          <TopOpportunitiesList rows={topOpportunities} />
+
           <div className="flex items-center justify-between text-sm text-stone-600">
             <p>
               Showing <span className="font-medium text-[var(--lumina-ink)]">{formatNumber(pageStart + 1)}</span>-

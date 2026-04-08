@@ -1,14 +1,18 @@
 'use client';
 
+import Link from 'next/link';
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import { EmptyInsight } from '@/components/EmptyInsight';
 import type { HotelTopicRow } from '@/lib/types';
 import { CHART_THEME } from '@/lib/chart-theme';
+import { titleCase } from '@/lib/utils';
 
 export function SentimentByTopic({
+  hotelId,
   topics,
   insight,
 }: {
+  hotelId: string;
   topics: HotelTopicRow[];
   insight?: string;
 }) {
@@ -43,6 +47,17 @@ export function SentimentByTopic({
           <Bar dataKey="negative" fill={CHART_THEME.negative} radius={[0, 6, 6, 0]} isAnimationActive={false} />
         </BarChart>
       </ResponsiveContainer>
+      <div className="flex flex-wrap gap-2">
+        {topics.slice(0, 8).map(topic => (
+          <Link
+            key={topic.aspect}
+            href={`/hotel/${hotelId}/reviews?aspect=${topic.aspect}`}
+            className="rounded-full bg-[#efe4d8] px-3 py-1 text-xs font-medium text-[var(--deep-terracotta)] hover:opacity-80"
+          >
+            {titleCase(topic.aspect)} · {topic.mention_count}
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }

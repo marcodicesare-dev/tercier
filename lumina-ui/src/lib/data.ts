@@ -3,6 +3,7 @@ import 'server-only';
 import { unstable_cache } from 'next/cache';
 import { supabase } from '@/lib/supabase';
 import type {
+  ChainIntelligenceRow,
   ContentSeedRow,
   GuestPersonaDeepDiveData,
   GuestPersonaRow,
@@ -10,11 +11,16 @@ import type {
   HotelChangeRow,
   HotelDashboardRow,
   HotelAmenityRow,
+  HotelOpportunityData,
+  HotelReviewRow,
   HotelMetricSnapshotRow,
   HotelPriceSnapshotRow,
   HotelQnaRow,
   HotelTopicRow,
   LanguageBreakdownRow,
+  ReviewExplorerData,
+  ReviewExplorerFilters,
+  ReviewTopicMentionRow,
   ReviewTimelineRow,
   CompetitorNetworkRow,
   SemanticReviewMatchRow,
@@ -133,6 +139,8 @@ function normalizeHotelCardData(payload: unknown): HotelCardData {
 }
 
 const HOTEL_DETAIL_FIELDS = `
+  ta_location_id,
+  gp_place_id,
   ta_has_free_wifi,
   ta_has_pool,
   ta_has_spa,
@@ -200,6 +208,38 @@ const HOTEL_DETAIL_FIELDS = `
   cert_swisstainable,
   cert_earthcheck,
   cert_earthcheck_level
+`;
+
+const REVIEW_SELECT = `
+  id,
+  hotel_id,
+  source,
+  source_review_id,
+  lang,
+  rating,
+  title,
+  text,
+  trip_type,
+  travel_date,
+  published_date,
+  helpful_votes,
+  reviewer_username,
+  reviewer_location,
+  reviewer_location_id,
+  has_owner_response,
+  owner_response_text,
+  owner_response_author,
+  owner_response_date,
+  owner_response_lang,
+  created_at,
+  sentiment,
+  sentiment_score,
+  topics,
+  guest_segment,
+  nlp_processed_at,
+  guest_persona,
+  content_seeds,
+  competitor_mentions
 `;
 
 function buildDistribution(rows: unknown[]): GuestPersonaDeepDiveData {
@@ -343,3 +383,234 @@ export const getHotelsByIds = unstable_cache(
   ['lumina-ui-compare-hotels'],
   { revalidate: 60 },
 );
+
+export const getHotelOpportunity = unstable_cache(
+  async (hotelId: string): Promise<HotelOpportunityData | null> => {
+    const { data, error } = await supabase.rpc('get_hotel_intelligence', {
+      target_hotel_id: hotelId,
+    });
+
+    if (error) throw error;
+    return (data ?? null) as HotelOpportunityData | null;
+  },
+  ['lumina-ui-hotel-opportunity'],
+  { revalidate: 60 },
+);
+
+export const getChainData = unstable_cache(
+  async (brand?: string): Promise<{
+    hotels: HotelDashboardRow[];
+    summaryRow: ChainIntelligenceRow | null;
+    opportunityRows: Array<{
+      hotel_id: string;
+      name: string;
+      city: string | null;
+      country: string | null;
+      computed_opportunity_score: number | null;
+      computed_opportunity_primary: string | null;
+      computed_opportunity_narrative: string | null;
+    }>;
+  }> => {
+    const hotels = await getPortfolioHotels();
+    const scopedHotels = brand
+      ? hotels.filter(hotel =>
+          [hotel.ta_brand, hotel.ta_parent_brand]
+            .filter(Boolean)
+            .some(value => value!.toLowerCase().includes(brand.toLowerCase())),
+        )
+      : hotels;
+
+    let summaryRow: ChainIntelligenceRow | null = null;
+    if (brand) {
+      const { data, error } = await supabase
+        .from('v_chain_intelligence')
+        .select('*')
+        .ilike('brand', `%${brand}%`)
+        .order('hotel_count', { ascending: false })
+        .limit(1)
+        .maybeSingle();
+      if (error) throw error;
+      summaryRow = (data ?? null) as ChainIntelligenceRow | null;
+    }
+
+    const opportunityQuery = supabase
+      .from('v_hotel_opportunities')
+      .select('hotel_id,name,city,country,computed_opportunity_score,computed_opportunity_primary,computed_opportunity_narrative')
+      .order('computed_opportunity_score', { ascending: false, nullsFirst: false })
+      .limit(10);
+
+    const { data: opportunityRows, error: opportunityError } = brand
+      ? await opportunityQuery.or(`ta_brand.ilike.%${brand}%,ta_parent_brand.ilike.%${brand}%`)
+      : await opportunityQuery;
+
+    if (opportunityError) throw opportunityError;
+
+    return {
+      hotels: scopedHotels,
+      summaryRow,
+      opportunityRows: (opportunityRows ?? []) as Array<{
+        hotel_id: string;
+        name: string;
+        city: string | null;
+        country: string | null;
+        computed_opportunity_score: number | null;
+        computed_opportunity_primary: string | null;
+        computed_opportunity_narrative: string | null;
+      }>,
+    };
+  },
+  ['lumina-ui-chain-data'],
+  { revalidate: 60 },
+);
+
+async function getReviewIdsForAspect(hotelId: string, aspect: string): Promise<string[]> {
+  const reviewIds = new Set<string>();
+  const batchSize = 1000;
+
+  for (let offset = 0; offset < 10000; offset += batchSize) {
+    const { data, error } = await supabase
+      .from('review_topic_index')
+      .select('review_id')
+      .eq('hotel_id', hotelId)
+      .eq('aspect', aspect)
+      .range(offset, offset + batchSize - 1);
+
+    if (error) throw error;
+
+    const rows = data ?? [];
+    rows.forEach(row => {
+      if (row.review_id) reviewIds.add(row.review_id);
+    });
+
+    if (rows.length < batchSize) break;
+  }
+
+  return [...reviewIds];
+}
+
+function applyReviewFilters(
+  query: any,
+  filters: ReviewExplorerFilters,
+  reviewIds: string[] | null,
+) {
+  let next = query;
+
+  if (reviewIds) {
+    if (!reviewIds.length) {
+      next = next.in('id', ['00000000-0000-0000-0000-000000000000']);
+    } else {
+      next = next.in('id', reviewIds);
+    }
+  }
+
+  if (filters.lang) next = next.eq('lang', filters.lang);
+  if (filters.sentiment) next = next.eq('sentiment', filters.sentiment);
+  if (filters.source) next = next.eq('source', filters.source);
+
+  return next;
+}
+
+export async function getHotelReviews(
+  hotelId: string,
+  filters: ReviewExplorerFilters = {},
+): Promise<ReviewExplorerData> {
+  const page = Number.isFinite(filters.page) ? Math.max(Math.floor(filters.page ?? 1), 1) : 1;
+  const pageSize = Number.isFinite(filters.pageSize) ? Math.min(Math.max(Math.floor(filters.pageSize ?? 20), 1), 50) : 20;
+  const reviewIds = filters.aspect ? await getReviewIdsForAspect(hotelId, filters.aspect) : null;
+
+  const countQuery = applyReviewFilters(
+    supabase
+      .from('hotel_reviews')
+      .select('id', { count: 'exact', head: true })
+      .eq('hotel_id', hotelId)
+      .not('text', 'is', null),
+    filters,
+    reviewIds,
+  );
+  const { count, error: countError } = await countQuery;
+  if (countError) throw countError;
+
+  const dataQuery = applyReviewFilters(
+    supabase
+      .from('hotel_reviews')
+      .select(REVIEW_SELECT)
+      .eq('hotel_id', hotelId)
+      .not('text', 'is', null)
+      .order('published_date', { ascending: false, nullsFirst: false })
+      .range((page - 1) * pageSize, page * pageSize - 1),
+    filters,
+    reviewIds,
+  );
+  const { data: reviews, error: reviewsError } = await dataQuery;
+  if (reviewsError) throw reviewsError;
+
+  const reviewPageIds = ((reviews ?? []) as HotelReviewRow[]).map((review: HotelReviewRow) => review.id).slice(0, 50);
+  let topicMentions: ReviewTopicMentionRow[] = [];
+  if (reviewPageIds.length) {
+    const topicMentionsQuery = supabase
+      .from('review_topic_index')
+      .select('*')
+      .eq('hotel_id', hotelId)
+      .in('review_id', reviewPageIds);
+
+    const narrowedTopicMentionsQuery = filters.aspect
+      ? topicMentionsQuery.eq('aspect', filters.aspect)
+      : topicMentionsQuery;
+    const { data, error: topicMentionsError } = await narrowedTopicMentionsQuery;
+    if (topicMentionsError) throw topicMentionsError;
+    topicMentions = (data ?? []) as ReviewTopicMentionRow[];
+  }
+
+  let selectedReview: HotelReviewRow | null = null;
+  if (filters.reviewId) {
+    const selectedQuery = applyReviewFilters(
+      supabase
+        .from('hotel_reviews')
+        .select(REVIEW_SELECT)
+        .eq('hotel_id', hotelId)
+        .eq('id', filters.reviewId)
+        .maybeSingle(),
+      filters,
+      reviewIds,
+    );
+    const { data, error } = await selectedQuery;
+    if (error) throw error;
+    selectedReview = (data ?? null) as HotelReviewRow | null;
+  }
+
+  const topicMentionReviewIds = new Set(((reviews ?? []) as HotelReviewRow[]).map((review: HotelReviewRow) => review.id));
+  if (selectedReview?.id) topicMentionReviewIds.add(selectedReview.id);
+
+  const mentionIds = [...topicMentionReviewIds].slice(0, 60);
+  let mergedTopicMentions = topicMentions;
+  if (selectedReview?.id && !mergedTopicMentions.some(mention => mention.review_id === selectedReview?.id) && mentionIds.length) {
+    const selectedMentionQuery = supabase
+      .from('review_topic_index')
+      .select('*')
+      .eq('hotel_id', hotelId)
+      .in('review_id', mentionIds);
+    const narrowedSelectedMentionQuery = filters.aspect
+      ? selectedMentionQuery.eq('aspect', filters.aspect)
+      : selectedMentionQuery;
+    const { data: selectedMentions, error: selectedMentionsError } = await narrowedSelectedMentionQuery;
+    if (selectedMentionsError) throw selectedMentionsError;
+    mergedTopicMentions = (selectedMentions ?? []) as ReviewTopicMentionRow[];
+  }
+
+  return {
+    reviews: (reviews ?? []) as HotelReviewRow[],
+    total: count ?? 0,
+    page,
+    pageSize,
+    selectedReview,
+    topicMentions: mergedTopicMentions,
+  };
+}
+
+export async function getReviewsByTopic(hotelId: string, aspect: string, filters: Omit<ReviewExplorerFilters, 'aspect'> = {}) {
+  return getHotelReviews(hotelId, { ...filters, aspect });
+}
+
+export async function getReviewsByLanguage(hotelId: string, lang: string, filters: Omit<ReviewExplorerFilters, 'lang'> = {}) {
+  return getHotelReviews(hotelId, { ...filters, lang });
+}

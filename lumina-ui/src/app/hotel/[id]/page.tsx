@@ -7,11 +7,13 @@ import { ContactIntel } from '@/components/ContactIntel';
 import { ContentSeedsList } from '@/components/ContentSeedsList';
 import { GuestSegmentPie } from '@/components/GuestSegmentPie';
 import { LanguageBreakdown } from '@/components/LanguageBreakdown';
+import { OpportunityHero } from '@/components/OpportunityHero';
 import { PriceIntelligence } from '@/components/PriceIntelligence';
+import { ReviewExplorer } from '@/components/ReviewExplorer';
 import { QualityRadar } from '@/components/QualityRadar';
 import { ReviewTimeline } from '@/components/ReviewTimeline';
 import { SentimentByTopic } from '@/components/SentimentByTopic';
-import { getHotelCard } from '@/lib/data';
+import { getHotelCard, getHotelOpportunity, getHotelReviews } from '@/lib/data';
 import {
   getAiVisibilityInsight,
   getCompetitiveInsight,
@@ -25,6 +27,7 @@ import {
   getTopicInsight,
   getWhoStaysInsight,
 } from '@/lib/insights';
+import { getHotelExternalLinks } from '@/lib/source-links';
 import type { HotelDashboardRow } from '@/lib/types';
 import { formatDecimal, formatNumber, titleCase } from '@/lib/utils';
 
@@ -84,7 +87,11 @@ function operationalSnapshot(hotel: HotelDashboardRow) {
 
 export default async function HotelPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const data = await getHotelCard(id);
+  const [data, opportunity, reviewsPreview] = await Promise.all([
+    getHotelCard(id),
+    getHotelOpportunity(id),
+    getHotelReviews(id, { pageSize: 3 }),
+  ]);
   const hotel = data.hotel;
 
   if (!hotel) notFound();
@@ -160,6 +167,7 @@ export default async function HotelPage({ params }: { params: Promise<{ id: stri
     hotel.cert_earthcheck === true ||
     hotel.cert_swisstainable != null;
   const hasContentSignal = data.content_seeds.length > 0;
+  const hasReviewSignal = reviewsPreview.total > 0;
   const hasContactSignal =
     hotel.cx_gm_name != null ||
     hotel.cx_gm_email != null ||
@@ -180,6 +188,8 @@ export default async function HotelPage({ params }: { params: Promise<{ id: stri
   const hasRepeatGuestCard = data.personaDeepDive.totalSignalReviews > 0;
   const hasTypicalStayCard = Boolean(primaryLengthOfStay);
   const hasStayDetailColumn = personaCards.length > 0 || hasRepeatGuestCard || hasTypicalStayCard;
+  const externalLinks = getHotelExternalLinks(hotel);
+  const reviewExplorerIntro = `Browse ${formatNumber(reviewsPreview.total || hotel.total_reviews_db)} guest reviews, then jump from any claim to the exact TripAdvisor or Google source that proves it.`;
 
   return (
     <main className="space-y-8">
@@ -226,6 +236,11 @@ export default async function HotelPage({ params }: { params: Promise<{ id: stri
         </div>
 
         <div className="mt-6 flex flex-wrap gap-3 text-sm">
+          {hasReviewSignal ? (
+            <Link href={`/hotel/${hotel.hotel_id}/reviews`} className="rounded-full bg-[var(--deep-terracotta)] px-4 py-2 font-medium text-white hover:bg-[var(--lumina-ink)]">
+              Open review explorer
+            </Link>
+          ) : null}
           <Link href={compareHref} className="rounded-full bg-[var(--deep-terracotta)] px-4 py-2 font-medium text-white hover:bg-[var(--lumina-ink)]">
             Compare
           </Link>
@@ -233,7 +248,51 @@ export default async function HotelPage({ params }: { params: Promise<{ id: stri
             Back to portfolio
           </Link>
         </div>
+        <div className="mt-4 flex flex-wrap gap-3 text-sm">
+          {externalLinks.website ? (
+            <a
+              href={externalLinks.website.href}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-full border border-stone-200 bg-white px-4 py-2 text-stone-700 hover:border-stone-300"
+            >
+              Website
+            </a>
+          ) : null}
+          {externalLinks.tripadvisor ? (
+            <a
+              href={externalLinks.tripadvisor.href}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-full border border-stone-200 bg-white px-4 py-2 text-stone-700 hover:border-stone-300"
+            >
+              TripAdvisor
+            </a>
+          ) : null}
+          {externalLinks.googleMaps ? (
+            <a
+              href={externalLinks.googleMaps.href}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-full border border-stone-200 bg-white px-4 py-2 text-stone-700 hover:border-stone-300"
+            >
+              Google Maps
+            </a>
+          ) : null}
+          {externalLinks.instagram ? (
+            <a
+              href={externalLinks.instagram.href}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-full border border-stone-200 bg-white px-4 py-2 text-stone-700 hover:border-stone-300"
+            >
+              Instagram
+            </a>
+          ) : null}
+        </div>
       </section>
+
+      <OpportunityHero hotel={hotel} opportunity={opportunity} />
 
       {hasQualitySignal ? (
         <Section title="Quality Profile">
@@ -314,13 +373,36 @@ export default async function HotelPage({ params }: { params: Promise<{ id: stri
 
       {hasTopicSignal ? (
         <Section title="What Guests Say">
-          <SentimentByTopic topics={data.topics} insight={getTopicInsight(data.topics)} />
+          <SentimentByTopic hotelId={hotel.hotel_id} topics={data.topics} insight={getTopicInsight(data.topics)} />
+        </Section>
+      ) : null}
+
+      {hasReviewSignal ? (
+        <Section title="Review Explorer">
+          <div className="space-y-4">
+            <ReviewExplorer
+              hotel={hotel}
+              data={reviewsPreview}
+              languages={data.languages}
+              topics={data.topics}
+              intro={reviewExplorerIntro}
+            />
+            <div className="flex justify-start">
+              <Link
+                href={`/hotel/${hotel.hotel_id}/reviews`}
+                className="rounded-full border border-stone-200 bg-white px-4 py-2 text-sm text-stone-700 hover:border-stone-300"
+              >
+                Browse full review corpus
+              </Link>
+            </div>
+          </div>
         </Section>
       ) : null}
 
       {hasLanguageSignal ? (
         <Section title="Language Opportunity">
           <LanguageBreakdown
+            hotelId={hotel.hotel_id}
             languages={data.languages}
             websiteContentLanguages={hotel.dp_website_content_languages}
             insight={getLanguageInsight(hotel, data.languages)}
@@ -372,7 +454,7 @@ export default async function HotelPage({ params }: { params: Promise<{ id: stri
         <Section title="Ready-to-Use Guest Quotes">
           <div className="space-y-4">
             <p className="text-sm leading-6 text-stone-700">{getContentSeedInsight(data.content_seeds)}</p>
-            <ContentSeedsList seeds={data.content_seeds} />
+            <ContentSeedsList hotelId={hotel.hotel_id} seeds={data.content_seeds} />
           </div>
         </Section>
       ) : null}

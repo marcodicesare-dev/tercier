@@ -1,12 +1,15 @@
+import Link from 'next/link';
 import { EmptyInsight } from '@/components/EmptyInsight';
 import type { LanguageBreakdownRow } from '@/lib/types';
 import { formatDecimal, formatNumber } from '@/lib/utils';
 
 export function LanguageBreakdown({
+  hotelId,
   languages,
   websiteContentLanguages,
   insight,
 }: {
+  hotelId: string;
   languages: LanguageBreakdownRow[];
   websiteContentLanguages?: string | null;
   insight?: string;
@@ -70,7 +73,11 @@ export function LanguageBreakdown({
           <tbody className="divide-y divide-stone-100">
             {languages.map(language => (
               <tr key={language.lang}>
-                <td className="px-4 py-3 font-medium text-[var(--lumina-ink)]">{language.lang}</td>
+                <td className="px-4 py-3 font-medium text-[var(--lumina-ink)]">
+                  <Link href={`/hotel/${hotelId}/reviews?lang=${encodeURIComponent(language.lang)}`} className="hover:text-[var(--deep-terracotta)]">
+                    {language.lang}
+                  </Link>
+                </td>
                 <td className="px-4 py-3">{formatNumber(language.review_count)}</td>
                 <td className="px-4 py-3">{formatDecimal(language.avg_rating, 2)}</td>
                 {hasSentimentCounts ? <td className="px-4 py-3">{formatNumber(language.positive)}</td> : null}
@@ -83,6 +90,17 @@ export function LanguageBreakdown({
       {!hasSentimentCounts ? (
         <p className="text-xs uppercase tracking-[0.16em] text-stone-500">Per-language sentiment counts are still thin.</p>
       ) : null}
+      <div className="flex flex-wrap gap-2">
+        {languages.slice(0, 8).map(language => (
+          <Link
+            key={`${language.lang}-reviews`}
+            href={`/hotel/${hotelId}/reviews?lang=${encodeURIComponent(language.lang)}`}
+            className="rounded-full border border-stone-200 bg-white px-3 py-1 text-xs text-stone-700 hover:border-stone-300"
+          >
+            Read {language.lang} reviews
+          </Link>
+        ))}
+      </div>
     </div>
   );
 }

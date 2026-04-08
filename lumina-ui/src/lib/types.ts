@@ -3,6 +3,8 @@ export interface HotelDashboardRow {
   name: string;
   city: string | null;
   country: string | null;
+  ta_location_id?: string | null;
+  gp_place_id?: string | null;
   ta_rating: number | null;
   gp_rating: number | null;
   ta_num_reviews: number | null;
@@ -61,6 +63,12 @@ export interface HotelDashboardRow {
   flag_is_premium: boolean | null;
   flag_needs_reputation_mgmt: boolean | null;
   flag_tercier_high_priority: boolean | null;
+  computed_opportunity_score?: number | null;
+  computed_opportunity_primary?: string | null;
+  computed_opportunity_narrative?: string | null;
+  computed_language_gap?: number | null;
+  computed_value_gap?: number | null;
+  computed_effective_website_langs?: number | null;
   total_reviews_db: number;
   positive_reviews: number;
   negative_reviews: number;
@@ -303,6 +311,130 @@ export interface SemanticReviewQueryResult {
   label: string;
   query: string;
   matches: SemanticReviewMatchRow[];
+}
+
+export interface ReviewTopicMention {
+  aspect: string;
+  mention: string | null;
+  sentiment: string | null;
+  score: number | null;
+}
+
+export interface HotelReviewRow {
+  id: string;
+  hotel_id: string;
+  source: string;
+  source_review_id: string | null;
+  lang: string | null;
+  rating: number | null;
+  title: string | null;
+  text: string | null;
+  trip_type: string | null;
+  travel_date: string | null;
+  published_date: string | null;
+  helpful_votes: number | null;
+  reviewer_username: string | null;
+  reviewer_location: string | null;
+  reviewer_location_id: string | null;
+  has_owner_response: boolean | null;
+  owner_response_text: string | null;
+  owner_response_author: string | null;
+  owner_response_date: string | null;
+  owner_response_lang: string | null;
+  created_at: string;
+  sentiment: string | null;
+  sentiment_score: number | null;
+  topics: ReviewTopicMention[] | null;
+  guest_segment: string | null;
+  nlp_processed_at: string | null;
+  guest_persona: Record<string, unknown> | null;
+  content_seeds: Array<Record<string, unknown>> | null;
+  competitor_mentions: Array<Record<string, unknown>> | null;
+}
+
+export interface ReviewTopicMentionRow {
+  id: string;
+  hotel_id: string;
+  review_id: string;
+  aspect: string;
+  sentiment: string | null;
+  sentiment_score: number | null;
+  mention_text: string | null;
+  lang: string | null;
+  published_date: string | null;
+  created_at: string;
+}
+
+export interface ReviewExplorerFilters {
+  lang?: string;
+  aspect?: string;
+  sentiment?: string;
+  source?: string;
+  page?: number;
+  pageSize?: number;
+  reviewId?: string;
+}
+
+export interface ReviewExplorerData {
+  reviews: HotelReviewRow[];
+  total: number;
+  page: number;
+  pageSize: number;
+  selectedReview: HotelReviewRow | null;
+  topicMentions: ReviewTopicMentionRow[];
+}
+
+export interface HotelOpportunityData {
+  opportunity: {
+    score: number;
+    narrative: string;
+    primary_reason: string;
+  };
+  review_velocity?: {
+    last_3_months: number;
+  } | null;
+  topic_strengths?: Array<{
+    aspect: string;
+    mentions: number;
+    positive_pct: number;
+  }>;
+  topic_weaknesses?: Array<{
+    aspect: string;
+    mentions: number;
+    negative_pct: number;
+  }>;
+  language_markets?: Array<{
+    lang: string;
+    avg_rating: number | null;
+    review_count: number;
+  }>;
+  content_seed_count?: number;
+}
+
+export interface ChainIntelligenceRow {
+  brand: string;
+  hotel_count: number;
+  rated_hotels: number;
+  avg_rating: number | null;
+  min_rating: number | null;
+  max_rating: number | null;
+  avg_hqi: number | null;
+  total_ta_reviews: number | null;
+  total_gp_reviews: number | null;
+  avg_response_rate: number | null;
+  avg_value_gap: number | null;
+  avg_language_gap: number | null;
+  avg_opportunity_score: number | null;
+  avg_segment_couples: number | null;
+  avg_segment_family: number | null;
+  avg_segment_business: number | null;
+  avg_segment_solo: number | null;
+  avg_segment_friends: number | null;
+  hotels_weak_value: number;
+  hotels_weak_location: number;
+  hotels_weak_rooms: number;
+  country_count: number;
+  city_count: number;
 }
 
 export interface HotelCardData {

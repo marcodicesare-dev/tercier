@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { EmptyInsight } from '@/components/EmptyInsight';
 import type { ContentSeedRow } from '@/lib/types';
 
@@ -17,7 +18,13 @@ function isAllCaps(value: string): boolean {
   return letters.length >= 4 && letters === letters.toUpperCase();
 }
 
-export function ContentSeedsList({ seeds }: { seeds: ContentSeedRow[] }) {
+export function ContentSeedsList({
+  hotelId,
+  seeds,
+}: {
+  hotelId: string;
+  seeds: ContentSeedRow[];
+}) {
   const filteredSeeds = [...seeds]
     .filter(seed => {
       const quote = (seed.quote ?? '').trim();
@@ -51,6 +58,14 @@ export function ContentSeedsList({ seeds }: { seeds: ContentSeedRow[] }) {
             <span className="rounded-full bg-stone-100 px-3 py-1 text-stone-700">{seed.segment ?? 'segment'}</span>
             <span className="rounded-full bg-stone-100 px-3 py-1 text-stone-700">{seed.marketing_use ?? 'use'}</span>
             <span className="rounded-full bg-stone-100 px-3 py-1 text-stone-700">{seed.lang ?? '—'}</span>
+          </div>
+          <div className="mt-4">
+            <Link
+              href={`/hotel/${hotelId}/reviews?reviewId=${seed.review_id}`}
+              className="text-sm font-medium text-[var(--deep-terracotta)] hover:text-[var(--lumina-ink)]"
+            >
+              Open source review →
+            </Link>
           </div>
         </article>
       ))}

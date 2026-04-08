@@ -8,12 +8,36 @@ import type {
   HotelPriceSnapshotRow,
   HotelTopicRow,
   LanguageBreakdownRow,
+  ReviewTimelineRow,
 } from '@/lib/types';
 import { formatDecimal, formatNumber, titleCase } from '@/lib/utils';
 
+// ---------------------------------------------------------------------------
+// Constants & helpers
+// ---------------------------------------------------------------------------
+
 const AI_QUERY_BENCHMARK = 20;
-const ENGLISH_CODES = new Set(['en', 'en-us', 'en-gb', 'english']);
+
+const ENGLISH_CODES = new Set(['en', 'en-us', 'en-gb', 'en-au', 'en-ca', 'english']);
+
 const EMPTY_TOKENS = new Set(['null', 'undefined', 'unknown', 'n/a', 'na', 'none']);
+
+/** Language display names for common ISO codes */
+const LANGUAGE_NAMES: Record<string, string> = {
+  en: 'English', de: 'German', fr: 'French', es: 'Spanish', it: 'Italian',
+  pt: 'Portuguese', ru: 'Russian', ar: 'Arabic', ja: 'Japanese', ko: 'Korean',
+  zh: 'Chinese', zhcn: 'Chinese', 'zh-cn': 'Chinese', cn: 'Chinese',
+  tr: 'Turkish', nl: 'Dutch', pl: 'Polish', sv: 'Swedish', da: 'Danish',
+  no: 'Norwegian', fi: 'Finnish', cs: 'Czech', sk: 'Slovak', hu: 'Hungarian',
+  he: 'Hebrew', th: 'Thai', vi: 'Vietnamese', id: 'Indonesian', in: 'Indonesian',
+  ms: 'Malay', el: 'Greek', ro: 'Romanian', bg: 'Bulgarian', hr: 'Croatian',
+  uk: 'Ukrainian', hi: 'Hindi',
+};
+
+function langName(code: string): string {
+  const normalized = code.trim().toLowerCase().replace(/-/g, '');
+  return LANGUAGE_NAMES[normalized] ?? LANGUAGE_NAMES[normalized.slice(0, 2)] ?? titleCase(code);
+}
 
 function normalizeTextToken(value: string | null | undefined): string | null {
   if (typeof value !== 'string') return null;
@@ -33,11 +57,34 @@ function positiveDelta(current: number | null | undefined, comparison: number | 
   return current - comparison;
 }
 
-function parseWebsiteLanguages(raw: string | null | undefined): string[] {
-  return (raw ?? '')
+/**
+ * Deduplicate locale variants into base languages.
+ * "en | en-gb" → ["en"]  (1 effective language, not 2)
+ */
+function getEffectiveWebsiteLanguages(raw: string | null | undefined): string[] {
+  const codes = (raw ?? '')
     .split(/[,|/]/)
     .map(value => value.trim().toLowerCase())
     .filter(Boolean);
+
+  const bases = new Set<string>();
+  for (const code of codes) {
+    if (ENGLISH_CODES.has(code)) {
+      bases.add('en');
+    } else {
+      // Take the base language from locale codes like de-de, zh-cn
+      bases.add(code.split('-')[0]);
+    }
+  }
+  return [...bases];
+}
+
+function getEffectiveWebsiteLanguageCount(hotel: HotelDashboardRow): number {
+  // Use the computed column from the intelligence layer if available
+  if ((hotel as any).computed_effective_website_langs > 0) {
+    return (hotel as any).computed_effective_website_langs;
+  }
+  return getEffectiveWebsiteLanguages(hotel.dp_website_content_languages).length;
 }
 
 function isEnglishLanguage(value: string | null | undefined): boolean {
@@ -55,24 +102,6 @@ function segmentRank(hotel: HotelDashboardRow): Array<{ label: string; value: nu
   ]
     .filter(item => item.value > 0)
     .sort((left, right) => right.value - left.value);
-}
-
-function getWebsiteLanguageCount(hotel: HotelDashboardRow): number {
-  if (hotel.dp_website_language_count && hotel.dp_website_language_count > 0) return hotel.dp_website_language_count;
-  return parseWebsiteLanguages(hotel.dp_website_content_languages).length;
-}
-
-function getTopLanguageGap(
-  languages: LanguageBreakdownRow[],
-  websiteLanguages: string[],
-): LanguageBreakdownRow | null {
-  const supported = new Set(websiteLanguages);
-  return [...languages]
-    .filter(language => {
-      const code = language.lang.trim().toLowerCase();
-      return !supported.has(code) && ![...supported].some(item => item.startsWith(code) || code.startsWith(item));
-    })
-    .sort((left, right) => right.review_count - left.review_count)[0] ?? null;
 }
 
 function getSubratingRows(hotel: HotelDashboardRow): Array<{ label: string; value: number }> {
@@ -97,11 +126,11 @@ function getSubratingRows(hotel: HotelDashboardRow): Array<{ label: string; valu
 
 function getBestAndWorstTopic(topics: HotelTopicRow[]) {
   const ranked = topics
-    .filter(topic => topic.mention_count > 0)
+    .filter(topic => topic.mention_count >= 5)
     .map(topic => ({
       ...topic,
-      positiveRate: topic.positive_pct ?? (topic.positive_count / Math.max(topic.mention_count, 1)),
-      negativeRate: topic.negative_pct ?? (topic.negative_count / Math.max(topic.mention_count, 1)),
+      positiveRate: topic.positive_pct ?? (topic.positive_count / Math.max(topic.mention_count, 1) * 100),
+      negativeRate: topic.negative_pct ?? (topic.negative_count / Math.max(topic.mention_count, 1) * 100),
     }));
 
   const strongestPraise = [...ranked].sort((left, right) => right.positiveRate - left.positiveRate)[0] ?? null;
@@ -110,26 +139,64 @@ function getBestAndWorstTopic(topics: HotelTopicRow[]) {
   return { strongestPraise, biggestConcern };
 }
 
+/**
+ * Get non-English languages that have significant review volume
+ * but are NOT served by the website.
+ */
+function getUnservedLanguageMarkets(
+  languages: LanguageBreakdownRow[],
+  websiteLanguages: string[],
+): LanguageBreakdownRow[] {
+  const supported = new Set(websiteLanguages);
+  return languages
+    .filter(language => {
+      const code = language.lang.trim().toLowerCase();
+      // Skip English — always assumed covered
+      if (isEnglishLanguage(code)) return false;
+      // Skip if the base language matches any website language
+      const base = code.split('-')[0];
+      return !supported.has(code) && !supported.has(base) &&
+        ![...supported].some(item => item.startsWith(base) || base.startsWith(item));
+    })
+    .sort((left, right) => right.review_count - left.review_count);
+}
+
+
+// ---------------------------------------------------------------------------
+// Per-hotel insight generators (existing API, improved implementations)
+// ---------------------------------------------------------------------------
+
+/**
+ * One-line opportunity insight for portfolio cards.
+ * Uses pre-computed opportunity data if available, otherwise falls through priority logic.
+ */
 export function getCardOpportunityInsight(hotel: HotelDashboardRow): string {
+  // Use pre-computed narrative from the intelligence layer if available
+  const computed = (hotel as any).computed_opportunity_narrative;
+  if (typeof computed === 'string' && computed.length > 10) {
+    return computed;
+  }
+
+  // Fallback: priority cascade
   if (typeof hotel.ai_visibility_score === 'number' && hotel.ai_visibility_score < 0.3) {
-    const visible = Math.round(hotel.ai_visibility_score * AI_QUERY_BENCHMARK);
-    const invisible = Math.max(0, AI_QUERY_BENCHMARK - visible);
+    const invisible = Math.max(0, AI_QUERY_BENCHMARK - Math.round(hotel.ai_visibility_score * AI_QUERY_BENCHMARK));
     return `Invisible to ChatGPT on ${invisible}/${AI_QUERY_BENCHMARK} discovery queries.`;
   }
 
-  const websiteLanguageCount = getWebsiteLanguageCount(hotel);
-  if ((hotel.ta_review_language_count ?? 0) > Math.max(websiteLanguageCount, 0) * 2 && websiteLanguageCount > 0) {
-    return `Guests review in ${formatNumber(hotel.ta_review_language_count)} languages, website serves ${formatNumber(websiteLanguageCount)}.`;
+  const effectiveLangs = getEffectiveWebsiteLanguageCount(hotel);
+  const reviewLangs = hotel.ta_review_language_count ?? 0;
+  if (reviewLangs > effectiveLangs * 2 && effectiveLangs > 0) {
+    return `Guests review in ${reviewLangs} languages, website effectively serves ${effectiveLangs}.`;
   }
 
   if (
     hotel.ta_subrating_weakest === 'value' &&
     typeof hotel.ta_subrating_service === 'number' &&
     typeof hotel.ta_subrating_value === 'number' &&
-    (hotel.ta_subrating_range ?? 0) > 0.5
+    (hotel.ta_subrating_range ?? 0) > 0.3
   ) {
     const gap = hotel.ta_subrating_service - hotel.ta_subrating_value;
-    return `Guests rate value ${formatDecimal(gap, 1)} points below service.`;
+    return `Value rated ${formatDecimal(gap, 1)} points below service — a pricing perception gap.`;
   }
 
   if (typeof hotel.ta_owner_response_rate === 'number' && hotel.ta_owner_response_rate < 0.3) {
@@ -174,28 +241,37 @@ export function getQualityInsight(hotel: HotelDashboardRow): string {
 
   const quality = roundScore(hotel.score_hqi);
   return quality != null
-    ? `Overall quality lands at ${quality}/100, with guest sentiment concentrated in a narrow band across the stay.`
-    : 'Guest quality signal is available, but the biggest gap is not yet clear.';
+    ? `Overall quality lands at ${quality}/100.`
+    : 'Quality signal is available but the biggest gap is not yet clear.';
 }
 
+/**
+ * Guest persona / segment insight.
+ * Fixes the "Null · Null · Null" bug by filtering out all-null personas
+ * and falling back to TripAdvisor segment data.
+ */
 export function getWhoStaysInsight(
   hotel: HotelDashboardRow,
   personas: GuestPersonaRow[],
   deepDive: GuestPersonaDeepDiveData,
 ): string {
-  const topPersona = personas.find(persona => Boolean(getPersonaLabel(persona))) ?? null;
+  // Only use personas where at least one dimension is non-null
+  const validPersonas = personas.filter(persona => Boolean(getPersonaLabel(persona)));
+  const topPersona = validPersonas[0] ?? null;
   const primarySegment = hotel.ta_primary_segment ? titleCase(hotel.ta_primary_segment) : null;
 
   if (topPersona) {
-    return `${getPersonaLabel(topPersona)} is the dominant persona, backed by ${formatNumber(topPersona.review_count)} reviews and an average rating of ${formatDecimal(topPersona.avg_rating, 1)}.`;
+    const label = getPersonaLabel(topPersona)!;
+    return `${label} is the dominant persona, backed by ${formatNumber(topPersona.review_count)} reviews and an average rating of ${formatDecimal(topPersona.avg_rating, 1)}.`;
   }
 
+  // Fall back to TripAdvisor segment data (always populated)
   const rankedSegments = segmentRank(hotel);
   if (rankedSegments.length >= 2) {
     return `${rankedSegments[0].label} travelers dominate at ${Math.round(rankedSegments[0].value * 100)}%, followed by ${rankedSegments[1].label} at ${Math.round(rankedSegments[1].value * 100)}%.`;
   }
 
-  if (primarySegment && deepDive.repeatGuestPct != null) {
+  if (primarySegment && deepDive.repeatGuestPct != null && deepDive.repeatGuestPct > 0) {
     return `${primarySegment} lead the mix, and ${Math.round(deepDive.repeatGuestPct * 100)}% of persona-tagged reviews come from repeat guests.`;
   }
 
@@ -226,7 +302,7 @@ export function getCompetitiveInsight(hotel: HotelDashboardRow, competitors: Com
   if (delta != null) {
     const direction = delta >= 0 ? 'above' : 'below';
     const strength = aboveAverage.length ? ` Strongest edge: ${aboveAverage.slice(0, 2).join(', ')}.` : '';
-    return `This hotel sits ${formatDecimal(Math.abs(delta), 1)} points ${direction} the competitive-set average on TripAdvisor.${strength}`;
+    return `This hotel sits ${formatDecimal(Math.abs(delta), 1)} points ${direction} the competitive-set average.${strength}`;
   }
 
   return `${formatNumber(competitors.length)} nearby competitors are mapped, giving sales and strategy a concrete set to compare against.`;
@@ -235,42 +311,41 @@ export function getCompetitiveInsight(hotel: HotelDashboardRow, competitors: Com
 export function getTopicInsight(topics: HotelTopicRow[]): string {
   const { strongestPraise, biggestConcern } = getBestAndWorstTopic(topics);
 
-  if (strongestPraise && biggestConcern) {
-    return `Strongest praise goes to ${titleCase(strongestPraise.aspect)}; the main drag is ${titleCase(biggestConcern.aspect)}.`;
+  if (strongestPraise && biggestConcern && biggestConcern.aspect !== strongestPraise.aspect) {
+    return `Strongest praise: ${titleCase(strongestPraise.aspect)} (${Math.round(strongestPraise.positiveRate)}% positive). Biggest concern: ${titleCase(biggestConcern.aspect)} (${Math.round(biggestConcern.negativeRate)}% negative).`;
   }
 
   if (strongestPraise) {
-    return `${titleCase(strongestPraise.aspect)} drives the clearest positive signal in the review corpus.`;
+    return `${titleCase(strongestPraise.aspect)} drives the clearest positive signal at ${Math.round(strongestPraise.positiveRate)}% positive.`;
   }
 
   return 'Topic coverage exists, but no single aspect clearly leads or drags sentiment yet.';
 }
 
+/**
+ * Language opportunity insight.
+ * Fixed: deduplicates en/en-gb, never flags English as "uncovered",
+ * uses proper language names instead of ISO codes.
+ */
 export function getLanguageInsight(
   hotel: HotelDashboardRow,
   languages: LanguageBreakdownRow[],
 ): string {
-  const websiteLanguages = parseWebsiteLanguages(hotel.dp_website_content_languages);
-  const websiteLanguageCount = getWebsiteLanguageCount(hotel);
-  const nonEnglishDemand = languages.filter(language => !isEnglishLanguage(language.lang));
-  const gap = getTopLanguageGap(nonEnglishDemand, websiteLanguages);
+  const websiteLanguages = getEffectiveWebsiteLanguages(hotel.dp_website_content_languages);
+  const websiteLanguageCount = websiteLanguages.length;
 
   if (websiteLanguageCount <= 0) {
     return 'Website language coverage has not been analyzed yet.';
   }
 
-  if (gap && websiteLanguageCount > 0) {
-    const topGaps = nonEnglishDemand
-      .filter(language => {
-        const code = language.lang.trim().toLowerCase();
-        return !websiteLanguages.includes(code) && !websiteLanguages.some(item => item.startsWith(code) || code.startsWith(item));
-      })
-      .sort((left, right) => right.review_count - left.review_count)
+  const unserved = getUnservedLanguageMarkets(languages, websiteLanguages);
+  if (unserved.length > 0) {
+    const topGaps = unserved
       .slice(0, 3)
-      .map(language => `${titleCase(language.lang)} (${formatNumber(language.review_count)})`);
-    const coverage = websiteLanguages.some(isEnglishLanguage) && websiteLanguageCount === 1
-      ? 'the site appears to serve English only'
-      : `the site serves ${formatNumber(websiteLanguageCount)} languages`;
+      .map(language => `${langName(language.lang)} (${formatNumber(language.review_count)} reviews, avg ${formatDecimal(language.avg_rating, 1)})`);
+    const coverage = websiteLanguageCount === 1
+      ? 'the site effectively serves English only'
+      : `the site serves ${websiteLanguageCount} languages`;
     return `Review demand is strongest in ${topGaps.join(', ')}, but ${coverage}.`;
   }
 
@@ -282,8 +357,7 @@ export function getAiVisibilityInsight(hotel: HotelDashboardRow, competitorAvera
   const delta = positiveDelta(score, competitorAverage);
 
   if (typeof score === 'number' && score < 0.3) {
-    const visible = Math.round(score * AI_QUERY_BENCHMARK);
-    const invisible = Math.max(0, AI_QUERY_BENCHMARK - visible);
+    const invisible = Math.max(0, AI_QUERY_BENCHMARK - Math.round(score * AI_QUERY_BENCHMARK));
     return `This hotel is effectively missing from AI discovery, invisible on ${invisible}/${AI_QUERY_BENCHMARK} benchmark queries.`;
   }
 
@@ -295,7 +369,7 @@ export function getAiVisibilityInsight(hotel: HotelDashboardRow, competitorAvera
     return 'Neither ChatGPT nor Perplexity currently surfaces this hotel in cached discovery checks.';
   }
 
-  return 'AI discovery signal exists, but the property is not yet converting that signal into a clear competitive edge.';
+  return 'AI discovery data has not been collected yet for this property.';
 }
 
 export function getPersonaLabel(persona: Pick<GuestPersonaRow, 'occasion' | 'group_detail' | 'spending_level'>): string | null {
@@ -320,9 +394,10 @@ export function getPricingInsight(hotel: HotelDashboardRow, snapshots: HotelPric
     const delta = direct - lowestOta;
     if (Math.abs(delta) >= 10) {
       return delta > 0
-        ? `Direct is currently priced above the cheapest OTA by ${Math.round(delta)}.`
-        : `Direct undercuts the cheapest OTA by ${Math.round(Math.abs(delta))}, a strong conversion lever.`;
+        ? `Direct is priced ${Math.round(delta)} above the cheapest OTA — potential margin leakage to intermediaries.`
+        : `Direct undercuts OTAs by ${Math.round(Math.abs(delta))} — strong direct booking incentive.`;
     }
+    return 'Direct and OTA pricing are in near-parity.';
   }
 
   if (parity != null) {
@@ -338,18 +413,18 @@ export function getDigitalOperationalInsight(
   hotel: HotelDashboardRow,
   amenities: HotelAmenityRow[],
 ): string {
-  const websiteLanguageCount = getWebsiteLanguageCount(hotel);
+  const websiteLanguageCount = getEffectiveWebsiteLanguageCount(hotel);
   const amenitiesCount = amenities.length || hotel.ta_amenity_count || 0;
 
   if (
     (hotel.ta_review_language_count ?? 0) > Math.max(websiteLanguageCount, 0) * 2 &&
     websiteLanguageCount > 0
   ) {
-    return `The digital stack is underserving demand: ${formatNumber(hotel.ta_review_language_count)} guest languages vs ${formatNumber(websiteLanguageCount)} website languages.`;
+    return `The digital stack is underserving demand: ${formatNumber(hotel.ta_review_language_count)} guest languages vs ${formatNumber(websiteLanguageCount)} website language${websiteLanguageCount === 1 ? '' : 's'}.`;
   }
 
   if (hotel.gmb_is_claimed === false) {
-    return 'The Google Business profile is still unclaimed, leaving an avoidable discovery and response gap.';
+    return 'The Google Business profile is still unclaimed, leaving an avoidable discovery gap.';
   }
 
   if (hotel.dp_has_schema_hotel === false || (hotel.dp_schema_completeness ?? 1) < 0.65) {
@@ -360,14 +435,29 @@ export function getDigitalOperationalInsight(
     return `${formatNumber(hotel.cx_active_job_count)} open roles suggest the property is actively growing or stretched operationally.`;
   }
 
-  return `${formatNumber(amenitiesCount)} amenities, ${titleCase(hotel.dp_website_tech_cms)} CMS, and ${formatNumber(hotel.seo_domain_authority)} domain authority form the core operating footprint.`;
+  return `${formatNumber(amenitiesCount)} amenities catalogued, DA ${formatNumber(hotel.seo_domain_authority)}.`;
 }
 
 export function getContentSeedInsight(seeds: ContentSeedRow[]): string {
-  const seed = seeds[0];
-  if (!seed) return 'Guest-quote seeds are available for sales and marketing reuse.';
-  const emotion = seed.emotion ? `${titleCase(seed.emotion)} tone` : 'review-led';
-  return `The quote library already has ${emotion} material ready for campaigns, outreach, and landing-page copy.`;
+  // Filter garbage seeds before counting
+  const quality = seeds.filter(s => {
+    if (!s.quote) return false;
+    if (s.quote.length < 25) return false;
+    if (s.quote === s.quote.toUpperCase() && s.quote.length > 5) return false;
+    return true;
+  });
+
+  if (quality.length === 0) {
+    return 'No high-quality guest quotes have been extracted yet.';
+  }
+
+  const emotions = new Map<string, number>();
+  for (const s of quality) {
+    if (s.emotion) emotions.set(s.emotion, (emotions.get(s.emotion) ?? 0) + 1);
+  }
+  const topEmotion = [...emotions.entries()].sort((a, b) => b[1] - a[1])[0];
+
+  return `${quality.length} marketing-ready guest quotes extracted. ${topEmotion ? `Dominant tone: ${topEmotion[0]} (${topEmotion[1]} quotes).` : ''}`;
 }
 
 export function getContactInsight(hotel: HotelDashboardRow): string {
@@ -380,4 +470,626 @@ export function getContactInsight(hotel: HotelDashboardRow): string {
   }
 
   return 'A contact trail exists for this property, even if the final decision-maker is not fully verified yet.';
+}
+
+
+// ---------------------------------------------------------------------------
+// NEW: Opportunity narrative generators
+// ---------------------------------------------------------------------------
+
+export interface OpportunityNarrative {
+  score: number;
+  primaryReason: string;
+  narrative: string;
+  action: string;
+}
+
+/**
+ * Full opportunity narrative for a hotel — "Why Lumina matters for this hotel."
+ * Returns score, primary reason, narrative explanation, and recommended action.
+ */
+export function getOpportunityNarrative(
+  hotel: HotelDashboardRow,
+  languages: LanguageBreakdownRow[],
+  topics: HotelTopicRow[],
+): OpportunityNarrative {
+  const signals: Array<{ reason: string; score: number; narrative: string; action: string }> = [];
+
+  // 1. Language gap
+  const effectiveLangs = getEffectiveWebsiteLanguageCount(hotel);
+  const reviewLangs = hotel.ta_review_language_count ?? 0;
+  const langGap = Math.max(reviewLangs - effectiveLangs, 0);
+  if (langGap > 0) {
+    const unserved = getUnservedLanguageMarkets(languages,
+      getEffectiveWebsiteLanguages(hotel.dp_website_content_languages));
+    const topLang = unserved[0];
+    const langNarrative = topLang
+      ? `${formatNumber(topLang.review_count)} guests reviewed in ${langName(topLang.lang)} (avg ${formatDecimal(topLang.avg_rating, 1)}) but the website has no ${langName(topLang.lang)} content.`
+      : `Guests review in ${reviewLangs} languages but the website serves ${effectiveLangs}.`;
+    signals.push({
+      reason: 'language_gap',
+      score: Math.min(langGap / 10, 1),
+      narrative: langNarrative,
+      action: topLang
+        ? `Deploy ${langName(topLang.lang)} landing pages targeting the ${formatNumber(topLang.review_count)} guest reviews in that market.`
+        : `Analyze top unserved language markets and deploy localized landing pages.`,
+    });
+  }
+
+  // 2. Value perception gap
+  if (hotel.ta_subrating_service != null && hotel.ta_subrating_value != null) {
+    const valueGap = hotel.ta_subrating_service - hotel.ta_subrating_value;
+    if (valueGap > 0.2) {
+      signals.push({
+        reason: 'value_gap',
+        score: Math.min(valueGap / 0.6, 1),
+        narrative: `Guests rate value ${formatDecimal(valueGap, 1)} points below service. The experience is strong but guests feel they overpay.`,
+        action: 'Reframe value messaging: highlight inclusions, packages, and experience-per-euro instead of rates.',
+      });
+    }
+  }
+
+  // 3. Owner response rate
+  if (hotel.ta_owner_response_rate != null && hotel.ta_owner_response_rate < 0.3) {
+    signals.push({
+      reason: 'response_rate',
+      score: 1 - hotel.ta_owner_response_rate,
+      narrative: `Only ${Math.round(hotel.ta_owner_response_rate * 100)}% of reviews get a response. Every unanswered negative review is a conversion leak.`,
+      action: 'Implement review response workflow — prioritize negative reviews in the top 3 languages.',
+    });
+  }
+
+  // 4. Competitive position
+  if (hotel.ta_rating != null && hotel.ta_compset_avg_rating != null) {
+    const compDelta = hotel.ta_compset_avg_rating - hotel.ta_rating;
+    if (compDelta > 0.1) {
+      signals.push({
+        reason: 'competitive_position',
+        score: Math.min(compDelta / 0.5, 1),
+        narrative: `Rating sits ${formatDecimal(compDelta, 1)} points below the competitive set average. Guests choosing between options see this gap.`,
+        action: 'Focus on the weakest subrating to close the gap, and generate fresh positive reviews.',
+      });
+    }
+  }
+
+  // 5. Topic weakness
+  const { biggestConcern } = getBestAndWorstTopic(topics);
+  if (biggestConcern && biggestConcern.negativeRate > 20) {
+    signals.push({
+      reason: 'topic_weakness',
+      score: Math.min(biggestConcern.negativeRate / 50, 1),
+      narrative: `${titleCase(biggestConcern.aspect)} is flagged negative in ${Math.round(biggestConcern.negativeRate)}% of mentions — the biggest operational drag in the review corpus.`,
+      action: `Address ${titleCase(biggestConcern.aspect).toLowerCase()} operationally, then use fresh positive reviews to dilute the negative signal.`,
+    });
+  }
+
+  // 6. Content maturity (thin seed library)
+  const seedCount = hotel.topic_mentions_total; // Proxy: topic mentions correlate with NLP depth
+  if (seedCount === 0) {
+    signals.push({
+      reason: 'content_gap',
+      score: 0.6,
+      narrative: 'No NLP-extracted content intelligence is available yet for this property.',
+      action: 'Run NLP pipeline to extract topics, personas, and content seeds from the review corpus.',
+    });
+  }
+
+  // Sort by score, pick the top one
+  signals.sort((a, b) => b.score - a.score);
+  const top = signals[0];
+
+  if (!top) {
+    return {
+      score: 0,
+      primaryReason: 'strong_position',
+      narrative: 'This hotel scores well across all measured dimensions.',
+      action: 'Maintain current strategy and monitor for shifts.',
+    };
+  }
+
+  // Composite score from all signals (weighted average)
+  const composite = signals.reduce((sum, s) => sum + s.score, 0) / Math.max(signals.length * 1.5, 1);
+
+  return {
+    score: Math.min(Math.round(composite * 100) / 100, 1),
+    primaryReason: top.reason,
+    narrative: top.narrative,
+    action: top.action,
+  };
+}
+
+
+// ---------------------------------------------------------------------------
+// NEW: Quality narrative
+// ---------------------------------------------------------------------------
+
+/**
+ * "What's strong, what's weak, and what it means" — 2-3 sentences.
+ */
+export function getQualityNarrative(hotel: HotelDashboardRow, topics: HotelTopicRow[]): string {
+  const parts: string[] = [];
+
+  // Rating context
+  if (hotel.ta_rating != null) {
+    const rankStr = hotel.ta_ranking != null && hotel.ta_ranking_out_of != null && hotel.ta_ranking_geo
+      ? ` (#${hotel.ta_ranking} of ${formatNumber(hotel.ta_ranking_out_of)} in ${hotel.ta_ranking_geo})`
+      : '';
+    parts.push(`TripAdvisor ${formatDecimal(hotel.ta_rating, 1)}${rankStr}.`);
+  }
+
+  // Subrating narrative
+  const subratings = getSubratingRows(hotel);
+  if (subratings.length >= 3) {
+    const sorted = [...subratings].sort((a, b) => b.value - a.value);
+    const best = sorted[0];
+    const worst = sorted[sorted.length - 1];
+    const gap = best.value - worst.value;
+    if (gap > 0.2) {
+      parts.push(`${best.label} leads at ${formatDecimal(best.value, 1)}, while ${worst.label.toLowerCase()} trails at ${formatDecimal(worst.value, 1)} (${formatDecimal(gap, 1)}-point spread).`);
+    } else {
+      parts.push(`Subratings are tightly clustered (${formatDecimal(gap, 1)}-point spread) — no dramatic weak spot.`);
+    }
+  }
+
+  // Topic color
+  const { strongestPraise, biggestConcern } = getBestAndWorstTopic(topics);
+  if (strongestPraise && biggestConcern && strongestPraise.aspect !== biggestConcern.aspect) {
+    parts.push(`In reviews, ${titleCase(strongestPraise.aspect).toLowerCase()} is praised most (${Math.round(strongestPraise.positiveRate)}% positive), while ${titleCase(biggestConcern.aspect).toLowerCase()} draws the most criticism (${Math.round(biggestConcern.negativeRate)}% negative).`);
+  }
+
+  return parts.join(' ') || getQualityInsight(hotel);
+}
+
+
+// ---------------------------------------------------------------------------
+// NEW: Guest narrative
+// ---------------------------------------------------------------------------
+
+/**
+ * "Who stays here, what they want, what they're not getting" — 2-3 sentences.
+ */
+export function getGuestNarrative(
+  hotel: HotelDashboardRow,
+  personas: GuestPersonaRow[],
+  deepDive: GuestPersonaDeepDiveData,
+): string {
+  const parts: string[] = [];
+
+  // Primary segment
+  const ranked = segmentRank(hotel);
+  if (ranked.length >= 2) {
+    parts.push(`The guest mix skews ${ranked[0].label.toLowerCase()} (${Math.round(ranked[0].value * 100)}%), with ${ranked[1].label.toLowerCase()} close behind at ${Math.round(ranked[1].value * 100)}%.`);
+  }
+
+  // Spending level from persona data
+  if (deepDive.spendingLevels.length > 0) {
+    const top = deepDive.spendingLevels[0];
+    parts.push(`Most persona-tagged reviews indicate ${top.label} spending (${Math.round(top.pct * 100)}%).`);
+  }
+
+  // Repeat guest insight
+  if (deepDive.repeatGuestPct != null && deepDive.repeatGuestPct > 0.05) {
+    parts.push(`${Math.round(deepDive.repeatGuestPct * 100)}% of analyzed reviews are from repeat guests — a loyalty signal.`);
+  }
+
+  // Content gap: which segments lack targeted content?
+  if (ranked.length >= 2 && hotel.total_reviews_db > 100) {
+    const secondarySegment = ranked[1].label;
+    parts.push(`The ${secondarySegment.toLowerCase()} segment (${Math.round(ranked[1].value * 100)}%) may be underserved in current marketing content.`);
+  }
+
+  return parts.join(' ') || getWhoStaysInsight(hotel, personas, deepDive);
+}
+
+
+// ---------------------------------------------------------------------------
+// NEW: Competitive narrative
+// ---------------------------------------------------------------------------
+
+/**
+ * "Where this hotel wins and loses vs the competitive set" — 2-3 sentences.
+ */
+export function getCompetitiveNarrative(
+  hotel: HotelDashboardRow,
+  competitors: CompetitorNetworkRow[],
+): string {
+  if (!competitors.length) return 'No competitive set has been mapped yet.';
+
+  const parts: string[] = [];
+
+  // Overall position
+  const delta = positiveDelta(hotel.ta_rating, hotel.ta_compset_avg_rating);
+  if (delta != null) {
+    if (delta >= 0.3) {
+      parts.push(`This hotel leads its competitive set by ${formatDecimal(delta, 1)} points — a strong position to defend.`);
+    } else if (delta >= 0) {
+      parts.push(`Rating sits ${formatDecimal(delta, 1)} points above the set average — competitive but not dominant.`);
+    } else {
+      parts.push(`Rating is ${formatDecimal(Math.abs(delta), 1)} points below the set average — guests choosing between options see this gap.`);
+    }
+  }
+
+  // Find specific competitor threats
+  const betterRated = competitors.filter(c => c.competitor_rating != null && hotel.ta_rating != null && c.competitor_rating > hotel.ta_rating);
+  const moreReviewed = competitors.filter(c => c.competitor_reviews != null && hotel.ta_num_reviews != null && c.competitor_reviews > hotel.ta_num_reviews);
+
+  if (betterRated.length > 0) {
+    const topThreat = betterRated.sort((a, b) => (b.competitor_rating ?? 0) - (a.competitor_rating ?? 0))[0];
+    parts.push(`${topThreat.competitor_name} leads at ${formatDecimal(topThreat.competitor_rating, 1)} with ${formatNumber(topThreat.competitor_reviews)} reviews.`);
+  }
+
+  if (moreReviewed.length > 0 && betterRated.length === 0) {
+    parts.push(`${moreReviewed.length} competitor${moreReviewed.length > 1 ? 's' : ''} have more reviews — higher visibility in search results.`);
+  }
+
+  return parts.join(' ') || getCompetitiveInsight(hotel, competitors);
+}
+
+
+// ---------------------------------------------------------------------------
+// NEW: Language opportunity narrative
+// ---------------------------------------------------------------------------
+
+/**
+ * "The revenue sitting on the table in underserved languages" — with concrete numbers.
+ */
+export function getLanguageNarrative(
+  hotel: HotelDashboardRow,
+  languages: LanguageBreakdownRow[],
+): string {
+  const websiteLanguages = getEffectiveWebsiteLanguages(hotel.dp_website_content_languages);
+  const unserved = getUnservedLanguageMarkets(languages, websiteLanguages);
+
+  if (unserved.length === 0) {
+    if (languages.length <= 1) return 'Review language data is limited for this property.';
+    return `Reviews span ${languages.length} languages, and the website covers the primary markets.`;
+  }
+
+  const parts: string[] = [];
+
+  // Headline
+  const totalUnservedReviews = unserved.reduce((sum, l) => sum + l.review_count, 0);
+  parts.push(`${formatNumber(totalUnservedReviews)} reviews across ${unserved.length} languages have no corresponding website content.`);
+
+  // Top 3 unserved markets
+  const topMarkets = unserved.slice(0, 3);
+  for (const market of topMarkets) {
+    const ratingStr = market.avg_rating != null ? `, avg rating ${formatDecimal(market.avg_rating, 1)}` : '';
+    parts.push(`${langName(market.lang)}: ${formatNumber(market.review_count)} reviews${ratingStr}.`);
+  }
+
+  return parts.join(' ');
+}
+
+
+// ---------------------------------------------------------------------------
+// NEW: AI Discovery narrative
+// ---------------------------------------------------------------------------
+
+/**
+ * "How invisible this hotel is to AI and what that costs."
+ */
+export function getAIDiscoveryNarrative(hotel: HotelDashboardRow, competitorAverage: number | null): string {
+  const score = hotel.ai_visibility_score;
+
+  if (score == null && hotel.ai_chatgpt_mentioned == null) {
+    return 'AI discovery benchmarks have not been collected yet. When travelers ask ChatGPT or Perplexity for hotel recommendations in this city, we don\'t yet know if this property appears.';
+  }
+
+  if (typeof score === 'number') {
+    if (score < 0.2) {
+      return `This hotel is nearly invisible to AI search — appearing in only ${Math.round(score * 100)}% of benchmark queries. Competitors average ${competitorAverage != null ? Math.round(competitorAverage * 100) + '%' : 'unknown'}. As AI-referred bookings grow, this gap becomes a direct revenue leak.`;
+    }
+    if (score < 0.5) {
+      return `AI visibility is below average at ${Math.round(score * 100)}%. The hotel appears in some queries but is not consistently recommended.`;
+    }
+    return `AI visibility is solid at ${Math.round(score * 100)}% — the hotel appears in most relevant benchmark queries.`;
+  }
+
+  if (hotel.ai_chatgpt_mentioned === false && hotel.ai_perplexity_mentioned === false) {
+    return 'Neither ChatGPT nor Perplexity currently surfaces this hotel. As AI-powered travel planning grows, missing from these results means missing bookings.';
+  }
+
+  return 'AI discovery data has not been collected yet for this property.';
+}
+
+
+// ---------------------------------------------------------------------------
+// NEW: Content readiness narrative
+// ---------------------------------------------------------------------------
+
+/**
+ * "What marketing assets could be generated RIGHT NOW from the data."
+ */
+export function getContentReadiness(
+  hotel: HotelDashboardRow,
+  seeds: ContentSeedRow[],
+  languages: LanguageBreakdownRow[],
+  topics: HotelTopicRow[],
+): string {
+  const parts: string[] = [];
+
+  // Quality-filtered seeds
+  const qualitySeeds = seeds.filter(s =>
+    s.quote && s.quote.length >= 25 &&
+    !(s.quote === s.quote.toUpperCase() && s.quote.length > 5)
+  );
+
+  if (qualitySeeds.length > 0) {
+    parts.push(`${qualitySeeds.length} marketing-ready guest quotes are available for campaigns.`);
+
+    // Breakdown by use
+    const uses = new Map<string, number>();
+    for (const s of qualitySeeds) {
+      if (s.marketing_use) uses.set(s.marketing_use, (uses.get(s.marketing_use) ?? 0) + 1);
+    }
+    const useStr = [...uses.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3)
+      .map(([use, count]) => `${count} ${use}`)
+      .join(', ');
+    if (useStr) parts.push(`Breakdown: ${useStr}.`);
+  } else {
+    parts.push('No marketing-ready guest quotes extracted yet.');
+  }
+
+  // Language content opportunity
+  const websiteLanguages = getEffectiveWebsiteLanguages(hotel.dp_website_content_languages);
+  const unserved = getUnservedLanguageMarkets(languages, websiteLanguages);
+  if (unserved.length > 0) {
+    parts.push(`${unserved.length} language-specific landing pages could be generated from existing review intelligence.`);
+  }
+
+  // Topic-based content
+  const strongTopics = topics.filter(t => t.mention_count >= 20 && (t.positive_pct ?? 0) >= 80);
+  if (strongTopics.length > 0) {
+    const topicNames = strongTopics.slice(0, 3).map(t => titleCase(t.aspect).toLowerCase());
+    parts.push(`Strong content angles: ${topicNames.join(', ')}.`);
+  }
+
+  return parts.join(' ');
+}
+
+
+// ---------------------------------------------------------------------------
+// NEW: Review momentum narrative
+// ---------------------------------------------------------------------------
+
+/**
+ * "Is this hotel's reputation improving or declining?"
+ */
+export function getReviewMomentum(
+  hotel: HotelDashboardRow,
+  timeline: ReviewTimelineRow[],
+): string {
+  if (timeline.length < 3) {
+    return 'Not enough review history to determine a trend.';
+  }
+
+  const recent = timeline.slice(-3);
+  const prior = timeline.slice(-6, -3);
+
+  if (prior.length === 0) {
+    const recentTotal = recent.reduce((sum, t) => sum + t.review_count, 0);
+    return `${formatNumber(recentTotal)} reviews in the last 3 months tracked.`;
+  }
+
+  const recentVolume = recent.reduce((sum, t) => sum + t.review_count, 0);
+  const priorVolume = prior.reduce((sum, t) => sum + t.review_count, 0);
+  const recentAvg = recent.reduce((sum, t) => sum + (t.avg_rating ?? 0) * t.review_count, 0) /
+    Math.max(recent.reduce((sum, t) => sum + t.review_count, 0), 1);
+  const priorAvg = prior.reduce((sum, t) => sum + (t.avg_rating ?? 0) * t.review_count, 0) /
+    Math.max(prior.reduce((sum, t) => sum + t.review_count, 0), 1);
+
+  const parts: string[] = [];
+
+  // Volume trend
+  if (priorVolume > 0) {
+    const volumeChange = ((recentVolume - priorVolume) / priorVolume * 100);
+    if (Math.abs(volumeChange) > 10) {
+      parts.push(`Review volume ${volumeChange > 0 ? 'up' : 'down'} ${Math.abs(Math.round(volumeChange))}% vs prior quarter.`);
+    } else {
+      parts.push('Review volume is stable vs prior quarter.');
+    }
+  }
+
+  // Rating trend
+  if (priorAvg > 0 && recentAvg > 0) {
+    const ratingDelta = recentAvg - priorAvg;
+    if (Math.abs(ratingDelta) > 0.1) {
+      parts.push(`Average rating ${ratingDelta > 0 ? 'improved' : 'declined'} from ${formatDecimal(priorAvg, 1)} to ${formatDecimal(recentAvg, 1)}.`);
+    }
+  }
+
+  // Negative sentiment trend
+  const recentNeg = recent.reduce((sum, t) => sum + t.negative, 0);
+  const priorNeg = prior.reduce((sum, t) => sum + t.negative, 0);
+  if (recentNeg > priorNeg * 1.5 && priorNeg > 5) {
+    parts.push(`Negative reviews increased significantly — worth investigating.`);
+  }
+
+  return parts.join(' ') || `${formatNumber(recentVolume)} reviews in the last 3 months, steady trajectory.`;
+}
+
+
+// ---------------------------------------------------------------------------
+// NEW: Portfolio-level insight generators
+// ---------------------------------------------------------------------------
+
+export interface ChainSummary {
+  headline: string;
+  strengths: string[];
+  weaknesses: string[];
+  patterns: string[];
+}
+
+/**
+ * "Across N properties: strengths, weaknesses, patterns."
+ */
+export function getChainSummary(hotels: HotelDashboardRow[]): ChainSummary {
+  const rated = hotels.filter(h => h.ta_rating != null);
+  const strengths: string[] = [];
+  const weaknesses: string[] = [];
+  const patterns: string[] = [];
+
+  if (rated.length === 0) {
+    return { headline: `${hotels.length} properties in the portfolio.`, strengths: [], weaknesses: [], patterns: [] };
+  }
+
+  // Headline
+  const avgRating = rated.reduce((sum, h) => sum + h.ta_rating!, 0) / rated.length;
+  const totalReviews = hotels.reduce((sum, h) => sum + h.total_reviews_db, 0);
+  const countries = new Set(hotels.map(h => h.country).filter(Boolean));
+  const headline = `${hotels.length} properties across ${countries.size} countries. Average TA rating ${formatDecimal(avgRating, 1)} from ${formatNumber(totalReviews)} reviews.`;
+
+  // Strengths
+  const topRated = rated.filter(h => h.ta_rating! >= 4.8);
+  if (topRated.length > 0) {
+    strengths.push(`${topRated.length} properties rated 4.8+.`);
+  }
+
+  const highResponse = hotels.filter(h => h.ta_owner_response_rate != null && h.ta_owner_response_rate > 0.8);
+  if (highResponse.length > rated.length * 0.6) {
+    strengths.push(`${highResponse.length} of ${rated.length} properties respond to 80%+ of reviews — strong reputation management.`);
+  }
+
+  // Weaknesses
+  const valueWeak = hotels.filter(h => h.ta_subrating_weakest === 'value');
+  if (valueWeak.length > rated.length * 0.5) {
+    weaknesses.push(`Value is the weakest subrating at ${valueWeak.length} of ${rated.length} properties — a chain-wide perception issue.`);
+  }
+
+  const lowRated = rated.filter(h => h.ta_rating! < 4.5);
+  if (lowRated.length > 0) {
+    const names = lowRated.slice(0, 3).map(h => h.name.replace(/Kempinski\s*(Hotel\s*)?/i, '').trim());
+    weaknesses.push(`${lowRated.length} properties rated below 4.5: ${names.join(', ')}${lowRated.length > 3 ? '...' : ''}.`);
+  }
+
+  // Patterns
+  const segmentCounts = { Family: 0, Couples: 0, Business: 0 };
+  hotels.forEach(h => {
+    if (h.ta_primary_segment === 'family') segmentCounts.Family++;
+    if (h.ta_primary_segment === 'couples') segmentCounts.Couples++;
+    if (h.ta_primary_segment === 'business') segmentCounts.Business++;
+  });
+  const topSegment = Object.entries(segmentCounts).sort((a, b) => b[1] - a[1])[0];
+  if (topSegment[1] > 0) {
+    patterns.push(`${topSegment[0]} is the dominant segment at ${topSegment[1]} properties.`);
+  }
+
+  // Language pattern
+  const avgLangGap = hotels
+    .map(h => (h as any).computed_language_gap ?? 0)
+    .filter((v: number) => v > 0);
+  if (avgLangGap.length > hotels.length * 0.5) {
+    const avg = avgLangGap.reduce((a: number, b: number) => a + b, 0) / avgLangGap.length;
+    patterns.push(`Average language gap of ${formatDecimal(avg, 0)} — most properties serve fewer languages than their guests speak.`);
+  }
+
+  return { headline, strengths, weaknesses, patterns };
+}
+
+
+/**
+ * "The N hotels that need Lumina most, ranked with reasons."
+ */
+export function getTopOpportunities(
+  hotels: HotelDashboardRow[],
+  n: number = 10,
+): Array<{ hotel: HotelDashboardRow; reason: string }> {
+  // Score each hotel
+  type Scored = { hotel: HotelDashboardRow; score: number; reason: string };
+  const scored: Scored[] = [];
+
+  for (const hotel of hotels) {
+    // Use pre-computed score if available
+    const computed = (hotel as any).computed_opportunity_score;
+    const computedReason = (hotel as any).computed_opportunity_narrative;
+
+    if (typeof computed === 'number' && typeof computedReason === 'string') {
+      scored.push({ hotel, score: computed, reason: computedReason });
+      continue;
+    }
+
+    // Fallback scoring
+    let score = 0;
+    let reason = '';
+
+    // Language gap
+    const effectiveLangs = getEffectiveWebsiteLanguageCount(hotel);
+    const reviewLangs = hotel.ta_review_language_count ?? 0;
+    const langGap = Math.max(reviewLangs - effectiveLangs, 0);
+    if (langGap > 5) { score += 0.3; reason = `${langGap} underserved language markets`; }
+    else if (langGap > 0) { score += langGap * 0.03; }
+
+    // Value gap
+    if (hotel.ta_subrating_service != null && hotel.ta_subrating_value != null) {
+      const vg = hotel.ta_subrating_service - hotel.ta_subrating_value;
+      if (vg > 0.3) {
+        score += vg * 0.3;
+        if (!reason) reason = `Value rated ${formatDecimal(vg, 1)} below service`;
+      }
+    }
+
+    // Low response rate
+    if (hotel.ta_owner_response_rate != null && hotel.ta_owner_response_rate < 0.3) {
+      score += 0.2;
+      if (!reason) reason = `Only ${Math.round(hotel.ta_owner_response_rate * 100)}% response rate`;
+    }
+
+    // Below compset
+    if (hotel.ta_rating != null && hotel.ta_compset_avg_rating != null) {
+      const cd = hotel.ta_compset_avg_rating - hotel.ta_rating;
+      if (cd > 0.1) {
+        score += cd * 0.2;
+        if (!reason) reason = `${formatDecimal(cd, 1)} points below competitive set`;
+      }
+    }
+
+    if (!reason) reason = `${formatNumber(hotel.total_reviews_db)} reviews to mine for intelligence`;
+
+    scored.push({ hotel, score, reason });
+  }
+
+  return scored
+    .sort((a, b) => b.score - a.score)
+    .slice(0, n)
+    .map(({ hotel, reason }) => ({ hotel, reason }));
+}
+
+
+/**
+ * "Kempinski's position in [market] vs competitors."
+ */
+export function getMarketInsight(
+  hotels: HotelDashboardRow[],
+  country: string,
+): string {
+  const countryHotels = hotels.filter(h =>
+    h.country?.toLowerCase() === country.toLowerCase()
+  );
+
+  if (countryHotels.length === 0) {
+    return `No properties found in ${country}.`;
+  }
+
+  const parts: string[] = [];
+  const rated = countryHotels.filter(h => h.ta_rating != null);
+
+  parts.push(`${countryHotels.length} propert${countryHotels.length === 1 ? 'y' : 'ies'} in ${country}.`);
+
+  if (rated.length > 0) {
+    const avgRating = rated.reduce((sum, h) => sum + h.ta_rating!, 0) / rated.length;
+    parts.push(`Average rating ${formatDecimal(avgRating, 1)}.`);
+
+    const best = rated.sort((a, b) => b.ta_rating! - a.ta_rating!)[0];
+    if (rated.length > 1) {
+      parts.push(`Top performer: ${best.name} at ${formatDecimal(best.ta_rating, 1)}.`);
+    }
+  }
+
+  const totalReviews = countryHotels.reduce((sum, h) => sum + h.total_reviews_db, 0);
+  parts.push(`${formatNumber(totalReviews)} total reviews in this market.`);
+
+  return parts.join(' ');
 }
