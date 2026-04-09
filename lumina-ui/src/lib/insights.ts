@@ -1,4 +1,5 @@
 import type {
+  ChainIntelligenceRow,
   CompetitorNetworkRow,
   ContentSeedRow,
   GuestPersonaDeepDiveData,
@@ -87,6 +88,21 @@ function getEffectiveWebsiteLanguageCount(hotel: HotelDashboardRow): number {
   return getEffectiveWebsiteLanguages(hotel.dp_website_content_languages).length;
 }
 
+function shouldUseComputedOpportunityNarrative(hotel: HotelDashboardRow, narrative: string | null | undefined): boolean {
+  if (typeof narrative !== 'string' || narrative.trim().length < 10) return false;
+
+  const effectiveLangs = getEffectiveWebsiteLanguageCount(hotel);
+  if (effectiveLangs === 0 && /\bserves 0\b/i.test(narrative)) {
+    return false;
+  }
+
+  if ((hotel.total_reviews_db ?? 0) === 0 && /\breviews?\b/i.test(narrative)) {
+    return false;
+  }
+
+  return true;
+}
+
 function isEnglishLanguage(value: string | null | undefined): boolean {
   if (!value) return false;
   return ENGLISH_CODES.has(value.trim().toLowerCase());
@@ -171,13 +187,11 @@ function getUnservedLanguageMarkets(
  * Uses pre-computed opportunity data if available, otherwise falls through priority logic.
  */
 export function getCardOpportunityInsight(hotel: HotelDashboardRow): string {
-  // Use pre-computed narrative from the intelligence layer if available
   const computed = (hotel as any).computed_opportunity_narrative;
-  if (typeof computed === 'string' && computed.length > 10) {
+  if (shouldUseComputedOpportunityNarrative(hotel, computed)) {
     return computed;
   }
 
-  // Fallback: priority cascade
   if (typeof hotel.ai_visibility_score === 'number' && hotel.ai_visibility_score < 0.3) {
     const invisible = Math.max(0, AI_QUERY_BENCHMARK - Math.round(hotel.ai_visibility_score * AI_QUERY_BENCHMARK));
     return `Invisible to ChatGPT on ${invisible}/${AI_QUERY_BENCHMARK} discovery queries.`;
@@ -499,7 +513,7 @@ export function getOpportunityNarrative(
   const effectiveLangs = getEffectiveWebsiteLanguageCount(hotel);
   const reviewLangs = hotel.ta_review_language_count ?? 0;
   const langGap = Math.max(reviewLangs - effectiveLangs, 0);
-  if (langGap > 0) {
+  if (effectiveLangs > 0 && langGap > 0) {
     const unserved = getUnservedLanguageMarkets(languages,
       getEffectiveWebsiteLanguages(hotel.dp_website_content_languages));
     const topLang = unserved[0];
@@ -926,7 +940,10 @@ export interface ChainSummary {
 /**
  * "Across N properties: strengths, weaknesses, patterns."
  */
-export function getChainSummary(hotels: HotelDashboardRow[]): ChainSummary {
+export function getChainSummary(
+  hotels: HotelDashboardRow[],
+  summaryRow?: ChainIntelligenceRow | null,
+): ChainSummary {
   const rated = hotels.filter(h => h.ta_rating != null);
   const strengths: string[] = [];
   const weaknesses: string[] = [];
@@ -936,13 +953,23 @@ export function getChainSummary(hotels: HotelDashboardRow[]): ChainSummary {
     return { headline: `${hotels.length} properties in the portfolio.`, strengths: [], weaknesses: [], patterns: [] };
   }
 
-  // Headline
-  const avgRating = rated.reduce((sum, h) => sum + h.ta_rating!, 0) / rated.length;
-  const totalReviews = hotels.reduce((sum, h) => sum + h.total_reviews_db, 0);
+  const avgRating = summaryRow?.avg_rating ?? (rated.reduce((sum, h) => sum + h.ta_rating!, 0) / rated.length);
+  const totalReviews = summaryRow?.total_reviews_db ?? hotels.reduce((sum, h) => sum + h.total_reviews_db, 0);
+  const avgOpportunity = summaryRow?.avg_opportunity_score ?? (
+    hotels
+      .map(h => h.computed_opportunity_score ?? h.score_tos)
+      .filter((value): value is number => typeof value === 'number')
+      .reduce((sum, value, _, rows) => sum + value / Math.max(rows.length, 1), 0)
+  );
+  const avgLanguageGap = summaryRow?.avg_language_gap ?? (
+    hotels
+      .map(h => h.computed_language_gap)
+      .filter((value): value is number => typeof value === 'number')
+      .reduce((sum, value, _, rows) => sum + value / Math.max(rows.length, 1), 0)
+  );
   const countries = new Set(hotels.map(h => h.country).filter(Boolean));
-  const headline = `${hotels.length} properties across ${countries.size} countries. Average TA rating ${formatDecimal(avgRating, 1)} from ${formatNumber(totalReviews)} reviews.`;
+  const headline = `${hotels.length} properties across ${countries.size} countries, ${formatNumber(totalReviews)} reviews, average rating ${formatDecimal(avgRating, 1)}, and an average opportunity score of ${Math.round((avgOpportunity ?? 0) * 100)}/100.`;
 
-  // Strengths
   const topRated = rated.filter(h => h.ta_rating! >= 4.8);
   if (topRated.length > 0) {
     strengths.push(`${topRated.length} properties rated 4.8+.`);
@@ -950,22 +977,37 @@ export function getChainSummary(hotels: HotelDashboardRow[]): ChainSummary {
 
   const highResponse = hotels.filter(h => h.ta_owner_response_rate != null && h.ta_owner_response_rate > 0.8);
   if (highResponse.length > rated.length * 0.6) {
-    strengths.push(`${highResponse.length} of ${rated.length} properties respond to 80%+ of reviews — strong reputation management.`);
+    strengths.push(`${highResponse.length} of ${rated.length} rated properties respond to 80%+ of reviews — reputation operations are mostly strong.`);
   }
 
-  // Weaknesses
+  const directCheaper = hotels.filter(h =>
+    typeof h.price_direct === 'number' &&
+    typeof h.price_lowest_ota === 'number' &&
+    h.price_direct < h.price_lowest_ota,
+  );
+  if (directCheaper.length > 0) {
+    strengths.push(`${directCheaper.length} properties already beat OTAs on direct pricing, which gives sales a concrete direct-booking story.`);
+  }
+
   const valueWeak = hotels.filter(h => h.ta_subrating_weakest === 'value');
   if (valueWeak.length > rated.length * 0.5) {
-    weaknesses.push(`Value is the weakest subrating at ${valueWeak.length} of ${rated.length} properties — a chain-wide perception issue.`);
+    weaknesses.push(`Value is the weakest subrating at ${valueWeak.length} of ${rated.length} rated properties — a chain-wide pricing-perception issue.`);
   }
 
-  const lowRated = rated.filter(h => h.ta_rating! < 4.5);
-  if (lowRated.length > 0) {
-    const names = lowRated.slice(0, 3).map(h => h.name.replace(/Kempinski\s*(Hotel\s*)?/i, '').trim());
-    weaknesses.push(`${lowRated.length} properties rated below 4.5: ${names.join(', ')}${lowRated.length > 3 ? '...' : ''}.`);
+  if ((avgLanguageGap ?? 0) >= 3) {
+    weaknesses.push(`Guests review in roughly ${formatDecimal(avgLanguageGap, 1)} more languages than hotel websites serve on average — localization is the biggest chain-wide wedge.`);
   }
 
-  // Patterns
+  const evidenceThin = hotels.filter(h => (h.total_reviews_db ?? 0) === 0);
+  if (evidenceThin.length > 0) {
+    weaknesses.push(`${evidenceThin.length} properties still have no review evidence in the live app, so they are not yet showcase-grade briefs.`);
+  }
+
+  const missingContact = hotels.filter(h => !h.cx_gm_name && !h.cx_gm_email && !h.cx_gm_phone);
+  if (missingContact.length > hotels.length * 0.5) {
+    weaknesses.push(`Contact intelligence is still missing on ${missingContact.length} properties, which caps outbound readiness even when the guest proof is strong.`);
+  }
+
   const segmentCounts = { Family: 0, Couples: 0, Business: 0 };
   hotels.forEach(h => {
     if (h.ta_primary_segment === 'family') segmentCounts.Family++;
@@ -974,16 +1016,20 @@ export function getChainSummary(hotels: HotelDashboardRow[]): ChainSummary {
   });
   const topSegment = Object.entries(segmentCounts).sort((a, b) => b[1] - a[1])[0];
   if (topSegment[1] > 0) {
-    patterns.push(`${topSegment[0]} is the dominant segment at ${topSegment[1]} properties.`);
+    patterns.push(`${topSegment[0]} is the dominant primary segment at ${topSegment[1]} properties, so outreach and content should assume a broad luxury-leisure bias first.`);
   }
 
-  // Language pattern
-  const avgLangGap = hotels
-    .map(h => (h as any).computed_language_gap ?? 0)
-    .filter((v: number) => v > 0);
-  if (avgLangGap.length > hotels.length * 0.5) {
-    const avg = avgLangGap.reduce((a: number, b: number) => a + b, 0) / avgLangGap.length;
-    patterns.push(`Average language gap of ${formatDecimal(avg, 0)} — most properties serve fewer languages than their guests speak.`);
+  if (summaryRow?.hotels_with_ai_visibility === 0) {
+    patterns.push('AI visibility is not yet populated anywhere in this chain, so it is a portfolio product gap, not a hotel-ranking signal.');
+  }
+
+  const zeroSocial = hotels.filter(h => h.dp_has_active_social === true).length === 0;
+  if (zeroSocial) {
+    patterns.push('Structured digital signals are much sparser than review signals, so the moat currently comes from guest evidence more than from website instrumentation.');
+  }
+
+  if ((summaryRow?.avg_processed_review_coverage ?? 0) > 0) {
+    patterns.push(`Average processed-review coverage is ${Math.round((summaryRow?.avg_processed_review_coverage ?? 0) * 100)}%, which is enough to support proof-heavy briefings on the strongest properties.`);
   }
 
   return { headline, strengths, weaknesses, patterns };
@@ -997,56 +1043,67 @@ export function getTopOpportunities(
   hotels: HotelDashboardRow[],
   n: number = 10,
 ): Array<{ hotel: HotelDashboardRow; reason: string }> {
-  // Score each hotel
   type Scored = { hotel: HotelDashboardRow; score: number; reason: string };
   const scored: Scored[] = [];
 
   for (const hotel of hotels) {
-    // Use pre-computed score if available
-    const computed = (hotel as any).computed_opportunity_score;
-    const computedReason = (hotel as any).computed_opportunity_narrative;
+  const computed = hotel.computed_opportunity_score;
+  const computedReason = hotel.computed_opportunity_narrative;
 
-    if (typeof computed === 'number' && typeof computedReason === 'string') {
-      scored.push({ hotel, score: computed, reason: computedReason });
+    if (typeof computed === 'number' && shouldUseComputedOpportunityNarrative(hotel, computedReason)) {
+      scored.push({ hotel, score: computed, reason: computedReason! });
       continue;
     }
 
-    // Fallback scoring
     let score = 0;
     let reason = '';
 
-    // Language gap
     const effectiveLangs = getEffectiveWebsiteLanguageCount(hotel);
     const reviewLangs = hotel.ta_review_language_count ?? 0;
     const langGap = Math.max(reviewLangs - effectiveLangs, 0);
-    if (langGap > 5) { score += 0.3; reason = `${langGap} underserved language markets`; }
-    else if (langGap > 0) { score += langGap * 0.03; }
+    if (effectiveLangs > 0 && langGap > 3) {
+      score += Math.min(langGap / 12, 0.45);
+      reason = `Guests review in ${reviewLangs} languages while the website serves ${effectiveLangs}.`;
+    } else if (effectiveLangs > 0 && langGap > 0) {
+      score += langGap * 0.03;
+    }
 
-    // Value gap
     if (hotel.ta_subrating_service != null && hotel.ta_subrating_value != null) {
       const vg = hotel.ta_subrating_service - hotel.ta_subrating_value;
       if (vg > 0.3) {
-        score += vg * 0.3;
-        if (!reason) reason = `Value rated ${formatDecimal(vg, 1)} below service`;
+        score += vg * 0.25;
+        if (!reason) reason = `Guests rate value ${formatDecimal(vg, 1)} points below service.`;
       }
     }
 
-    // Low response rate
     if (hotel.ta_owner_response_rate != null && hotel.ta_owner_response_rate < 0.3) {
-      score += 0.2;
-      if (!reason) reason = `Only ${Math.round(hotel.ta_owner_response_rate * 100)}% response rate`;
+      score += 0.08;
+      if (!reason) reason = `Only ${Math.round(hotel.ta_owner_response_rate * 100)}% of reviews get a response.`;
     }
 
-    // Below compset
     if (hotel.ta_rating != null && hotel.ta_compset_avg_rating != null) {
       const cd = hotel.ta_compset_avg_rating - hotel.ta_rating;
       if (cd > 0.1) {
-        score += cd * 0.2;
-        if (!reason) reason = `${formatDecimal(cd, 1)} points below competitive set`;
+        score += cd * 0.18;
+        if (!reason) reason = `${formatDecimal(cd, 1)} points below the mapped competitive set.`;
       }
     }
 
-    if (!reason) reason = `${formatNumber(hotel.total_reviews_db)} reviews to mine for intelligence`;
+    if (
+      typeof hotel.price_direct === 'number' &&
+      typeof hotel.price_lowest_ota === 'number' &&
+      hotel.price_direct < hotel.price_lowest_ota
+    ) {
+      score += 0.06;
+      if (!reason) reason = `Direct already undercuts OTAs by ${formatNumber(Math.round(Math.abs(hotel.price_direct - hotel.price_lowest_ota)))}.`;
+    }
+
+    if ((hotel.total_reviews_db ?? 0) === 0) {
+      score = Math.max(score - 0.2, 0);
+      if (!reason) reason = 'Review evidence is still thin; complete the corpus before using it as a showcase brief.';
+    }
+
+    if (!reason) reason = `${formatNumber(hotel.total_reviews_db)} reviews already mapped for proof-led outreach.`;
 
     scored.push({ hotel, score, reason });
   }
@@ -1075,6 +1132,14 @@ export function getMarketInsight(
 
   const parts: string[] = [];
   const rated = countryHotels.filter(h => h.ta_rating != null);
+  const avgLanguageGap = countryHotels
+    .map(h => h.computed_language_gap)
+    .filter((value): value is number => typeof value === 'number');
+  const directCheaper = countryHotels.filter(h =>
+    typeof h.price_direct === 'number' &&
+    typeof h.price_lowest_ota === 'number' &&
+    h.price_direct < h.price_lowest_ota,
+  );
 
   parts.push(`${countryHotels.length} propert${countryHotels.length === 1 ? 'y' : 'ies'} in ${country}.`);
 
@@ -1090,6 +1155,17 @@ export function getMarketInsight(
 
   const totalReviews = countryHotels.reduce((sum, h) => sum + h.total_reviews_db, 0);
   parts.push(`${formatNumber(totalReviews)} total reviews in this market.`);
+
+  if (avgLanguageGap.length) {
+    const avg = avgLanguageGap.reduce((sum, value) => sum + value, 0) / avgLanguageGap.length;
+    if (avg >= 3) {
+      parts.push(`Average language gap is ${formatDecimal(avg, 1)}, so localization is the clearest commercial wedge here.`);
+    }
+  }
+
+  if (directCheaper.length > 0) {
+    parts.push(`${directCheaper.length} properties already beat OTAs on direct rate, which makes direct-booking messaging more credible here.`);
+  }
 
   return parts.join(' ');
 }

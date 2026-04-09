@@ -37,7 +37,11 @@ export function TopOpportunitiesList({
               <div className="rounded-2xl bg-stone-50 px-4 py-3">
                 <p className="text-xs uppercase tracking-[0.14em] text-stone-500">Opportunity</p>
                 <p className="mt-1 font-medium text-[var(--lumina-ink)]">
-                  {hotel.score_tos != null ? `${Math.round(hotel.score_tos * 100)}/100` : '—'}
+                  {hotel.computed_opportunity_score != null
+                    ? `${Math.round(hotel.computed_opportunity_score * 100)}/100`
+                    : hotel.score_tos != null
+                      ? `${Math.round(hotel.score_tos * 100)}/100`
+                      : '—'}
                 </p>
               </div>
               <div className="rounded-2xl bg-stone-50 px-4 py-3">

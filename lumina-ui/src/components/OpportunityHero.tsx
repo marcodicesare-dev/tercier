@@ -21,8 +21,16 @@ export function OpportunityHero({
 }) {
   const score = opportunity?.opportunity?.score ?? hotel.score_tos ?? 0;
   const reason = opportunity?.opportunity?.primary_reason ?? hotel.computed_opportunity_primary ?? null;
+  const action = opportunity?.opportunity?.action ?? null;
+  const salesHook = opportunity?.opportunity?.sales_hook ?? null;
+  const proofPathState = opportunity?.opportunity?.proof_path_state ?? opportunity?.evidence_summary?.proof_path_state ?? null;
   const languageMarkets = opportunity?.language_markets?.slice(0, 5) ?? [];
   const topicWeaknesses = opportunity?.topic_weaknesses?.slice(0, 4) ?? [];
+  const unservedLanguages = languageMarkets.filter(language => language.served === false);
+  const evidenceSummary = opportunity?.evidence_summary ?? null;
+  const processedCoverage = evidenceSummary?.processed_review_coverage != null
+    ? `${Math.round(evidenceSummary.processed_review_coverage * 100)}%`
+    : null;
   const verificationPrompt = reason
     ? `${titleCase(reason)} is driving the ranking. Use the drill-downs below to verify it against guest reviews and source pages.`
     : 'Use the drill-downs below to prove the opening brief against guest reviews and source pages.';
@@ -42,16 +50,25 @@ export function OpportunityHero({
               Primary driver: <span className="font-medium text-[var(--lumina-ink)]">{titleCase(reason)}</span>
             </p>
           ) : null}
+          {salesHook ? (
+            <p className="text-sm leading-6 text-stone-700">{salesHook}</p>
+          ) : null}
+          {action ? (
+            <div className="rounded-3xl border border-stone-200 bg-[var(--warm-cream)] p-4">
+              <p className="text-xs uppercase tracking-[0.18em] text-stone-600">What to do now</p>
+              <p className="mt-2 text-sm leading-6 text-[var(--lumina-ink)]">{action}</p>
+            </div>
+          ) : null}
           <div className="flex flex-wrap gap-3">
             <Link href={`/hotel/${hotel.hotel_id}/reviews`} className="rounded-full bg-[var(--deep-terracotta)] px-4 py-2 text-sm font-medium text-white hover:bg-[var(--lumina-ink)]">
               Open review explorer
             </Link>
-            {languageMarkets[0] ? (
+            {unservedLanguages[0] ? (
               <Link
-                href={buildReviewsHref(hotel.hotel_id, { lang: languageMarkets[0].lang })}
+                href={buildReviewsHref(hotel.hotel_id, { lang: unservedLanguages[0].lang })}
                 className="rounded-full border border-stone-200 bg-white px-4 py-2 text-sm text-stone-700 hover:border-stone-300"
               >
-                Read {titleCase(languageMarkets[0].lang)} reviews
+                Read {unservedLanguages[0].lang_name ?? titleCase(unservedLanguages[0].lang)} reviews
               </Link>
             ) : null}
             {topicWeaknesses[0] ? (
@@ -74,15 +91,26 @@ export function OpportunityHero({
             <p className="mt-2 text-sm text-stone-600">Reviews in the last 90 days feeding this brief.</p>
           </div>
           <div className="rounded-3xl border border-stone-200 bg-white p-5">
-            <p className="text-xs uppercase tracking-[0.18em] text-stone-600">Evidence paths</p>
+            <p className="text-xs uppercase tracking-[0.18em] text-stone-600">Proof depth</p>
+            <p className="mt-3 text-3xl font-semibold text-[var(--deep-terracotta)]">
+              {processedCoverage ?? '—'}
+            </p>
+            <p className="mt-2 text-sm text-stone-600">
+              {evidenceSummary
+                ? `${formatNumber(evidenceSummary.processed_reviews)} processed reviews out of ${formatNumber(evidenceSummary.total_reviews)} total · ${proofPathState ?? 'unknown'} proof path`
+                : 'Evidence depth has not been summarized yet.'}
+            </p>
+          </div>
+          <div className="rounded-3xl border border-stone-200 bg-white p-5 md:col-span-2">
+            <p className="text-xs uppercase tracking-[0.18em] text-stone-600">Language evidence</p>
             <div className="mt-3 flex flex-wrap gap-2">
-              {languageMarkets.slice(0, 4).map(language => (
+              {(unservedLanguages.length ? unservedLanguages : languageMarkets).slice(0, 4).map(language => (
                 <Link
                   key={language.lang}
                   href={buildReviewsHref(hotel.hotel_id, { lang: language.lang })}
                   className="rounded-full bg-stone-100 px-3 py-1 text-xs font-medium text-stone-700 hover:bg-stone-200"
                 >
-                  {titleCase(language.lang)} · {formatNumber(language.review_count)}
+                  {(language.lang_name ?? titleCase(language.lang))} · {formatNumber(language.review_count)}
                 </Link>
               ))}
               {!languageMarkets.length ? (

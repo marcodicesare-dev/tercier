@@ -18,6 +18,7 @@ import type {
   HotelQnaRow,
   HotelTopicRow,
   LanguageBreakdownRow,
+  MarketIntelligenceRow,
   ReviewExplorerData,
   ReviewExplorerFilters,
   ReviewTopicMentionRow,
@@ -401,6 +402,7 @@ export const getChainData = unstable_cache(
   async (brand?: string): Promise<{
     hotels: HotelDashboardRow[];
     summaryRow: ChainIntelligenceRow | null;
+    marketRows: MarketIntelligenceRow[];
     opportunityRows: Array<{
       hotel_id: string;
       name: string;
@@ -409,6 +411,8 @@ export const getChainData = unstable_cache(
       computed_opportunity_score: number | null;
       computed_opportunity_primary: string | null;
       computed_opportunity_narrative: string | null;
+      opportunity_action?: string | null;
+      sales_hook?: string | null;
     }>;
   }> => {
     const hotels = await getPortfolioHotels();
@@ -435,7 +439,7 @@ export const getChainData = unstable_cache(
 
     const opportunityQuery = supabase
       .from('v_hotel_opportunities')
-      .select('hotel_id,name,city,country,computed_opportunity_score,computed_opportunity_primary,computed_opportunity_narrative')
+      .select('hotel_id,name,city,country,computed_opportunity_score,computed_opportunity_primary,computed_opportunity_narrative,opportunity_action,sales_hook')
       .order('computed_opportunity_score', { ascending: false, nullsFirst: false })
       .limit(10);
 
@@ -445,9 +449,18 @@ export const getChainData = unstable_cache(
 
     if (opportunityError) throw opportunityError;
 
+    const { data: marketRows, error: marketError } = await supabase
+      .from('v_market_intelligence')
+      .select('*')
+      .order('avg_opportunity_score', { ascending: false, nullsFirst: false })
+      .limit(12);
+
+    if (marketError) throw marketError;
+
     return {
       hotels: scopedHotels,
       summaryRow,
+      marketRows: (marketRows ?? []) as MarketIntelligenceRow[],
       opportunityRows: (opportunityRows ?? []) as Array<{
         hotel_id: string;
         name: string;
@@ -456,10 +469,31 @@ export const getChainData = unstable_cache(
         computed_opportunity_score: number | null;
         computed_opportunity_primary: string | null;
         computed_opportunity_narrative: string | null;
+        opportunity_action?: string | null;
+        sales_hook?: string | null;
       }>,
     };
   },
   ['lumina-ui-chain-data'],
+  { revalidate: 60 },
+);
+
+export const getMarketIntelligence = unstable_cache(
+  async (country?: string): Promise<MarketIntelligenceRow[]> => {
+    let query = supabase
+      .from('v_market_intelligence')
+      .select('*')
+      .order('avg_opportunity_score', { ascending: false, nullsFirst: false });
+
+    if (country) {
+      query = query.eq('country', country);
+    }
+
+    const { data, error } = await query;
+    if (error) throw error;
+    return (data ?? []) as MarketIntelligenceRow[];
+  },
+  ['lumina-ui-market-intelligence'],
   { revalidate: 60 },
 );
 

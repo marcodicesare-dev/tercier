@@ -38,7 +38,7 @@ function filterHotels(
   rows = [...rows].sort((left, right) => {
     switch (sort) {
       case 'opportunity':
-        return (right.score_tos ?? -1) - (left.score_tos ?? -1);
+        return (right.computed_opportunity_score ?? right.score_tos ?? -1) - (left.computed_opportunity_score ?? left.score_tos ?? -1);
       case 'reviews':
         return (right.total_reviews_db ?? 0) - (left.total_reviews_db ?? 0);
       case 'rating':
@@ -70,7 +70,7 @@ export default async function PortfolioPage({
   const enrichedHotels = hotels.filter(isComplete);
   const filtered = filterHotels(enrichedHotels, search, country, brand, sort);
   const chainData = await getChainData(brand || undefined);
-  const chainSummary = getChainSummary(filtered);
+  const chainSummary = getChainSummary(filtered, chainData.summaryRow);
   const topOpportunities = getTopOpportunities(filtered, 8);
 
   const countries = [...new Set(enrichedHotels.map(hotel => hotel.country).filter(Boolean))].sort();

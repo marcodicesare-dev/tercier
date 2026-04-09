@@ -27,6 +27,14 @@ export function ChainSummaryCard({
       : null
   );
   const countryCount = summaryRow?.country_count ?? new Set(hotels.map(hotel => hotel.country).filter(Boolean)).size;
+  const evidenceReviews = summaryRow?.total_reviews_db ?? hotels.reduce((sum, hotel) => sum + (hotel.total_reviews_db ?? 0), 0);
+  const processedCoverage = summaryRow?.avg_processed_review_coverage ?? null;
+  const largeLanguageGapHotels = summaryRow?.hotels_with_large_language_gap ?? hotels.filter(hotel => (hotel.computed_language_gap ?? 0) >= 3).length;
+  const directAdvantageHotels = summaryRow?.direct_rate_advantage_hotels ?? hotels.filter(hotel =>
+    typeof hotel.price_direct === 'number' &&
+    typeof hotel.price_lowest_ota === 'number' &&
+    hotel.price_direct < hotel.price_lowest_ota,
+  ).length;
 
   return (
     <section className="rounded-[2rem] border border-stone-200 bg-white/95 p-6 shadow-sm">
@@ -36,12 +44,18 @@ export function ChainSummaryCard({
 
       <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <div className="rounded-3xl bg-[var(--warm-cream)] p-5">
-          <p className="text-xs uppercase tracking-[0.18em] text-stone-600">Properties</p>
-          <p className="mt-3 text-3xl font-semibold text-[var(--deep-terracotta)]">{formatNumber(hotels.length)}</p>
+          <p className="text-xs uppercase tracking-[0.18em] text-stone-600">Evidence reviews</p>
+          <p className="mt-3 text-3xl font-semibold text-[var(--deep-terracotta)]">{formatNumber(evidenceReviews)}</p>
         </div>
         <div className="rounded-3xl border border-stone-200 bg-white p-5">
           <p className="text-xs uppercase tracking-[0.18em] text-stone-600">Avg rating</p>
           <p className="mt-3 text-3xl font-semibold text-[var(--deep-terracotta)]">{formatDecimal(avgRating, 2)}</p>
+        </div>
+        <div className="rounded-3xl border border-stone-200 bg-white p-5">
+          <p className="text-xs uppercase tracking-[0.18em] text-stone-600">Proof coverage</p>
+          <p className="mt-3 text-3xl font-semibold text-[var(--deep-terracotta)]">
+            {processedCoverage != null ? `${Math.round(processedCoverage * 100)}%` : '—'}
+          </p>
         </div>
         <div className="rounded-3xl border border-stone-200 bg-white p-5">
           <p className="text-xs uppercase tracking-[0.18em] text-stone-600">Avg opportunity</p>
@@ -49,10 +63,18 @@ export function ChainSummaryCard({
             {avgOpportunity != null ? `${Math.round(avgOpportunity * 100)}/100` : '—'}
           </p>
         </div>
-        <div className="rounded-3xl border border-stone-200 bg-white p-5">
-          <p className="text-xs uppercase tracking-[0.18em] text-stone-600">Countries</p>
-          <p className="mt-3 text-3xl font-semibold text-[var(--deep-terracotta)]">{formatNumber(countryCount)}</p>
-        </div>
+      </div>
+
+      <div className="mt-4 flex flex-wrap gap-3 text-sm">
+        <span className="rounded-full bg-[var(--warm-cream)] px-3 py-1 text-[var(--deep-terracotta)]">
+          {formatNumber(countryCount)} countries
+        </span>
+        <span className="rounded-full bg-stone-100 px-3 py-1 text-stone-700">
+          {formatNumber(largeLanguageGapHotels)} hotels with material language gaps
+        </span>
+        <span className="rounded-full bg-stone-100 px-3 py-1 text-stone-700">
+          {formatNumber(directAdvantageHotels)} hotels already cheaper direct than OTA
+        </span>
       </div>
 
       <div className="mt-5 grid gap-4 lg:grid-cols-3">

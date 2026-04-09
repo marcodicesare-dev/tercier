@@ -389,7 +389,41 @@ export interface HotelOpportunityData {
     score: number;
     narrative: string;
     primary_reason: string;
+    action?: string | null;
+    sales_hook?: string | null;
+    proof_path_state?: string | null;
   };
+  evidence_summary?: {
+    total_reviews: number;
+    processed_reviews: number;
+    processed_review_coverage: number | null;
+    google_reviews: number;
+    tripadvisor_reviews: number;
+    proof_path_state: string | null;
+  } | null;
+  guest_signal?: {
+    dominant_spending_level?: string | null;
+    dominant_length_of_stay?: string | null;
+    repeat_guest_pct?: number | null;
+  } | null;
+  pricing_signal?: {
+    latest_check_date?: string | null;
+    direct_rate_delta?: number | null;
+    position?: string | null;
+    narrative?: string | null;
+  } | null;
+  content_readiness?: {
+    distinct_quote_count?: number | null;
+    seed_review_count?: number | null;
+    dominant_emotion?: string | null;
+    narrative?: string | null;
+  } | null;
+  competitive_signal?: {
+    delta_vs_compset?: number | null;
+    top_competitor_name?: string | null;
+    top_competitor_rating?: number | null;
+    narrative?: string | null;
+  } | null;
   review_velocity?: {
     last_3_months: number;
   } | null;
@@ -405,8 +439,10 @@ export interface HotelOpportunityData {
   }>;
   language_markets?: Array<{
     lang: string;
+    lang_name?: string;
     avg_rating: number | null;
     review_count: number;
+    served?: boolean;
   }>;
   content_seed_count?: number;
 }
@@ -421,6 +457,9 @@ export interface ChainIntelligenceRow {
   avg_hqi: number | null;
   total_ta_reviews: number | null;
   total_gp_reviews: number | null;
+  total_reviews_db?: number | null;
+  total_processed_reviews?: number | null;
+  avg_processed_review_coverage?: number | null;
   avg_response_rate: number | null;
   avg_value_gap: number | null;
   avg_language_gap: number | null;
@@ -433,8 +472,30 @@ export interface ChainIntelligenceRow {
   hotels_weak_value: number;
   hotels_weak_location: number;
   hotels_weak_rooms: number;
+  deep_proof_hotels?: number;
+  direct_rate_advantage_hotels?: number;
+  hotels_with_unserved_languages?: number;
+  hotels_with_large_language_gap?: number;
+  hotels_with_contact_intel?: number;
+  hotels_with_ai_visibility?: number;
   country_count: number;
   city_count: number;
+}
+
+export interface MarketIntelligenceRow {
+  country: string | null;
+  hotel_count: number;
+  total_reviews: number | null;
+  avg_rating: number | null;
+  avg_hqi: number | null;
+  avg_opportunity_score: number | null;
+  avg_language_gap: number | null;
+  avg_value_gap: number | null;
+  avg_response_rate: number | null;
+  deep_proof_hotels: number;
+  direct_rate_advantage_hotels: number;
+  contact_ready_hotels: number;
+  narrative: string | null;
 }
 
 export interface HotelCardData {

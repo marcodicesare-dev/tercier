@@ -21,6 +21,7 @@ import {
   getContentSeedInsight,
   getDigitalOperationalInsight,
   getLanguageInsight,
+  getOpportunityNarrative,
   getPersonaLabel,
   getPricingInsight,
   getQualityInsight,
@@ -190,8 +191,24 @@ export default async function HotelPage({ params }: { params: Promise<{ id: stri
   const hasStayDetailColumn = personaCards.length > 0 || hasRepeatGuestCard || hasTypicalStayCard;
   const externalLinks = getHotelExternalLinks(hotel);
   const reviewExplorerIntro = `Browse ${formatNumber(reviewsPreview.total || hotel.total_reviews_db)} guest reviews, then jump from any claim to the exact TripAdvisor or Google source that proves it.`;
-  const heroNarrative = opportunity?.opportunity?.narrative ?? hotel.computed_opportunity_narrative ?? getQualityInsight(hotel);
-  const heroPrimaryDriver = opportunity?.opportunity?.primary_reason ?? hotel.computed_opportunity_primary ?? null;
+  const fallbackOpportunity = getOpportunityNarrative(hotel, data.languages, data.topics);
+  const computedWebsiteLangs = hotel.computed_effective_website_langs ?? 0;
+  const useRpcNarrative = !(
+    computedWebsiteLangs === 0 &&
+    opportunity?.opportunity?.primary_reason === 'language_gap'
+  );
+  const heroNarrative = (
+    (useRpcNarrative ? opportunity?.opportunity?.narrative : null) ??
+    hotel.computed_opportunity_narrative ??
+    fallbackOpportunity.narrative ??
+    getQualityInsight(hotel)
+  );
+  const heroPrimaryDriver = (
+    (useRpcNarrative ? opportunity?.opportunity?.primary_reason : null) ??
+    hotel.computed_opportunity_primary ??
+    fallbackOpportunity.primaryReason ??
+    null
+  );
   const heroMetrics = [
     hotel.ta_rating != null ? { label: 'TripAdvisor', value: formatDecimal(hotel.ta_rating, 1) } : null,
     hotel.gp_rating != null ? { label: 'Google', value: formatDecimal(hotel.gp_rating, 1) } : null,
