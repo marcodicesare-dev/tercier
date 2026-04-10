@@ -306,11 +306,9 @@ const PORTFOLIO_FIELDS = [
   'score_hqi', 'score_tos', 'score_digital_presence', 'score_reputation_risk',
   'computed_opportunity_score', 'computed_opportunity_narrative',
   'gp_editorial_summary',
-  'ai_visibility_score', 'ai_chatgpt_mentioned', 'ai_perplexity_mentioned',
   'enrichment_status',
   'flag_is_independent', 'flag_tercier_high_priority',
   'topic_mentions_total',
-  'dp_website_language_count',
   'updated_at',
 ].join(',');
 
