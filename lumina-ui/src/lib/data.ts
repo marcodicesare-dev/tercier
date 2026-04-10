@@ -291,18 +291,49 @@ function buildDistribution(rows: unknown[]): GuestPersonaDeepDiveData {
   };
 }
 
+const PORTFOLIO_FIELDS = [
+  'hotel_id', 'name', 'city', 'country',
+  'ta_brand', 'ta_parent_brand', 'ta_price_level', 'ta_category',
+  'ta_rating', 'gp_rating', 'total_reviews_db',
+  'ta_ranking', 'ta_ranking_out_of', 'ta_ranking_geo',
+  'ta_review_language_count',
+  'ta_primary_segment', 'ta_segment_pct_business', 'ta_segment_pct_couples',
+  'ta_segment_pct_solo', 'ta_segment_pct_family', 'ta_segment_pct_friends',
+  'ta_subrating_strongest', 'ta_subrating_weakest',
+  'ta_subrating_value', 'ta_subrating_service', 'ta_subrating_range',
+  'ta_owner_response_rate',
+  'competitor_count',
+  'score_hqi', 'score_tos', 'score_digital_presence', 'score_reputation_risk',
+  'computed_opportunity_score', 'computed_opportunity_narrative',
+  'gp_editorial_summary',
+  'ai_visibility_score', 'ai_chatgpt_mentioned', 'ai_perplexity_mentioned',
+  'enrichment_status',
+  'flag_is_independent', 'flag_tercier_high_priority',
+  'topic_mentions_total',
+  'dp_website_language_count',
+  'updated_at',
+].join(',');
+
 export const getPortfolioHotels = unstable_cache(
-  async (): Promise<HotelDashboardRow[]> => {
-    const { data, error } = await supabase
+  async (brand?: string): Promise<HotelDashboardRow[]> => {
+    let query = supabase
       .from('mv_hotel_dashboard')
-      .select('*')
-      .order('score_hqi', { ascending: false, nullsFirst: false });
+      .select(PORTFOLIO_FIELDS)
+      .in('enrichment_status', ['computed', 'hotel_enrichment_complete'])
+      .order('score_hqi', { ascending: false, nullsFirst: false })
+      .limit(1200);
+
+    if (brand) {
+      query = query.or(`ta_brand.ilike.%${brand}%,ta_parent_brand.ilike.%${brand}%`);
+    }
+
+    const { data, error } = await query;
 
     if (error) throw error;
-    return (data ?? []) as HotelDashboardRow[];
+    return (data ?? []) as unknown as HotelDashboardRow[];
   },
   ['lumina-ui-portfolio-hotels'],
-  { revalidate: 60 },
+  { revalidate: 120 },
 );
 
 export const getHotelCard = unstable_cache(
@@ -415,67 +446,72 @@ export const getChainData = unstable_cache(
       sales_hook?: string | null;
     }>;
   }> => {
-    const hotels = await getPortfolioHotels();
-    const scopedHotels = brand
-      ? hotels.filter(hotel =>
-          [hotel.ta_brand, hotel.ta_parent_brand]
-            .filter(Boolean)
-            .some(value => value!.toLowerCase().includes(brand.toLowerCase())),
-        )
-      : hotels;
+    const scopedHotels = await getPortfolioHotels(brand);
 
     let summaryRow: ChainIntelligenceRow | null = null;
     if (brand) {
-      const { data, error } = await supabase
-        .from('v_chain_intelligence')
-        .select('*')
-        .ilike('brand', `%${brand}%`)
-        .order('hotel_count', { ascending: false })
-        .limit(1)
-        .maybeSingle();
-      if (error) throw error;
-      summaryRow = (data ?? null) as ChainIntelligenceRow | null;
+      try {
+        const { data, error } = await supabase
+          .from('v_chain_intelligence')
+          .select('*')
+          .ilike('brand', `%${brand}%`)
+          .order('hotel_count', { ascending: false })
+          .limit(1)
+          .maybeSingle();
+        if (!error) summaryRow = (data ?? null) as ChainIntelligenceRow | null;
+      } catch { /* view may not exist yet */ }
     }
 
-    const opportunityQuery = supabase
-      .from('v_hotel_opportunities')
-      .select('hotel_id,name,city,country,computed_opportunity_score,computed_opportunity_primary,computed_opportunity_narrative,opportunity_action,sales_hook')
-      .order('computed_opportunity_score', { ascending: false, nullsFirst: false })
-      .limit(10);
+    type OpportunityRow = {
+      hotel_id: string;
+      name: string;
+      city: string | null;
+      country: string | null;
+      computed_opportunity_score: number | null;
+      computed_opportunity_primary: string | null;
+      computed_opportunity_narrative: string | null;
+      opportunity_action?: string | null;
+      sales_hook?: string | null;
+    };
 
-    const { data: opportunityRows, error: opportunityError } = brand
-      ? await opportunityQuery.or(`ta_brand.ilike.%${brand}%,ta_parent_brand.ilike.%${brand}%`)
-      : await opportunityQuery;
+    let opportunityRows: OpportunityRow[] = [];
+    try {
+      let opportunityQuery = supabase
+        .from('v_hotel_opportunities')
+        .select('hotel_id,name,city,country,computed_opportunity_score,computed_opportunity_primary,computed_opportunity_narrative,opportunity_action,sales_hook')
+        .order('computed_opportunity_score', { ascending: false, nullsFirst: false })
+        .limit(10);
 
-    if (opportunityError) throw opportunityError;
+      if (brand) {
+        const scopedHotelIds = scopedHotels.map(hotel => hotel.hotel_id);
+        if (scopedHotelIds.length) {
+          opportunityQuery = opportunityQuery.in('hotel_id', scopedHotelIds);
+        }
+      }
 
-    const { data: marketRows, error: marketError } = await supabase
-      .from('v_market_intelligence')
-      .select('*')
-      .order('avg_opportunity_score', { ascending: false, nullsFirst: false })
-      .limit(12);
+      const { data, error } = await opportunityQuery;
+      if (!error) opportunityRows = (data ?? []) as OpportunityRow[];
+    } catch { /* view may not exist yet */ }
 
-    if (marketError) throw marketError;
+    let marketRows: MarketIntelligenceRow[] = [];
+    try {
+      const { data, error } = await supabase
+        .from('v_market_intelligence')
+        .select('*')
+        .order('avg_opportunity_score', { ascending: false, nullsFirst: false })
+        .limit(12);
+      if (!error) marketRows = (data ?? []) as MarketIntelligenceRow[];
+    } catch { /* view may not exist yet */ }
 
     return {
       hotels: scopedHotels,
       summaryRow,
-      marketRows: (marketRows ?? []) as MarketIntelligenceRow[],
-      opportunityRows: (opportunityRows ?? []) as Array<{
-        hotel_id: string;
-        name: string;
-        city: string | null;
-        country: string | null;
-        computed_opportunity_score: number | null;
-        computed_opportunity_primary: string | null;
-        computed_opportunity_narrative: string | null;
-        opportunity_action?: string | null;
-        sales_hook?: string | null;
-      }>,
+      marketRows,
+      opportunityRows,
     };
   },
   ['lumina-ui-chain-data'],
-  { revalidate: 60 },
+  { revalidate: 120 },
 );
 
 export const getMarketIntelligence = unstable_cache(
